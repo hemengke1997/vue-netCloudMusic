@@ -1,8 +1,8 @@
-# 使用@vue/cli搭建一个vue项目
+# 使用@vue/cli3搭建一个vue移动端项目
 ### 安装淘宝的NPM镜像
 `$ npm install -g cnpm --registry=https://registry.npm.taobao.org`
 
-### 安装node9以上环境  [node官网](https://nodejs.org/en/)
+### 安装node9以上环境
 因为vue-cli3是基于webpack搭建的，所以需要用到node，可以在官网下载安装，安装之后可以命令行输入 `node -v` 查看当前版本
 
 ### 全局安装vue-cli3
@@ -10,7 +10,7 @@ Vue CLI 的包名称由 vue-cli 改成了 @vue/cli。 如果你已经全局安�
 
 ## 采坑记录
 ### 1. 安装  cnpm i -g @vue/cli (3.x版本)
-报错：==EPERM: operation not permitted, mkdir 'C:\Program Files\nodejs\node_modules\@vue'==
+报错 ==EPERM: operation not permitted, mkdir 'C:\Program Files\nodejs\node_modules\@vue'==
 
 原因：权限不足
 
@@ -25,7 +25,7 @@ Vue CLI 的包名称由 vue-cli 改成了 @vue/cli。 如果你已经全局安�
 
 
 ### 2.构建项目命令： vue create <项目名> 
-- 如果你在 Windows 上通过 minTTY 使用 Git Bash，交互提示符并不工作。你必须通过 `winpty vue.cmd create <项目名>` 启动这个命令。
+- 如果你在 Windows 上通过 minTTY 使用 Git Bash，交互提示符并不工作。你必须通过 `winpty vue.cmd create hello-world` 启动这个命令。
 
 - 有两个选项，第一个是默认选项，适合快速创建一个新项目的原型；第二个选项进入后可以手动设置一些面向生产的项目所需要的配置。
 
@@ -78,9 +78,8 @@ vue-cli2把这些配置是单独放的
 
 ![旧的目录结构](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/E55F38E401CE412FA5CE57085011ED06/1016)
 
-**可以看到新版的项目目录中没有build和config了**！那我们在哪里配置webpack呢？？？问题不大，可以按照[vue-cli官方文档](https://cli.vuejs.org/zh/config/)来配置
-
-
+**可以看到新版的项目目录中没有build和config了**！那我们在哪里配置webpack呢？？？问题不大，可以按照[vue-cli官方文档](https://cli.vuejs.org/zh/config/)来配置  
+顺道说明一下package-lock.json，简单来说，这个文件是为了团队环境的一致，当其他人拉这个仓库代码时，运行npm i，就可以下载所有需要的依赖且保持一致
 ---
 
 ### 3. 配置vue.config.js
@@ -109,42 +108,346 @@ SEO | 可以做到很好 | 需要nuxt.js或者Vue SSR
 
 
 
+
+
+> 首先，要知道全局的cli配置放在一个`.vuer`c的json文件中，可以使用编辑器直接编辑这个文件来更改已经保存的选项，也可以使用`vue config`
+
 #### vue.config.js
 ---
-> 首先，要知道全局的cli配置放在一个`.vuer`c的json文件中，可以使用编辑器直接编辑这个文件来更改已经保存的选项，也可以使用`vue config`  
 > 在`package.json`的同级目录下创建`vue.config.js`,这样的话这个js文件会被`@vue/cli-service`自动加载。
 
 
+### 4.适配移动端
+##### 方案1： 安装`flexible`和`postcss-px2rem`
+
+1. 命令行安装  `cnpm i lib-flexible` ，`cnpn i postcss-px2rem`
+
+这个方案是之前手淘解决移动端适配创造的一个JS库flexibel.js  （已经不维护了）
+现在viewport兼容性越来越好的今天，CSS3的新属性 `vh,vw` 对于移动端开发更方便了
+
+2. 引入lib-flexible
+
+在项目入口文件main.js中 `import 'lib-flexible'`
+注意：由于flexible会动态给页面的header中添加`<meta name='viewport'>`标签，所以要把public/index.html中的这个标签删除了
+
+3. 配置postcss-px2rem
+
+在vue.config.js中配置，具体配置内容如下：
+```javascript
+ 1 module.exports = {
+ 2     css: {
+ 3         loaderOptions: {
+ 5           postcss: {
+ 6             plugins: [
+ 7               require('postcss-px2rem')({
+ 8                 remUnit: 75  //转换的基数
+ 9               })
+10             ]
+11           }
+12         }
+13     },
+14 }
+```
+
+4. 重启项目
+
+在about.vue中 我写了个这个，结果是什么呢？
+```
+.about {
+  width: 300px;
+  height: 100px;
+  background-color: grey;
+}
+```
+
+在浏览器中，
+```
+.about {
+    width: 4rem;
+    ...
+}
+```
+
+px确实转化成了rem，但是有个问题就是，HTML的font-size最大是54，这个问题我还没解决。看了flexible的源码，里面出现了540，好像是设置了视窗的最大宽度
+
+解决了：
+
+![解决](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/1C424CA19C3E4071ACF3C2AE08525DC9/1264)
+
+可以看到淘宝对分辨率大于540的设备不认为它们是移动端。当分辨率大于540时，一律按照540处理。可以改的，比如我想最大兼容750的（因为设计稿通常是750x1336）
+![ok](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/6CE99E514B2844D5B80A25721BE8CA72/1276)
 
 
+##### 方案2:使用vw,vh移动端适配
+> 介绍vh，vw。 他们俩是相对于视窗的长度
 
-# vue-first
+![1](https://images2017.cnblogs.com/blog/1210235/201709/1210235-20170918162531150-539160393.jpg)
+![2](https://images2017.cnblogs.com/blog/1210235/201709/1210235-20170918162831821-1344168854.jpg)
 
-## Project setup
-```
-cnpm install
+1. 安装依赖 
+ 
+**-D**（开发依赖）
+- postcss-import
+- postcss-url
+- cssnano-preset-advanced
+
+**-S**（开发，运行依赖）
+- postcss-aspect-ratio-mini
+- postcss-px-to-viewport
+- postcss-cssnext
+- cssnano
+- postcss-viewport-units
+
+2. 配置.postcssrc.js
+
+```javascript
+module.exports = {
+  "plugins": {
+    "postcss-import": {},
+    "postcss-url": {},
+    "postcss-aspect-ratio-mini": {},
+      "postcss-write-svg": {
+        utf8: false
+      },
+      "postcss-cssnext": {},
+      "postcss-px-to-viewport": {
+        viewportWidth: 750,  //视窗的宽度，对应的是我们设计稿的宽度，一般是750
+        viewportHeight: 1334, // 视窗的高度，根据750设备的宽度来指定，一般指定1334，也可以不配置
+        unitPrecision: 3,       // 指定`px`转换为视窗单位值的小数位数（很多时候无法整除）
+        viewportUnit: 'vw',     // 指定需要转换成的视窗单位，建议使用vw
+        selectorBlackList: ['.ignore', '.hairlines'],  // 指定不转换为视窗单位的类，可以自定义，可以无限添加,建议定义一至两个通用的类名
+        minPixelValue: 1,       // 小于或等于`1px`不转换为视窗单位，你也可以设置为你想要的值
+        mediaQuery: false       // 允许在媒体查询中转换`px`
+      },
+      "postcss-viewport-units":{},
+      "cssnano": {
+        preset: "advanced",
+        autoprefixer: false,
+        "postcss-zindex": false
+      },
+  }
+}
 ```
 
-### Compiles and hot-reloads for development
+解释一下上述的插件：
+
+- [postcss-import](https://github.com/postcss/postcss-import)主要功有是解决@import引入路径问题。使用这个插件，可以让你很轻易的使用本地文件、node_modules或者web_modules的文件。这个插件配合postcss-url让你引入文件变得更轻松。
+- postcss-url相关配置可以点击[这里](https://github.com/postcss/postcss-url)。该插件主要用来处理文件，比如图片文件、字体文件等引用路径的处理。
+- [autoprefixer](https://github.com/postcss/autoprefixer)插件是用来自动处理浏览器前缀的一个插件。如果你配置了[postcss-cssnext](https://github.com/MoOx/postcss-cssnext)，其中就已具备了autoprefixer的功能。在配置的时候，未显示的配置相关参数的话，表示使用的是[Browserslist](https://github.com/browserslist/browserslist)指定的列表参数，你也可以像这样来指定last 2 versions 或者 > 5%
+
+Vue-cli默认配置了上述三个PostCSS插件，但我们要完成vw的布局兼容方案，或者说让我们能更专心的撸码，还需要配置下面的几个PostCSS插件：
+- [postcss-aspect-ratio-mini](https://github.com/yisibl/postcss-aspect-ratio-mini)（用于将元素的尺寸固定为宽高比）
+- [postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport)（把px转换成视图单位）
+- [postcss-write-svg](https://github.com/jonathantneal/postcss-write-svg)（直接在css中使用svg）
+- [postcss-preset-env](https://preset-env.cssdb.org/)（使用未来的css语言）
+- [cssnano](https://github.com/cssnano/cssnano)（压缩）
+- [postcss-viewport-units](https://github.com/springuper/postcss-viewport-units)
+
+使用他们要先进行安装(按照需求，如果不需要就不用安装)
 ```
-npm run serve
+cnpm i postcss-aspect-ratio-mini postcss-px-to-viewport postcss-write-svg postcss-preset-env postcss-viewport-units cssnano --S
 ```
 
-### Compiles and minifies for production
+> **特别声明**：由于cssnext和cssnano都具有autoprefixer,事实上只需要一个，所以把默认的autoprefixer删除掉，然后把cssnano中的autoprefixer设置为false。对于其他的插件使用，稍后会简单的介绍。
+
+在cssnano的配置中，使用了preset: "advanced"，所以我们需要另外安装：
 ```
-npm run build
+npm i cssnano-preset-advanced --save-dev
+```
+cssnano集成了一些其他的PostCSS插件，如果你想禁用cssnano中的某个插件的时候，可以像下面这样操作：
+```javascript
+"cssnano": {
+    autoprefixer: false,
+    "postcss-zindex": false
+}
+```
+上面的代码把autoprefixer和postcss-zindex禁掉了。前者是有重复调用，后者是一个讨厌的东东。只要启用了这个插件，z-index的值就会重置为1。这是一个天坑，**千万记得将postcss-zindex设置为false。**
+
+目前出视觉设计稿，我们都是使用750px宽度的，那么100vw = 750px，即1vw = 7.5px。那么我们可以根据设计图上的px值直接转换成对应的vw值。在实际撸码过程，不需要进行任何的计算，直接在代码中写px，比如：
+
+```
+.about {
+  border: .5px solid #000;
+  border-bottom-width: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  background-color: pink;
+}
+```
+编译出来的CSS：
+```
+.about[data-v-039c5b43] {
+    border: solid #000;
+    border-width: .5px .5px .533vw;
+    font-size: 1.867vw;
+    line-height: 2.667vw;
+    background-color: pink;
+    content: "viewport-units-buggyfill; border-bottom-width: 0.533vw; font-size: 1.867vw; line-height: 2.667vw";
+}
+
+```
+在不想要把px转换为vw的时候，首先在对应的元素（html）中添加配置中指定的类名.ignore或.hairlines(.hairlines一般用于设置border-width:0.5px的元素中)：
+```
+<template>
+  <div class="about ignore">
+    <h1>This is an about page</h1>
+  </div>
+</template>
+
+<style lang="less" scoped>
+.about {
+  border: .5px solid #000;
+  border-bottom-width: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  background-color: pink;
+}
+.ignore {
+  color: red;
+  margin: 10px;
+}
+```
+编译出来：
+
+```
+.ignore[data-v-039c5b43] {
+    color: red;
+    margin: 10px;
+}
+
+<style>
+.about[data-v-039c5b43] {
+    border: solid #000;
+    border-width: .5px .5px .533vw;
+    font-size: 1.867vw;
+    line-height: 2.667vw;
+    background-color: pink;
+    content: "viewport-units-buggyfill; border-bottom-width: 0.533vw; font-size: 1.867vw; line-height: 2.667vw";
+}
 ```
 
-### Run your tests
+上面解决了px到vw的转换计算。那么在哪些地方可以使用vw来适配我们的页面。根据相关的测试：
+
+- 容器适配，可以使用vw
+- 文本的适配，可以使用vw
+- 大于1px的边框、圆角、阴影都可以使用vw
+- 内距和外距，可以使用vw
+
+postcss-aspect-ratio-mini主要用来处理元素容器宽高比。在实际使用的时候，具有一个默认的结构
+```html
+<div aspectratio>
+    <div aspectratio-content></div>
+</div>
 ```
-npm run test
+在实际使用的时候，可以把自定义属性aspectratio和aspectratio-content换成相应的类名，比如：
+```html
+<div class="aspectratio">
+    <div class="aspectratio-content"></div>
+</div>
+```
+不知道这个怎么用...
+
+[postcss-viewport-units](https://github.com/springuper/postcss-viewport-units)插件主要是给CSS的属性添加content的属性，配合[viewport-units-buggyfill](https://github.com/rodneyrehm/viewport-units-buggyfill)库给vw、vh、vmin和vmax做适配的操作。  
+这是实现vw布局必不可少的一个插件，因为少了这个插件，这将是一件痛苦的事情。后面你就清楚。  
+
+[原文链接](https://www.cnblogs.com/yikuu/p/9052148.html)
+
+
+3. 兼容性处理 
+
+**引入JS文件**
+
+viewport-units-buggyfill主要有两个JavaScript文件：viewport-units-buggyfill.js和viewport-units-buggyfill.hacks.js。你只需要在你的HTML文件中引入这两个文件。比如在Vue项目中的index.html引入它们：
+```
+<script src="//g.alicdn.com/fdilab/lib3rd/viewport-units-buggyfill/0.6.2/??viewport-units-buggyfill.hacks.min.js,viewport-units-buggyfill.min.js"></script>
 ```
 
-### Lints and fixes files
+第二步，在HTML文件中调用viewport-units-buggyfill，比如：
+
 ```
-npm run lint
+<script>
+    window.onload = function () {
+        window.viewportUnitsBuggyfill.init({
+            hacks: window.viewportUnitsBuggyfillHacks
+        });
+    }
+</script>
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+为了你Demo的时候能获取对应机型相关的参数，我在示例中添加了一段额外的代码，估计会让你有点烦：
+```
+<script>
+    window.onload = function () {
+        window.viewportUnitsBuggyfill.init({
+        hacks: window.viewportUnitsBuggyfillHacks
+        });
 
+        var winDPI = window.devicePixelRatio;
+        var uAgent = window.navigator.userAgent;
+        var screenHeight = window.screen.height;
+        var screenWidth = window.screen.width;
+        var winWidth = window.innerWidth;
+        var winHeight = window.innerHeight;
+
+        alert(
+            "Windows DPI:" + winDPI +
+            ";\ruAgent:" + uAgent +
+            ";\rScreen Width:" + screenWidth +
+            ";\rScreen Height:" + screenHeight +
+            ";\rWindow Width:" + winWidth +
+            ";\rWindow Height:" + winHeight
+        )
+    }
+</script>
+```
+
+具体的使用。在你的CSS中，只要使用到了viewport的单位（vw、vh、vmin或vmax ）地方，需要在样式中添加content：
+```
+.my-viewport-units-using-thingie {
+    width: 50vmin;
+    height: 50vmax;
+    top: calc(50vh - 100px);
+    left: calc(50vw - 100px);
+
+    /* hack to engage viewport-units-buggyfill */
+    content: 'viewport-units-buggyfill; width: 50vmin; height: 50vmax; top: calc(50vh - 100px); left: calc(50vw - 100px);';
+}
+```
+
+这可能会令你感到恶心，而且我们不可能每次写vw都去人肉的计算。特别是在我们的这个场景中，咱们使用了postcss-px-to-viewport这个插件来转换vw，更无法让我们人肉的去添加content内容。
+
+这个时候就需要前面提到的postcss-viewport-units插件。这个插件将让你无需关注content的内容，插件会自动帮你处理。比如插件处理后的代码：
+
+![1](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/BA23BCA6CCD142F0964119EA40CD2F4A/1443)
+
+Viewport Units Buggyfill还提供了其他的功能。详细的这里不阐述了。但是content也会引起一定的副作用。比如img和伪元素::before(:before)或::after（:after）。在img中content会引起部分浏览器下，图片不会显示。这个时候需要全局添加：
+```
+img {
+    content: normal !important;
+}
+```
+
+而对于::after之类的，就算是里面使用了vw单位，Viewport Units Buggyfill对其并不会起作用。比如：
+
+```
+// 编译前
+.after {
+    content: 'after content';
+    display: block;
+    width: 100px;
+    height: 20px;
+    background: green;
+}
+
+// 编译后
+.after[data-v-469af010] {
+    content: "after content";
+    display: block;
+    width: 13.333vw;
+    height: 2.667vw;
+    background: green;
+}
+```
+
+[原项目下载地址](https://www.w3cplus.com/sites/default/files/blogs/2018/1801/vw-layout.zip)
+接着运行npm i，再运行npm run dev，你就可以看到效果了。

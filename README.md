@@ -1,4 +1,4 @@
-# 使用@vue/cli3搭建一个vue移动端项目
+# 使用@vue/cli搭建一个vue移动端项目
 ### 安装淘宝的NPM镜像
 `$ npm install -g cnpm --registry=https://registry.npm.taobao.org`
 
@@ -106,17 +106,6 @@ SEO | 可以做到很好 | 需要nuxt.js或者Vue SSR
 2. SEO 本质是一个服务器向另一个服务器发起请求，解析请求内容。但一般来说搜索引擎是不会去执行请求到的js的。也就是说，如果一个单页应用，html在服务器端还没有渲染部分数据数据，在浏览器才渲染出数据，而搜索引擎请求到的html是没有渲染数据的。 这样就很不利于内容被搜索引擎搜索到。 所以服务端渲染就是尽量在服务器发送到浏览器前 页面上就是有数据的。
 3. 一般的数据逻辑操作是放在后端的。排序这个如果仅仅是几条数据，前后端排序开起来是一样的，如果是有1000条数据，前端要排序就要都请求过来。这样显然是不合理的。
 
-
-
-
-
-> 首先，要知道全局的cli配置放在一个`.vuer`c的json文件中，可以使用编辑器直接编辑这个文件来更改已经保存的选项，也可以使用`vue config`
-
-#### vue.config.js
----
-> 在`package.json`的同级目录下创建`vue.config.js`,这样的话这个js文件会被`@vue/cli-service`自动加载。
-
-
 ### 4.适配移动端
 ##### 方案1： 安装`flexible`和`postcss-px2rem`
 
@@ -184,7 +173,7 @@ px确实转化成了rem，但是有个问题就是，HTML的font-size最大是54
 ![1](https://images2017.cnblogs.com/blog/1210235/201709/1210235-20170918162531150-539160393.jpg)
 ![2](https://images2017.cnblogs.com/blog/1210235/201709/1210235-20170918162831821-1344168854.jpg)
 
-1. 安装依赖 
+### 1. 安装依赖 
  
 **-D**（开发依赖）
 - postcss-import
@@ -198,7 +187,7 @@ px确实转化成了rem，但是有个问题就是，HTML的font-size最大是54
 - cssnano
 - postcss-viewport-units
 
-2. 配置.postcssrc.js
+### 2. 配置.postcssrc.js
 
 ```javascript
 module.exports = {
@@ -348,12 +337,9 @@ postcss-aspect-ratio-mini主要用来处理元素容器宽高比。在实际使�
 不知道这个怎么用...
 
 [postcss-viewport-units](https://github.com/springuper/postcss-viewport-units)插件主要是给CSS的属性添加content的属性，配合[viewport-units-buggyfill](https://github.com/rodneyrehm/viewport-units-buggyfill)库给vw、vh、vmin和vmax做适配的操作。  
-这是实现vw布局必不可少的一个插件，因为少了这个插件，这将是一件痛苦的事情。后面你就清楚。  
+这是实现vw布局必不可少的一个插件，因为少了这个插件，这将是一件痛苦的事情。后面你就清楚。
 
-[原文链接](https://www.cnblogs.com/yikuu/p/9052148.html)
-
-
-3. 兼容性处理 
+### **3. 兼容性处理** 
 
 **引入JS文件**
 
@@ -417,7 +403,6 @@ viewport-units-buggyfill主要有两个JavaScript文件：viewport-units-buggyfi
 这可能会令你感到恶心，而且我们不可能每次写vw都去人肉的计算。特别是在我们的这个场景中，咱们使用了postcss-px-to-viewport这个插件来转换vw，更无法让我们人肉的去添加content内容。
 
 这个时候就需要前面提到的postcss-viewport-units插件。这个插件将让你无需关注content的内容，插件会自动帮你处理。比如插件处理后的代码：
-
 ![1](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/BA23BCA6CCD142F0964119EA40CD2F4A/1443)
 
 Viewport Units Buggyfill还提供了其他的功能。详细的这里不阐述了。但是content也会引起一定的副作用。比如img和伪元素::before(:before)或::after（:after）。在img中content会引起部分浏览器下，图片不会显示。这个时候需要全局添加：
@@ -451,3 +436,140 @@ img {
 
 [原项目下载地址](https://www.w3cplus.com/sites/default/files/blogs/2018/1801/vw-layout.zip)
 接着运行npm i，再运行npm run dev，你就可以看到效果了。
+---
+
+> 首先，要知道全局的cli配置放在一个`.vuer`c的json文件中，可以使用编辑器直接编辑这个文件来更改已经保存的选项，也可以使用`vue config`
+
+#### vue.config.js
+> 在`package.json`的同级目录下创建`vue.config.js`,这样的话这个js文件会被`@vue/cli-service`自动加载。
+
+一般通用的vue.config.js的配置如下：
+
+```javascript
+const isProduction = process.env.NODE_ENV === 'production'
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+
+module.exports = {
+    lintOnSave: false,
+    productionSourceMap: false,
+    publicPath: process.env.BASE_URL, // .env文件中的
+    outputDir: 'dist', // 默认dist
+    indexPath: 'index.html', // 默认index.html
+    filenameHashing: true, // 默认true 控制缓存
+    pages: undefined, // 用于构建多页面，默认undefined
+    runtimeCompiler: false, // 是否使用包含运行时编译器的Vue核心的构建
+    transpileDependencies: [],  // 默认情况下 babel-loader 会忽略所有 node_modules 中的文件。如果你想要通过 Babel 显式转译一个依赖，可以在这个选项中列出来
+    productionSourceMap: false,  // 如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
+    configureWebpack: config => {
+        if (isProduction) {
+          // 为生产环境修改配置...
+          // 使用uglifyjs-webpack-plugin压缩混淆代码
+          let optimization = {
+            minimizer: [
+              new UglifyJsPlugin({
+                uglifyOptions: {
+                  warnings: false,
+                  compress: {
+                    drop_console: true,
+                    drop_debugger: false,
+                    pure_funcs: ['console.log']
+                  }
+                }
+              })
+            ]
+          }
+          Object.assign(config,{optimization})
+          // 开启gzip压缩
+          const productionGzipExtensions = /\.(js|css|json|txt|html|ico|svg)(\?.*)?$/i
+          config.plugins.push(
+            new CompressionWebpackPlugin({
+              filename: '[path].gz[query]',
+              algorithm: 'gzip',
+              test: productionGzipExtensions,
+              threshold: 10240, // Only assets bigger than this size are processed. In bytes.
+              minRatio: 0.8,
+              deleteOriginalAssets: false, // Whether to delete the original assets or not.
+            })
+          )
+        } else {
+          // 为开发环境修改配置...
+        }
+    },
+    // css相关配置
+    css: {
+        // 启用 CSS modules
+        modules: false,
+        // 是否使用css分离插件
+        extract: isProduction ? true : false,
+        // 开启 CSS source maps?
+        sourceMap: isProduction ? false : true,
+        // css预设器配置项
+        loaderOptions: {
+          postcss: {
+            plugins: [
+              require('postcss-px2rem')({
+                remUnit: 75
+              })
+            ]
+          }
+        },
+    },
+    pwa: {},  // PWA 插件相关配置
+    pluginOptions: {  // 第三方插件配置
+    // ...
+    },
+    parallel: require('os').cpus().length > 1, // 该选项在系统的 CPU 有多于一个内核时自动启用，仅作用于生产构建
+    devServer: { // 所有 webpack-dev-server 的选项都支持
+    hot: true, // 热更新
+        open: true,
+        host: '0.0.0.0',
+        port: 8088,
+        https: false,
+        hotOnly: false,
+        // proxy: {}, // 跨域代理
+    },
+
+}
+```
+
+#### 环境变量和模式
+
+可以在项目的根目录中添加下列文件来指定环境变量
+```
+.env                # 在所有的环境中被载入
+.env.local          # 在所有的环境中被载入，但会被 git 忽略
+.env.[mode]         # 只在指定的模式中被载入
+.env.[mode].local   # 只在指定的模式中被载入，但会被 git 忽略
+```
+
+一个环境文件值包含环境变量的键值对，如：
+```
+NODE_ENV = 'development'
+BASE_URL = '/'
+VUE_APP_SECRET=secret
+```
+
+被载入的变量将会对 `vue-cli-service` 的所有命令、插件和依赖可用。
+
+> **环境加载属性**  
+为一个特定模式准备的环境文件的 (例如 `.env.production`) 将会比一般的环境文件 (例如 `.env`) 拥有更高的优先级。  
+此外，Vue CLI 启动时已经存在的环境变量拥有最高优先级，并不会被 `.env` 文件覆写
+
+> NODE_ENV  
+如果在环境中有默认的 `NODE_ENV`，你应该移除它或在运行 `vue-cli-service` 命令的时候明确地设置 `NODE_ENV`。
+
+你可以通过传递 `--mode`选项参数为命令行覆写默认的模式。例如，如果你想要在构建命令中使用开发环境变量，请在你的 `package.json` 脚本中加入：
+```
+"dev-build": "vue-cli-service build --mode development",
+```
+
+至此，环境已经搭建完毕，不出意外的话，`npm run serve` 是没有问题的
+
+以上参考：
+
+[vueCLI官网](https://cli.vuejs.org/zh/)
+
+[基于vue-cli3.0构建功能完善的移动端架子](https://juejin.im/post/5cbf32bc6fb9a03236393379)
+
+[如何在Vue项目中使用vw实现移动端适配](https://www.cnblogs.com/yikuu/p/9052148.html)

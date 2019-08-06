@@ -1,5 +1,5 @@
 module.exports = {
-  "plugins": {
+  plugins: {
     "postcss-import": {},
     "postcss-url": {},
     "postcss-aspect-ratio-mini": {},
@@ -17,9 +17,7 @@ module.exports = {
     },
     "postcss-viewport-units": {},
     "cssnano": {
-      preset: 'advanced',
-      autoprefixer: false,
-      "postcss-zindex": false
+      preset: 'default'
     }
   }
 }

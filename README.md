@@ -10,7 +10,7 @@ Vue CLI 的包名称由 vue-cli 改成了 @vue/cli。 如果你已经全局安�
 
 ## 采坑记录
 ### 1. 安装  cnpm i -g @vue/cli (3.x版本)
-报错 ==EPERM: operation not permitted, mkdir 'C:\Program Files\nodejs\node_modules\@vue'==
+报错 EPERM: operation not permitted, mkdir 'C:\Program Files\nodejs\node_modules\@vue'
 
 原因：权限不足
 
@@ -48,7 +48,7 @@ hash ——即url中的#。比如http://www.abc.com/#/login，hash的值为#/log
 它的特点是：hash出现在URL中，但不会放在http请求中，不会重新加载页面，对后端完全没有影响
 history ——里面HTML5中新增的API pushState()和replaceState()方法 （需要特定的浏览器支持）
 这两个方法应用于浏览器的历史记录栈，在当前已有的back、forward、go的基础之上，提供对历史记录进行修改的功能。
-虽然改变了URL，但是他们也不会向后端发送请求
+虽然改变了URL，但是他们也不会向后端发送请求，__这种模式需要服务器__
 ```
 ```
 Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): Less

@@ -80,6 +80,7 @@ vue-cli2把这些配置是单独放的
 
 **可以看到新版的项目目录中没有build和config了**！那我们在哪里配置webpack呢？？？问题不大，可以按照[vue-cli官方文档](https://cli.vuejs.org/zh/config/)来配置  
 顺道说明一下package-lock.json，简单来说，这个文件是为了团队环境的一致，当其他人拉这个仓库代码时，运行npm i，就可以下载所有需要的依赖且保持一致
+
 ---
 
 ### 3. 配置vue.config.js
@@ -436,11 +437,11 @@ img {
 
 [原项目下载地址](https://www.w3cplus.com/sites/default/files/blogs/2018/1801/vw-layout.zip)
 接着运行npm i，再运行npm run dev，你就可以看到效果了。
----
 
+---
+## vue.config.js
 > 首先，要知道全局的cli配置放在一个`.vuer`c的json文件中，可以使用编辑器直接编辑这个文件来更改已经保存的选项，也可以使用`vue config`
 
-#### vue.config.js
 > 在`package.json`的同级目录下创建`vue.config.js`,这样的话这个js文件会被`@vue/cli-service`自动加载。
 
 一般通用的vue.config.js的配置如下：

@@ -5,8 +5,8 @@ import store from './store'
 
 Vue.config.productionTip = false
 
-import 'normalize.css'
-
+import './vant'           // 引入vant-ui
+import 'less/base.less'   // 引入全局样式
 
 new Vue({
   router,

@@ -1,6 +1,12 @@
 const isProduction = process.env.NODE_ENV === 'production'
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const {resolve} = require('path')
+// const path = require('path')
+
+// function resolve(dir) {
+//   return path.join(__dirname,dir)
+// }
 
 module.exports = {
     lintOnSave: false,
@@ -47,6 +53,14 @@ module.exports = {
         } else {
           // 为开发环境修改配置...
         }
+    },
+    chainWebpack: config => {
+      config.resolve.alias
+            .set('@',resolve('src'))
+            .set('js',resolve('src/assets/js'))
+            .set('less',resolve('src/assets/less'))
+            .set('img',resolve('src/assets/img'))
+            .set('public',resolve('src/components/public'))
     },
     // css相关配置
     css: {

@@ -165,6 +165,7 @@ px确实转化成了rem，但是有个问题就是，HTML的font-size最大是54
 ![解决](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/1C424CA19C3E4071ACF3C2AE08525DC9/1264)
 
 可以看到淘宝对分辨率大于540的设备不认为它们是移动端。当分辨率大于540时，一律按照540处理。可以改的，比如我想最大兼容750的（因为设计稿通常是750x1336）
+
 ![ok](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/6CE99E514B2844D5B80A25721BE8CA72/1276)
 
 
@@ -404,6 +405,7 @@ viewport-units-buggyfill主要有两个JavaScript文件：viewport-units-buggyfi
 这可能会令你感到恶心，而且我们不可能每次写vw都去人肉的计算。特别是在我们的这个场景中，咱们使用了postcss-px-to-viewport这个插件来转换vw，更无法让我们人肉的去添加content内容。
 
 这个时候就需要前面提到的postcss-viewport-units插件。这个插件将让你无需关注content的内容，插件会自动帮你处理。比如插件处理后的代码：
+
 ![1](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/BA23BCA6CCD142F0964119EA40CD2F4A/1443)
 
 Viewport Units Buggyfill还提供了其他的功能。详细的这里不阐述了。但是content也会引起一定的副作用。比如img和伪元素::before(:before)或::after（:after）。在img中content会引起部分浏览器下，图片不会显示。这个时候需要全局添加：
@@ -574,3 +576,71 @@ VUE_APP_SECRET=secret
 [基于vue-cli3.0构建功能完善的移动端架子](https://juejin.im/post/5cbf32bc6fb9a03236393379)
 
 [如何在Vue项目中使用vw实现移动端适配](https://www.cnblogs.com/yikuu/p/9052148.html)
+
+## 自己的问题：
+1. `post-import` ， `post-url` 不理解他们的用法，去官方文档看了，感觉很厉害
+2. vue router中的name的作用： [参考链接](https://blog.csdn.net/weixin_42470791/article/details/82944838)
+
+假设路由中的router对象是这样子的：
+```javascript
+export default new Router({
+  mode: 'history',
+  routes: [
+    {
+      path: '/',
+      name: 'Hello',
+      component: Hello
+    }, {
+      path: '/text',
+      name: 'text',
+      component: text
+    }, {
+      path: '/text/:id',
+      component: param
+    }
+  ]
+})
+```
+- **第一种用法：**
+ 
+> 通过 `name` 属性为一个页面中不同的router-view渲染不同的组件，如：
+
+```
+<template>
+  <div id="app">
+     <router-view></router-view>
+     <router-view  name="Hello"></router-view> //将渲染Hello组件
+     <router-view  name="text"></router-view>   //将渲染text组件
+  </div>
+</template>
+```
+
+- **第二种用法：**
+
+> 使用$router.name获取组件的name值
+
+```
+<template>
+  <div id="app">
+    <p>{{ $route.name }}</p> //可以获取到渲染进来的组件的name值
+    <router-view></router-view>
+  </div>
+</template>
+```
+
+- **第三种用法：**
+
+> 页面渲染时传递参数
+
+```
+<template>
+  <div id="app">
+    //向name为hello的组件传参数id，值为12
+    <router-link ：to="{name:'hello', params:{id: '12'}}">hello</router-link> 
+    <router-view></router-view>
+  </div>
+</template>
+```
+
+
+

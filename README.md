@@ -642,5 +642,29 @@ export default new Router({
 </template>
 ```
 
+---
+## 现在是2019/8/7
+思来想去，还是想做一个类似网易云的webapp。（毕竟我是网易云音乐的忠实听众  
 
+于是在网上搜了一下相关的教程，找到某课网上的一个视频教程，价格399。买不起！T.T  
+在github上搜了一下，发现有人照着视频写了一遍，那么我也来模仿一下。  
+[原文链接](https://github.com/caijinyc/vue-music-webapp) 
 
+### 记录问题 —— 2019/8/7  
+
+1. 模仿vue-element-admin，在main.js中引入全局less文件，不起作用
+
+> 解决方案： 
+命令行输入 vue add style-resources-loader  
+然后在vue.config.js中配置
+
+```
+pluginOptions: {
+      'style-resources-loader': {
+        preProcessor: 'less',
+        patterns: [resolve(__dirname,'src/assets/less/base.less')]
+      }
+    },
+```
+
+这样就能引入全局样式文件了

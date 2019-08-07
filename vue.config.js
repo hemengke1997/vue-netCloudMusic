@@ -2,8 +2,8 @@ const isProduction = process.env.NODE_ENV === 'production'
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const CompressionWebpackPlugin = require('compression-webpack-plugin')
 const {resolve} = require('path')
-// const path = require('path')
 
+// const path = require('path')
 // function resolve(dir) {
 //   return path.join(__dirname,dir)
 // }

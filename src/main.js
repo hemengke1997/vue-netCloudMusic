@@ -5,8 +5,7 @@ import store from './store/index'
 
 Vue.config.productionTip = false
 
-import 'normalize.css'
-import 'less/base.less'   // 引入全局样式
+import 'normalize.css'  // css重置
 
 
 new Vue({

@@ -20,7 +20,6 @@ export default {};
 </script>
 
 <style lang="less" scoped>
-// @import "../../assets/less/variable.less";
 .topsearch {
   width: 100%;
   height: 50px;
@@ -30,20 +29,38 @@ export default {};
       display: flex;
       align-items: center;
       height: 100%;
+      margin: 0 8px;
+      justify-content: space-between;
     .sing {
-      font-size: @font-size-medium;
+      color: @white;
+      
+      i {
+          font-size: 22px;
+      }
     }
     .search {
       display: flex;
-      border-radius: 10px;
-      width: 295px;
+      border-radius: 26px;
+      width: 280px;
       height: 40px;
       align-items: center;
       justify-content: center;
-      font-size: @font-size-medium;
+      background-color: rgba( 202, 86, 74);
+      i , span{
+          color: #fff;
+          opacity: 0.5;
+      }
+      span {
+          margin-left: 5px;
+          font-family: Arial;
+          font-size: 14px;
+      }
     }
     .player {
-      font-size: @font-size-medium;
+      color: @white;
+      i {
+          font-size: 20px;
+      }
     }
   }
 }

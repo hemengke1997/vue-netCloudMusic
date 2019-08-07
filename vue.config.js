@@ -55,13 +55,27 @@ module.exports = {
         }
     },
     chainWebpack: config => {
+      config.plugins.delete('preload')
+      config.plugins.delete('prefetch')
+
       config.resolve.alias
             .set('@',resolve('src'))
             .set('js',resolve('src/assets/js'))
             .set('less',resolve('src/assets/less'))
             .set('img',resolve('src/assets/img'))
             .set('public',resolve('src/components/public'))
-    },
+      
+      // set preserveWhitespace
+      config.module
+      .rule('vue')
+      .use('vue-loader')
+      .loader('vue-loader')
+      .tap(options => {
+        options.compilerOptions.preserveWhitespace = true
+        return options
+      })
+      .end()
+      },
     // css相关配置
     css: {
         // 启用 CSS modules
@@ -71,21 +85,24 @@ module.exports = {
         // 开启 CSS source maps?
         sourceMap: isProduction ? false : true,
         // css预设器配置项
-        // loaderOptions: {
-        //   postcss: {
-        //     plugins: [
-        //       require('postcss-px2rem')({
-        //         remUnit: 75
-        //       })
-        //     ]
-        //   }
-        // },
+        loaderOptions: {
+          // postcss: {
+          //   plugins: [
+          //     require('postcss-px2rem')({
+          //       remUnit: 75
+          //     })
+          //   ]
+          // }
+          // less: {
+          //   data: `@import "~less/variable.less"`
+          // }
+        },
     },
     pwa: {},  // PWA 插件相关配置
     pluginOptions: {
       'style-resources-loader': {
         preProcessor: 'less',
-        patterns: []
+        patterns: [resolve(__dirname,'src/assets/less/base.less')]
       }
     },
     parallel: require('os').cpus().length > 1, // 该选项在系统的 CPU 有多于一个内核时自动启用，仅作用于生产构建

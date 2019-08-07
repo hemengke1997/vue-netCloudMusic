@@ -6,7 +6,7 @@ import store from './store/index'
 Vue.config.productionTip = false
 
 import 'normalize.css'  // css重置
-
+import 'less/base.less'  // 引入全局less
 
 new Vue({
   router,

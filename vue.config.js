@@ -78,14 +78,15 @@ module.exports = {
       },
     // css相关配置
     css: {
-        // 启用 CSS modules
-        modules: true,
+        // 是否启用 CSS modules
+        modules: false,
         // 是否使用css分离插件
         extract: isProduction ? true : false,
         // 开启 CSS source maps?
-        sourceMap: isProduction ? false : true,
+        sourceMap: false,
         // css预设器配置项
         loaderOptions: {
+          // 以下是使用rem适配方案时的配置
           // postcss: {
           //   plugins: [
           //     require('postcss-px2rem')({
@@ -102,7 +103,7 @@ module.exports = {
     pluginOptions: {
       'style-resources-loader': {
         preProcessor: 'less',
-        patterns: [resolve(__dirname,'src/assets/less/base.less')]
+        patterns: [resolve(__dirname,'src/assets/less/variable.less')]
       }
     },
     parallel: require('os').cpus().length > 1, // 该选项在系统的 CPU 有多于一个内核时自动启用，仅作用于生产构建

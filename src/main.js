@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import store from './store/index'
 
 Vue.config.productionTip = false
 
-import './vant'           // 引入vant-ui
+import 'normalize.css'
 import 'less/base.less'   // 引入全局样式
+
 
 new Vue({
   router,

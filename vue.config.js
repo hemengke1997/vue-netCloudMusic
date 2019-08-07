@@ -65,25 +65,28 @@ module.exports = {
     // css相关配置
     css: {
         // 启用 CSS modules
-        modules: false,
+        modules: true,
         // 是否使用css分离插件
         extract: isProduction ? true : false,
         // 开启 CSS source maps?
         sourceMap: isProduction ? false : true,
         // css预设器配置项
-        loaderOptions: {
-          postcss: {
-            plugins: [
-              require('postcss-px2rem')({
-                remUnit: 75
-              })
-            ]
-          }
-        },
+        // loaderOptions: {
+        //   postcss: {
+        //     plugins: [
+        //       require('postcss-px2rem')({
+        //         remUnit: 75
+        //       })
+        //     ]
+        //   }
+        // },
     },
     pwa: {},  // PWA 插件相关配置
-    pluginOptions: {  // 第三方插件配置
-    // ...
+    pluginOptions: {
+      'style-resources-loader': {
+        preProcessor: 'less',
+        patterns: []
+      }
     },
     parallel: require('os').cpus().length > 1, // 该选项在系统的 CPU 有多于一个内核时自动启用，仅作用于生产构建
     devServer: { // 所有 webpack-dev-server 的选项都支持

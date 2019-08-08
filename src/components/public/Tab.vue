@@ -26,21 +26,24 @@ export default {
   },
   computed: {
     _route() {
+      console.log(this,'333~')
       return this.$route
     }
   },
   methods: {
     test() {
-      console.log(this._route)
+      console.log(this._route,'222~')
     }
   },
-  watch: {
-    $route(to,from) {
-      // console.log(to,'to')
-      this.flag = to.path.split('/')[1];
-    }
-  },
-  
+  // watch: {
+  //   $route(to,from) {
+  //     console.log(to,'to')
+  //     this.flag = to.path.split('/')[1];
+  //   }
+  // },
+  mounted() {
+    this.test()
+  }
 };
 </script>
 

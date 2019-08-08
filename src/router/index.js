@@ -3,16 +3,47 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const Discover = ()=>import('../views/discover/Discover.vue')
+const Recommend = () => import('@/views/recommend/Recommend.vue')
+const MusicList = () => import('@/views/music-list/Musiclist.vue')
+
 
 export default new Router({
-  // mode: 'history',   // 需要服务器支持
+  mode: 'history',   // 需要服务器支持
+
   base: process.env.BASE_URL,
-  routes: [
-    {path: '/',redirect: '/home'},
-    {path: '/discover',component:Discover,meta:{keepAlive:true},name:'Discover',title:'发现'},
-    // {path: '/user',component:User,name:'User',title:'个人中心'}
-    // {path: '/video',component:Video,meta:{keepAlive:true},name:'Video',title:'视频'},
-    // {path: '/my',component:My,meta:{keepAlive:true},name:''}
+
+  routes: [{
+      path: '/',
+      redirect: '/recommend',
+      component:Recommend,
+      children: [{
+        path: '/recommend',
+        component: Recommend,
+        meta: {
+          keepAlive: true
+        },
+        name: 'Recommend',
+        title: '推荐音乐',
+      }]
+    },
+    {
+      path:'/hot',
+    
+      component:MusicList,
+      name:'test'
+    }
+    // {
+    //   path: '/recommend',
+    //   component: Recommend,
+    //   meta: {
+    //     keepAlive: true
+    //   },
+    //   name: 'Recommend',
+    //   title: '推荐音乐',
+    //   // children: [{
+    //   //   path: ':id',
+    //   //   component: MusicList
+    //   // }]
+    // },
   ]
 })

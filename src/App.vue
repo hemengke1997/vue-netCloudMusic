@@ -1,25 +1,36 @@
 <template>
   <div id="app">
-    <top-search v-if="1"></top-search>
+    <top-search></top-search>
+    <tab></tab>
     <transition>
       <keep-alive v-if="$route.meta.keepAlive">
         <router-view></router-view>
       </keep-alive>
       <router-view v-else></router-view>
     </transition>
-    <bottom-tags></bottom-tags>
+    
   </div>
 </template>
 <script>
 import TopSearch from 'public/TopSearch'
-import BottomTags from 'public/BottomTags'
+import Tab from 'public/Tab'
+import { setTimeout } from 'timers';
 export default {
   components: {
-    TopSearch,BottomTags
+    TopSearch,Tab
+  },
+  mounted() {
+    console.log(this,'app')
+    console.log(this.$route,'app')
+    setTimeout(()=>{
+      console.log(this.$route,'zzzzzzzzzzzz')
+    },10)
   }
 }
 </script>
 
 <style lang="less">
-
+#app {
+  overflow-x: hidden;
+}
 </style>

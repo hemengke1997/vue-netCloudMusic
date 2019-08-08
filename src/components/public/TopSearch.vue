@@ -2,7 +2,7 @@
   <div class="topsearch">
     <div class="top">
       <router-link to="/" class="sing">
-        <i class="iconfont icon-maikefeng"></i>
+        <i class="iconfont icon-caidan"></i>
       </router-link>
       <router-link to="/search" class="search" tag="div">
         <i class="iconfont icon-search"></i>

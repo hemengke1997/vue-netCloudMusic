@@ -3,10 +3,9 @@
     <top-search></top-search>
     <tab></tab>
     <transition>
-      <keep-alive v-if="$route.meta.keepAlive">
+      <keep-alive>
         <router-view></router-view>
       </keep-alive>
-      <router-view v-else></router-view>
     </transition>
     
   </div>
@@ -20,11 +19,11 @@ export default {
     TopSearch,Tab
   },
   mounted() {
-    console.log(this,'app')
-    console.log(this.$route,'app')
-    setTimeout(()=>{
-      console.log(this.$route,'zzzzzzzzzzzz')
-    },10)
+    // console.log(this,'app')
+    // console.log(this.$route,'app')
+    // setTimeout(()=>{
+    //   console.log(this.$route,'zzzzzzzzzzzz')
+    // },10)
   }
 }
 </script>

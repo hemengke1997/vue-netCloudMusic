@@ -14,8 +14,8 @@ export default {
         [PullRefresh.name]: PullRefresh,
     },
     mounted(){
-        console.log(this.$route,'recommend')
-        console.log(this,'recommend')
+        // console.log(this.$route,'recommend')
+        // console.log(this,'recommend')
     }
 }
 </script>

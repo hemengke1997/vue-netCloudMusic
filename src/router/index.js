@@ -5,17 +5,17 @@ Vue.use(Router)
 
 const Recommend = () => import('@/views/recommend/Recommend.vue')
 const MusicList = () => import('@/views/music-list/Musiclist.vue')
-
+const Singer = () => import('@/views/singer/Singer.vue')
 
 export default new Router({
-  mode: 'history',   // 需要服务器支持
+  // mode: 'history',   // 需要服务器支持
 
   base: process.env.BASE_URL,
 
   routes: [{
       path: '/',
       redirect: '/recommend',
-      component:Recommend,
+      // component:Recommend,
       children: [{
         path: '/recommend',
         component: Recommend,
@@ -28,9 +28,13 @@ export default new Router({
     },
     {
       path:'/hot',
-    
       component:MusicList,
-      name:'test'
+      name: 'hot'
+    },
+    {
+      path: '/singer',
+      component: Singer,
+      name: 'singer'
     }
     // {
     //   path: '/recommend',

@@ -673,3 +673,42 @@ pluginOptions: {
 
 解决方案： `cnpm i css-loader -S`  
 在vue.config.js中的配置css，把module设置为false即可（官网说要加xxx.module.css），我加了之后报错了
+
+3. 给计算属性传参  
+
+> 以前用计算属性 都是进行简单的计算。一直以为计算属性不能传参，网上搜了一下，说可以用闭包的方式实现传参，并且保留了计算属性的缓存机制
+
+```javascript
+computed: {
+        isActive() {
+            return function(route) {
+                return this.$route.path.split('/')[1] === route.split('/')[1]
+            }
+        }
+    }
+```
+
+4. 移动端实现0.5px细线的效果
+
+> 使用缩放
+
+```css
+.tab {
+    display: flex;
+    width: 100%;
+    height: 45px;
+    position: fixed;
+    margin-top: 50px;
+    align-items: center;
+    // border-bottom: 1px solid rgb(211, 211, 211);
+    &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 1px;
+        background-color: rgb(211, 211, 211);
+        transform: scaleY(.5);
+    }
+```

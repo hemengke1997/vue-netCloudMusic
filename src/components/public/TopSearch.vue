@@ -16,7 +16,21 @@
 </template>
 
 <script>
-export default {};
+export default {
+  computed:{
+    _route() {
+      return this.$route
+    }
+  },
+  methods:{
+    test() {
+      console.log(this._route,'111~')
+    }
+  },
+  mounted() {
+    this.test()
+  }
+};
 </script>
 
 <style lang="less" scoped>

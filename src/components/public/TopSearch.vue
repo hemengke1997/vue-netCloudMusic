@@ -6,7 +6,7 @@
       </router-link>
       <router-link to="/search" class="search" tag="div">
         <i class="iconfont icon-search"></i>
-        <span>江湖流</span>
+        <span>Search</span>
       </router-link>
       <router-link to="/player" class="player">
         <i class="iconfont icon-diantai"></i>
@@ -18,17 +18,13 @@
 <script>
 export default {
   computed:{
-    _route() {
-      return this.$route
-    }
+   
   },
   methods:{
-    test() {
-      console.log(this._route,'111~')
-    }
+    
   },
   mounted() {
-    this.test()
+    
   }
 };
 </script>
@@ -39,6 +35,7 @@ export default {
   height: 50px;
   position: fixed;
   background-color: @color-theme;
+  z-index: 999;
   .top {
       display: flex;
       align-items: center;

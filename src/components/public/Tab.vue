@@ -1,13 +1,14 @@
 <template>
   <div class="tab">
-    <router-link
+    <router-link 
       v-for="(item,index) in routes"
       :key="index"
       :tag="item.tag"
-      :to="item.router"
       class="tab_item"
+      :to="item.router"
+      
     >
-      <span :class="{active: flag === item.router.split('/')[1]}" class="title" @click='test'>{{item.title}}</span>
+      <span class="title">{{item.title}}</span>
     </router-link>
   </div>
 </template>
@@ -24,25 +25,9 @@ export default {
       ],
     };
   },
-  computed: {
-    _route() {
-      console.log(this,'333~')
-      return this.$route
-    }
-  },
-  methods: {
-    test() {
-      console.log(this._route,'222~')
-    }
-  },
-  // watch: {
-  //   $route(to,from) {
-  //     console.log(to,'to')
-  //     this.flag = to.path.split('/')[1];
-  //   }
-  // },
-  mounted() {
-    this.test()
+  
+  methods:{
+    
   }
 };
 </script>
@@ -54,7 +39,9 @@ export default {
   height: 40px;
   position: fixed;
   margin-top: 50px;
-  border-bottom: 1px solid rgb(211, 211, 211);
+  border-bottom: 1px solid #ccc;
+  background-color: #fff;
+  z-index: 999;
   &::after {
     content: "";
     position: absolute;
@@ -71,12 +58,9 @@ export default {
     font-size: 15px;
     height: 100%;
     line-height: 40px;
-    .title {
-      display: inline-block;
-      position: relative;
-      height: 45px;
-      &.active {
-          color: @red;
+    &.router-link-active {
+      .title {
+        color: @red;
         &::after {
           content: "";
           position: absolute;
@@ -89,6 +73,12 @@ export default {
           transform: scaleY(.5);
         }
       }
+    }
+    .title {
+      display: inline-block;
+      position: relative;
+      height: 45px;
+      color: #000;
     }
   }
 }

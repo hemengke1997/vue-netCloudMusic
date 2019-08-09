@@ -5,8 +5,7 @@
 <script>
 export default {
     mounted() {
-        // console.log(this.$route,'music')
-        // console.log(this,'music')
+     
     }
 }
 </script>

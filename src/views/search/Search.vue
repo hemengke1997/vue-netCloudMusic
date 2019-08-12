@@ -1,8 +1,8 @@
 <template>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-        <div class="test">
-
-        </div>
+        <ul class="test">
+            <li class="item"></li>
+        </ul>
     </van-pull-refresh>
 </template>
 
@@ -31,7 +31,7 @@ export default {
 <style scoped>
 .test {
     width: 200px;
-    height: 200px;
+    height: 3000px;
 }
 
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/">
+  <router-link to="/search">
     <div class="top">
       <div class="ignore_logo">
         <i class="iconfont icon-wangyiyunyinle"></i>

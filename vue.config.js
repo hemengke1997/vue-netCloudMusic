@@ -75,7 +75,12 @@ module.exports = {
         return options
       })
       .end()
-      },
+
+      config
+        .when(process.env.NODE_ENV === 'development',
+        config => config.devtool('cheap-source-map'))
+        
+    },
     // css相关配置
     css: {
         // 是否启用 CSS modules

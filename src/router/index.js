@@ -8,6 +8,7 @@ const MusicList = ()=> import('@/views/music-list/Musiclist.vue')
 const Singer = ()=> import('@/views/singer/Singer.vue')
 const Hot = ()=> import('@/views/hot/Hot.vue')
 const Index = ()=> import('@/views/index.vue')
+const Search = ()=> import('@/views/search/Search.vue')
 
 export default new Router({
   // mode: 'history',   // 需要服务器支持
@@ -61,6 +62,10 @@ export default new Router({
           }
         }
       ]
+    },
+    {
+      path: '/search',
+      component: Search
     }
   ]
 })

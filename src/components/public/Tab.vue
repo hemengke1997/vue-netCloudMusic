@@ -1,5 +1,5 @@
 <template>
-  <div class="tab">
+  <nav class="tab">
     <router-link 
       v-for="(item,index) in routes"
       :key="index"
@@ -10,7 +10,7 @@
     >
       <span class="title">{{item.title}}</span>
     </router-link>
-  </div>
+  </nav>
 </template>
 
 <script>
@@ -38,10 +38,10 @@ export default {
   width: 100%;
   height: 40px;
   position: fixed;
-  margin-top: 50px;
+  top: 84px;
   border-bottom: 1px solid #ccc;
   background-color: #fff;
-  z-index: 999;
+  z-index: 200;
   &::after {
     content: "";
     position: absolute;

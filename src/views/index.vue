@@ -1,18 +1,18 @@
 <template>
   <div id="container">
-    <top-search></top-search>
+    <top></top>
     <tab></tab>
     <app-main></app-main>
   </div>
 </template>
 
 <script>
-import TopSearch from "public/TopSearch";
+import Top from "public/Top";
 import Tab from "public/Tab";
 import AppMain from 'public/AppMain'
 export default {
   components: {
-    TopSearch,
+    Top,
     Tab,
     AppMain
   },

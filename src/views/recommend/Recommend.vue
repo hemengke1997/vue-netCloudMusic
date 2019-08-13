@@ -1,7 +1,7 @@
 <template>
   <div class="recommend">
     <div class="songsheet">
-      <h2 class="title">推荐歌单</h2>
+      <h2 class="title" v-show="flag">推荐歌单</h2>
       <ul class="sheet_ul">
         <li class="sheet_li" v-for="item in sheetList" :key="item.id" @click="selectList(item)">
           <div class="cover">
@@ -16,7 +16,7 @@
       </ul>
     </div>
     <div class="new_song">
-      <h2 class="title">推荐歌曲</h2>
+      <h2 class="title" v-show="flag">推荐歌曲</h2>
       <ul class="song_ul">
         <li class="song_li" v-for="item in songs" :key="item.id">
           <div class="content">
@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import { setTimeout } from "timers";
 import { getSheetList, getNewSong, getSheetDetails } from "@/api/recommend-api";
 import { OK } from "@/assets/js/config";
 import RecommendFooter from "public/Footer.vue"
@@ -86,6 +85,7 @@ export default {
 
 <style lang="less" scoped>
 .title {
+  margin-top: 20px;
   margin-bottom: 14px;
   height: 20px;
   line-height: 20px;
@@ -165,11 +165,11 @@ export default {
     flex-direction: column;
     .song_li {
       display: flex;
-      padding-left: 10px;
       .content {
         flex: 1 1 auto;
         display: flex;
         position: relative;
+        padding-left: 10px;
         &::after{
           position: absolute;
           content: "";

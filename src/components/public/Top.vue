@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/search">
+  <router-link to="/search" class="wrapper">
     <div class="top">
       <div class="ignore_logo">
         <i class="iconfont icon-wangyiyunyinle"></i>
@@ -21,10 +21,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.top {
+.wrapper {
+  display: block;
+  padding-bottom: 84px;
+  position: relative;
+  width: 100%;
+  height: 0;
+  transition: padding-bottom .3s;
+  .top {
   width: 100%;
   height: 84px;
   position: fixed;
+  left: 0;
+  top: 0;
   background-color: @color-theme;
   z-index: 100;
   box-sizing: border-box;
@@ -60,5 +69,6 @@ export default {
     border-radius: 48px;
     color: @color-theme;
   }
+}
 }
 </style>

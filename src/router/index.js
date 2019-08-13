@@ -27,7 +27,6 @@ export default new Router({
           component: Recommend,
           name:'recommend',
           meta: {
-            keepAlive:true,
             title:'推荐'
           }
         }
@@ -42,30 +41,24 @@ export default new Router({
           name: 'hot',
           component: Hot,
           meta:{
-            keepAlive: true,
             title: '热歌榜'
           }
         }
       ]
     },
     {
-      path: '/singer',
+      path: '/search',
       component:Index,
       children: [
         {
-          path:'/singer',
-          name:'singer',
-          component: Singer,
+          path:'/search',
+          name:'search',
+          component: Search,
           meta:{
-            keepAlive:true,
-            title:'歌手'
+            title:'搜索'
           }
         }
       ]
     },
-    {
-      path: '/search',
-      component: Search
-    }
   ]
 })

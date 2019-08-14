@@ -3,7 +3,7 @@
     <div class="songsheet">
       <h2 class="title" v-show="flag">推荐歌单</h2>
       <ul class="sheet_ul">
-        <li class="sheet_li" v-for="item in sheetList" :key="item.id" @click="selectList(item)">
+        <li class="sheet_li" v-for="item in sheetList" :key="item.id" @click="selectList(item.id)">
           <div class="cover">
             <img v-lazy="item.picUrl" />
             <div class="play_count">
@@ -59,7 +59,12 @@ export default {
     this._getNewSong()
   },
   methods: {
-    selectList(item) {},
+    selectList(id) {
+      this.$router.push({
+        path: '/playlist/detail',
+        query: {id:id}
+      })
+    },
     _getSheetList() {
       getSheetList().then(res => {
         if (res.status === OK) {

@@ -1,9 +1,7 @@
 <template>
   <section class="app-main">
-      <transition>
-        <keep-alive>
-          <router-view :key="$route.fullPath"></router-view>
-        </keep-alive>
+      <transition name="fade-transform" mode="out-in">
+          <router-view :key="$route.path"></router-view>
       </transition>
   </section>
   
@@ -17,5 +15,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/* fade-transform */
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+  transition: all .3s;
+}
 
+.fade-transform-enter {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
 </style>

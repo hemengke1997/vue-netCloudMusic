@@ -24,7 +24,7 @@
       <section class="hot_list">
         <h3 class="title">热门搜索</h3>
         <ul class="list">
-          <li class="item" v-for="(item,index) in hotsearch" :key="index">{{item.first}}</li>
+          <li class="item ignore_item_bottom" v-for="(item,index) in hotsearch" :key="index">{{item.first}}</li>
         </ul>
       </section>
       <section class="history_wrapper" v-if="0">
@@ -219,36 +219,16 @@ export default {
           color: #333;
           position: relative;
           &::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            box-sizing: border-box;
-            width: 100%;
-            height: 100%;
-            border-color: #d3d4da;
-            border-radius: 32px;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            transform-origin: left top;
-            @media screen and (-webkit-device-pixel-ratio: 3) {
-              width: 300%;
-              height: 300%;
-              transform: scale(0.333333);
-              border-radius: 60px;
-            }
-            @media screen and (-webkit-device-pixel-ratio: 2) {
-              width: 200%;
-              height: 200%;
-              transform: scale(0.5);
-            }
-            @media screen and (-webkit-device-pixel-ratio: 1) {
-              width: 150%;
-              height: 150%;
-              transform: scale(0.666666);
-            }
+            .small_border;
           }
         }
+        .ignore_item_bottom {
+          &::after {
+            border-width: 1px;
+            border-radius: 60px;
+          }
+        }
+
       }
     }
     .history_wrapper {

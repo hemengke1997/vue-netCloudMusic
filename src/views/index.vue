@@ -22,7 +22,7 @@ export default {
 
 <style lang="less">
 #container {
-  overflow-x: hidden;
+  overflow: hidden;
 }
 </style>
 

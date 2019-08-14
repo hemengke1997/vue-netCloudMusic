@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <nav class="tab">
+    <nav class="tab tab_bottom">
       <router-link
         v-for="(item,index) in routes"
         :key="index"
@@ -32,13 +32,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-// @media screen and (-webkit-min-device-pixel-ratio: 3){
-//   .tab::after{
-//     width: 300%;
-//     height: 300%;
-//     transform: scale(.333333);
-//   }
-// }
 .wrapper {
   padding-top: 40px;
   .tab {
@@ -50,16 +43,9 @@ export default {
     background-color: #fff;
     z-index: 200;
     &::after {
-      .small_line;
-      @media screen and (-webkit-device-pixel-ratio: 3) {
-        transform: scaleY(.2);
-      }
-      @media screen and (-webkit-device-pixel-ratio: 2) {
-        transform: scaleY(.22);
-      }
-      @media screen and (-webkit-device-pixel-ratio: 1.5) {
-        transform: scaleY(.21)
-      }
+      .small_border;
+      border-color: #ccc;
+      z-index: 0;
     }
     .tab_item {
       flex: 1;
@@ -89,6 +75,11 @@ export default {
         color: #000;
         padding: 0 5px;
       }
+    }
+  }
+  .tab_bottom {
+    &::after {
+      border-bottom-width: 1px;
     }
   }
 }

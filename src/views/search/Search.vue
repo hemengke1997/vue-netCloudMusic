@@ -12,6 +12,8 @@
           v-model="inputVal"
           @input="inputsome($event)"
           ref="input"
+          v-focus
+          autofocus
         />
         <figure class="ignore_close" v-show="inputdata||inputVal">
           <i class="iconfont icon-guanbi-" @click="clear"></i>
@@ -48,7 +50,7 @@
         </li>
       </ul>
     </section>
-    <div class="loading" v-if="isLoading">
+    <div class="loading" v-if="isLoading&&inputVal">
       <img src="../../assets/img/loading.gif" alt />
     </div>
   </div>
@@ -73,9 +75,14 @@ export default {
     this._getHotSearch();
   },
   mounted() {
-    this.$nextTick(()=>{
       this.$refs.input.focus()
-    })
+  },
+  directives: {
+    focus: {
+      inserted: function(el) {
+        el.focus()
+      }
+    }
   },
   methods: {
     _getHotSearch() {
@@ -94,7 +101,8 @@ export default {
         this.searchresult = res.data.result.allMatch;
         this.isLoading = false;
       });
-    }
+    },
+    
   },
   watch: {
     inputVal(v, ov) {
@@ -114,7 +122,6 @@ export default {
 <style lang="less" scoped>
 .search {
   width: 100%;
-  height: 100%;
 
   .loading {
     position: absolute;

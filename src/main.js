@@ -15,6 +15,11 @@ Vue.use(VueLazyLoad,{
   error: require('@/assets/img/default.jpg')
 })
 
+// Vue.directive('focus',{
+//   inserted: function(el) {
+//     el.focus()
+//   }
+// })
 
 new Vue({
   router,

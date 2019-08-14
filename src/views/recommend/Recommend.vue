@@ -61,7 +61,7 @@ export default {
   methods: {
     selectList(id) {
       this.$router.push({
-        path: '/playlist/detail',
+        path: 'playlist/detail',
         query: {id:id}
       })
     },

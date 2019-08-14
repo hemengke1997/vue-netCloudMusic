@@ -27,6 +27,8 @@
           </div>
         </li>
       </ul>
+    </div>
+    <div class="loading_box">
       <div class="loading" v-if="isLoading">
         <img src="../../assets/img/loading.gif" alt="">
       </div>
@@ -97,6 +99,7 @@ export default {
 
 <style lang="less" scoped>
 .hot {
+  overflow: hidden;
   .hot_top {
     background: url("../../assets/img/hot_music_bg_2x.jpg") no-repeat;
     background-size: contain;
@@ -144,15 +147,6 @@ export default {
   }
 
   .hot_song {
-    .loading {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%,-50%);
-      img {
-        width: 50%;
-      }
-    }
     .song_ul {
       display: flex;
       flex-direction: column;
@@ -215,6 +209,23 @@ export default {
             }
           }
         }
+      }
+    }
+  }
+
+  .loading_box {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    .loading {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      img {
+        width: 50%;
       }
     }
   }

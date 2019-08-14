@@ -15,10 +15,15 @@
 
 <script>
 export default {
+    mounted() {
+        console.log('play')
+    }
 
 }
 </script>
 
 <style lang="less" scoped>
+.root {
 
+}
 </style>

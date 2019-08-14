@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {HOST} from '@/assets/js/config'
+import {HOST} from 'js/config'
 
 function getSheetList() {  // 获取推荐歌单
     const url = HOST + '/personalized'

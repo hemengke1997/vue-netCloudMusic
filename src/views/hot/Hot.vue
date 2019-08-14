@@ -3,7 +3,7 @@
     <div class="hot_top">
       <div class="banner">
         <div class="ignore_hot_icon"></div>
-        <div class="hot_time">更新日期：{{date.month}}月{{date.day}}日</div>
+        <div class="hot_time">更新日期：{{updateDate}}</div>
       </div>
     </div>
     <div class="hot_song">
@@ -27,6 +27,9 @@
           </div>
         </li>
       </ul>
+      <div class="loading" v-if="isLoading">
+        <img src="../../assets/img/loading.gif" alt="">
+      </div>
     </div>
   </div>
 </template>
@@ -45,7 +48,7 @@ export default {
           month:'',
           day:''
       },
-      flag: false
+      isLoading: true
     };
   },
   computed:{
@@ -66,6 +69,9 @@ export default {
                   return temp.join(' / ')
               }
           }
+      },
+      updateDate() {
+        return `${this.date.month}月${this.date.day}日`
       }
   },
   created() {
@@ -77,11 +83,9 @@ export default {
               if(res.status === OK) {
                 const time = transDate(res.data.playlist.updateTime)
                 this.date = {month:time.month, day: time.day}
-                
                 this.songs = res.data.playlist.tracks
                 this.hotsongs = this.songs.slice(0,20)
-
-                this.flag = true
+                this.isLoading = false
               } else {
                   console.log('hotsong-error')
               }
@@ -140,6 +144,15 @@ export default {
   }
 
   .hot_song {
+    .loading {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%);
+      img {
+        width: 50%;
+      }
+    }
     .song_ul {
       display: flex;
       flex-direction: column;

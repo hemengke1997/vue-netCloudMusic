@@ -1,44 +1,37 @@
 <template>
   <div class="search">
-    <form action="#" method="get" class="search_form">
+    <form action="#" method="get" class="search_form search_form_bottom">
       <div class="inputcover">
         <i class="iconfont icon-sousuo"></i>
-        <input type="search" name="search" class="input" placeholder autocomplete="off" value />
-        <label class="holder">搜索歌手、歌曲、专辑</label>
-        <figure class="ignore_close" v-show="flag">
-          <i class="iconfont icon-guanbi-"></i>
+        <input
+          type="text"
+          name="search"
+          class="input"
+          placeholder="搜索歌手、歌曲、专辑"
+          autocomplete="off"
+          v-model="inputVal"
+          @input="inputsome($event)"
+          ref="input"
+        />
+        <figure class="ignore_close" v-show="inputdata||inputVal">
+          <i class="iconfont icon-guanbi-" @click="clear"></i>
         </figure>
       </div>
     </form>
-    <div class="hot_search">
+    <div class="hot_search" v-show="!inputdata&&!inputVal">
       <section class="hot_list">
         <h3 class="title">热门搜索</h3>
         <ul class="list">
-          <li class="item">抢霉霉演唱会门票</li>
-          <li class="item">抢霉霉演唱会门票</li>
-          <li class="item">抢霉霉演唱会门票</li>
-          <li class="item">抢霉霉演唱会门票</li>
-          <li class="item">抢霉霉演唱会门票</li>
-          <li class="item">抢霉霉演唱会门票</li>
-          <li class="item">抢霉霉演唱会门票</li>
+          <li class="item" v-for="(item,index) in hotsearch" :key="index">{{item.first}}</li>
         </ul>
       </section>
-      <section class="history_wrapper">
+      <section class="history_wrapper" v-if="0">
         <ul class="list">
           <li class="item">
             <i class="iconfont icon-jilu"></i>
-            <div class="history">
-              <span class="link">ceshiceshijsijf</span>
-              <figure class="close">
-                <i class="iconfont icon-guanbi"></i>
-              </figure>
-            </div>
-          </li>
-          <li class="item">
-            <i class="iconfont icon-jilu"></i>
-            <div class="history">
-              <span class="link">ceshiceshijsijf</span>
-              <figure class="close">
+            <div class="history history_1">
+              <span class="link">测试</span>
+              <figure class="ignore_close">
                 <i class="iconfont icon-guanbi"></i>
               </figure>
             </div>
@@ -46,15 +39,74 @@
         </ul>
       </section>
     </div>
+    <section class="s_content" v-show="inputVal">
+      <h3 class="title t_bottom">搜索"{{inputVal}}"</h3>
+      <ul>
+        <li class="recomitem" v-for="(item,index) in searchresult" :key="index">
+          <i class="iconfont icon-sousuo"></i>
+          <span class="link link_bottom">{{item.keyword}}</span>
+        </li>
+      </ul>
+    </section>
+    <div class="loading" v-if="isLoading">
+      <img src="../../assets/img/loading.gif" alt />
+    </div>
   </div>
 </template>
 
 <script>
+import { getHotSearch } from "@/api/hot-api";
+import { clearTimeout, setTimeout } from "timers";
+import { getSearchList } from "@/api/search-api";
 export default {
   data() {
     return {
-      flag: false
+      hotsearch: [],
+      inputVal: "",
+      inputdata: "",
+      timeout: null,
+      isLoading: false,
+      searchresult: []
     };
+  },
+  created() {
+    this._getHotSearch();
+  },
+  mounted() {
+    this.$nextTick(()=>{
+      this.$refs.input.focus()
+    })
+  },
+  methods: {
+    _getHotSearch() {
+      getHotSearch().then(res => {
+        this.hotsearch = res.data.result.hots;
+      });
+    },
+    clear() {
+      this.inputVal = "";
+    },
+    inputsome(e) {
+      this.inputdata = e.data;
+    },
+    _getSearchList(v) {
+      getSearchList(v).then(res => {
+        this.searchresult = res.data.result.allMatch;
+        this.isLoading = false;
+      });
+    }
+  },
+  watch: {
+    inputVal(v, ov) {
+      this.searchresult = []
+      if (v) {
+        this.isLoading = true;
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+          this._getSearchList(v);
+        }, 300);
+      }
+    }
   }
 };
 </script>
@@ -63,10 +115,22 @@ export default {
 .search {
   width: 100%;
   height: 100%;
-  // overflow: hidden;
+
+  .loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    img {
+      width: 50%;
+    }
+  }
   .search_form {
     padding: 15px 10px;
     position: relative;
+    &::after {
+      .small_border;
+    }
     .inputcover {
       position: relative;
       width: 100%;
@@ -91,15 +155,13 @@ export default {
         background: transparent;
         font-size: 14px;
         color: #333;
-      }
-      .holder {
-        position: absolute;
-        left: 30px;
-        top: 8px;
-        font-size: 14px;
-        color: #c9c9c9;
-        background: transparent;
-        pointer-events: none;
+        &::-webkit-search-cancel-button {
+          display: none;
+        }
+        &::-webkit-input-placeholder {
+          font-size: 14px;
+          color: #c9c9c9;
+        }
       }
       .ignore_close {
         position: absolute;
@@ -114,6 +176,11 @@ export default {
           font-size: 14px;
         }
       }
+    }
+  }
+  .search_form_bottom {
+    &::after {
+      border-bottom-width: 1px;
     }
   }
   .hot_search {
@@ -149,23 +216,23 @@ export default {
             height: 100%;
             border-color: #d3d4da;
             border-radius: 32px;
-            border: 1px solid rgba(0, 0, 0, .1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             transform-origin: left top;
-            @media screen and (-webkit-device-pixel-ratio: 3){
+            @media screen and (-webkit-device-pixel-ratio: 3) {
               width: 300%;
               height: 300%;
-              transform: scale(.333333);
+              transform: scale(0.333333);
               border-radius: 60px;
             }
-            @media screen and (-webkit-device-pixel-ratio: 2){
+            @media screen and (-webkit-device-pixel-ratio: 2) {
               width: 200%;
               height: 200%;
-              transform: scale(.5);
+              transform: scale(0.5);
             }
-            @media screen and (-webkit-device-pixel-ratio: 1){
+            @media screen and (-webkit-device-pixel-ratio: 1) {
               width: 150%;
               height: 150%;
-              transform: scale(.666666);
+              transform: scale(0.666666);
             }
           }
         }
@@ -177,11 +244,94 @@ export default {
         flex-direction: column;
         .item {
           display: flex;
-          
+          height: 45px;
+          align-items: center;
+          .icon-jilu {
+            margin: 0 10px;
+            color: #c9c9c9;
+            font-size: 26px;
+          }
+          .history {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 45px;
+            &::after {
+              .small_border;
+            }
+            .link {
+              margin-right: 10px;
+              flex: 1;
+              .text_overflow;
+              font-size: 15px;
+              color: #333;
+            }
+            .ignore_close {
+              color: #c9c9c9;
+              flex: none;
+              width: 32px;
+              height: 32px;
+              line-height: 32px;
+            }
+          }
+          .history_1 {
+            &::after {
+              border-bottom-width: 1px;
+            }
+          }
         }
       }
     }
   }
-
+  .s_content {
+    margin: 0 auto;
+    .title {
+      height: 50px;
+      margin-left: 10px;
+      padding-right: 10px;
+      font-size: 15px;
+      line-height: 50px;
+      color: #507daf;
+      &::after {
+        .small_border;
+      }
+    }
+    .t_bottom {
+      &::after {
+        border-bottom-width: 1px;
+      }
+    }
+    .recomitem {
+      display: flex;
+      align-items: center;
+      height: 45px;
+      padding-left: 10px;
+      .icon-sousuo {
+        flex: none;
+        margin-right: 7px;
+        font-size: 15px;
+        color: #c9c9c9;
+      }
+      .link {
+        display: inline-block;
+        flex: 1;
+        padding-right: 10px;
+        font-size: 15px;
+        line-height: 45px;
+        color: #333;
+        .text_overflow;
+        position: relative;
+        &::after {
+          .small_border;
+        }
+      }
+      .link_bottom {
+        &::after {
+          border-bottom-width: 1px;
+        }
+      }
+    }
+  }
 }
 </style>

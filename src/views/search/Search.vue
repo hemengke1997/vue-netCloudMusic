@@ -115,6 +115,12 @@ export default {
         }, 300);
       }
     }
+  },
+  activated() {
+    this._getHotSearch()
+  },
+  deactivated() {
+    this.hotsearch = []
   }
 };
 </script>

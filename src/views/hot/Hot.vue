@@ -1,5 +1,5 @@
 <template>
-  <div class="hot" v-show="$route.path==='/hot'">
+  <div class="hot">
     <div class="hot_top">
       <div class="banner">
         <div class="ignore_hot_icon"></div>
@@ -93,6 +93,12 @@ export default {
               }
           })
       },
+  },
+  activated() {
+    this._getHotSong()
+  },
+  deactivated() {
+    this.hotsongs = []
   }
 };
 </script>

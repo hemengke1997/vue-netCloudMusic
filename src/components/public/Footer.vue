@@ -1,5 +1,5 @@
 <template>
-  <footer class="wrapper">
+  <footer class="wrapper" v-if="$route.path==='/recommend'">
     <div class="recommend_footer">
       <div class="item_list">
         <div class="logo">
@@ -19,7 +19,7 @@ export default {};
 
 <style lang="less" scoped>
 .wrapper {
-    background: url("../../assets/img/recommand_bg_2x.png") no-repeat;
+    background: url("../../assets/img/recommand_bg_2x.png") 1px 0 no-repeat;
     position: relative;
     background-size: contain;
     width: 100%;

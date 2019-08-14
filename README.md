@@ -765,13 +765,13 @@ Vue.use(VueLazyLoad,{
 相关钩子加载顺序为: beforeRouteUpdate  
 
 > 2. 设置 router-view 的 key 属性值为 $route.path
-从/page/1 => /page/2, 由于这两个路由的$route.path并不一样, 所以组件被强制不复用, 相关钩子加载顺序为:
+从/page/1 => /page/2, 由于这两个路由的$route.path并不一样, 所以强制不复用组件, 相关钩子加载顺序为:
 beforeRouteUpdate => created => mounted  
 从/page?id=1 => /page?id=2, 由于这两个路由的$route.path一样, 所以和没设置 key 属性一样, 会复用组件, 相关钩子加载顺序为:
 beforeRouteUpdate
 
 > 3. 设置 router-view 的 key 属性值为 $route.fullPath
-从/page/1 => /page/2, 由于这两个路由的$route.fullPath并不一样, 所以组件被强制不复用, 相关钩子加载顺序为:
+从/page/1 => /page/2, 由于这两个路由的$route.fullPath并不一样, 所以强制不复用组件, 相关钩子加载顺序为:
 beforeRouteUpdate => created => mounted  
 从/page?id=1 => /page?id=2, 由于这两个路由的$route.fullPath并不一样, 所以组件被强制不复用, 相关钩子加载顺序为:
 beforeRouteUpdate => created => mounted
@@ -831,3 +831,7 @@ this.$router.push({
 
 > 上述两种方式一样的，千万注意，使用query方式的时候，path前面没有 `/`
 
+19. `keep-alive` 的组件特有的钩子函数
+
+> 被激活的时候会触发 `activated()` 钩子  
+被销毁的时候会触发 `deactivated()` 钩子

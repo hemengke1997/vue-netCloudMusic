@@ -1,7 +1,7 @@
 <template>
   <div class="recommend">
     <div class="songsheet">
-      <h2 class="title" v-show="flag">推荐歌单</h2>
+      <h2 class="title">推荐歌单</h2>
       <ul class="sheet_ul">
         <li class="sheet_li" v-for="item in sheetList" :key="item.id" @click="selectList(item.id)">
           <div class="cover">
@@ -16,7 +16,10 @@
       </ul>
     </div>
     <div class="new_song">
-      <h2 class="title" v-show="flag">推荐歌曲</h2>
+      <h2 class="title">推荐歌曲</h2>
+      <div class="loading" v-if="isLoading">
+        <div class="loading_img"></div>
+      </div>
       <ul class="song_ul">
         <li class="song_li" v-for="item in songs" :key="item.id">
           <div class="content">
@@ -34,7 +37,7 @@
         </li>
       </ul>
     </div>
-    <recommend-footer v-show="flag"></recommend-footer>
+    <recommend-footer></recommend-footer>
   </div>
 </template>
 
@@ -48,7 +51,7 @@ export default {
     return {
       sheetList: [], // 推荐歌单
       songs: [],
-      flag: false
+      isLoading: true
     };
   },
   components: {
@@ -69,7 +72,6 @@ export default {
       getSheetList().then(res => {
         if (res.status === OK) {
           this.sheetList = res.data.result.splice(0, 6);
-          // console.log(this.sheetList, "sheetlist");
         } else {
           alter("获取推荐歌单失败");
         }
@@ -79,12 +81,17 @@ export default {
       getNewSong().then(res => {
         if(res.status === OK) {
           this.songs = res.data.result
-          this.flag = true
-          // console.log(this.songs)
+          this.isLoading = false
         }
       })
     }
-  }
+  },
+  activated() {
+    this._getNewSong()
+  },
+  deactivated() {
+    this.songs = []
+  },
 };
 </script>
 
@@ -165,6 +172,20 @@ export default {
 .new_song {
   width: 100%;
   margin-top: 30px;
+  .loading {
+    position: relative;
+    min-height: 20px;
+    .loading_img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      height: 100%;
+      background: url('../../assets/img/loading.gif') 50% no-repeat;
+      background-size: 20px;
+    }
+  }
   .song_ul {
     display: flex;
     flex-direction: column;

@@ -1,25 +1,21 @@
 <template>
-    <section class="app-main">
-        <transition>
-            <keep-alive v-if="$route.meta.keepAlive">
-                <router-view :key="$route.path"></router-view>
-            </keep-alive>
-            <router-view v-else></router-view>
-        </transition>
-    </section>
+  <section class="app-main">
+      <transition>
+        <keep-alive>
+          <router-view :key="$route.fullPath"></router-view>
+        </keep-alive>
+      </transition>
+  </section>
+  
 </template>
 
 <script>
+
 export default {
-    name: 'AppMain',
-    computed: {
-        key() {
-            return this.$route.path
-        }
-    }
-}
+  name: "AppMain",
+};
 </script>
 
-<style>
+<style lang="less" scoped>
 
 </style>

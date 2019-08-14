@@ -4,17 +4,8 @@
 @color-highlight-background: rgb(196, 71, 59);
 @color-dialog-background: rgb(204, 204, 204);
 @color-theme: #d43c33;   // top的背景色
-@color-theme-l: rgb(241, 241, 241);
-@color-theme-g: rgb(219, 219, 219);
-@color-theme-d: rgba(19, 19, 19, 0.6);
 @color-sub-theme: rgb(240, 116, 107);
 @color-text: #2E3030;
-@color-text-g: #757575; 
-@color-text-ggg: #c7c7c7; 
-@color-text-gg: rgb(219, 219, 219); 
-@color-text-l: rgb(241, 241, 241);
-@color-text-lm: rgb(228, 228, 228);
-@color-text-ll: rgba(255, 255, 255, 0.8);
 
 @white: #fff;
 @red: #dd001b;  // tab的字体颜色
@@ -30,3 +21,54 @@
 @font-size-large: 18px;
 @font-size-large-x: 22px;
 
+// 自定义类
+.text_overflow() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-break: normal;
+}
+
+.small_line() {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    z-index: 2;
+    background-color: #ccc;
+    width: 100%;
+    height: 1px;
+    transform: scaleY(.2);
+}
+
+.small_border() {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    border-color: #d3d4da;
+    border-radius: 32px;
+    border: 1px solid rgba(0, 0, 0, .1);
+    transform-origin: left top;
+    @media screen and (-webkit-device-pixel-ratio: 3){
+        width: 300%;
+        height: 300%;
+        transform: scale(.333333);
+        border-radius: 60px;
+    }
+    @media screen and (-webkit-device-pixel-ratio: 2){
+        width: 200%;
+        height: 200%;
+        transform: scale(.5);
+    }
+    @media screen and (-webkit-device-pixel-ratio: 1){
+        width: 150%;
+        height: 150%;
+        transform: scale(.666666);
+    }
+}

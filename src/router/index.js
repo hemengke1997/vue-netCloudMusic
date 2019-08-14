@@ -8,6 +8,7 @@ const MusicList = ()=> import('@/views/music-list/Musiclist.vue')
 const Singer = ()=> import('@/views/singer/Singer.vue')
 const Hot = ()=> import('@/views/hot/Hot.vue')
 const Index = ()=> import('@/views/index.vue')
+const Search = ()=> import('@/views/search/Search.vue')
 
 export default new Router({
   // mode: 'history',   // 需要服务器支持
@@ -26,7 +27,6 @@ export default new Router({
           component: Recommend,
           name:'recommend',
           meta: {
-            keepAlive:true,
             title:'推荐'
           }
         }
@@ -41,26 +41,24 @@ export default new Router({
           name: 'hot',
           component: Hot,
           meta:{
-            keepAlive: true,
             title: '热歌榜'
           }
         }
       ]
     },
     {
-      path: '/singer',
+      path: '/search',
       component:Index,
       children: [
         {
-          path:'/singer',
-          name:'singer',
-          component: Singer,
+          path:'/search',
+          name:'search',
+          component: Search,
           meta:{
-            keepAlive:true,
-            title:'歌手'
+            title:'搜索'
           }
         }
       ]
-    }
+    },
   ]
 })

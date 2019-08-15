@@ -6,7 +6,7 @@
         <div class="hot_time">更新日期：{{updateDate}}</div>
       </div>
     </div>
-    <div class="hot_song">
+    <!-- <div class="hot_song">
       <ul class="song_ul">
         <li class="song_li" v-for="(item,index) in hotsongs" :key="index">
           <div class="rank" :class="{red: index<3}">{{rank(index+1)}}</div>
@@ -27,10 +27,11 @@
           </div>
         </li>
       </ul>
-    </div>
+    </div>-->
+    <music-list></music-list>
     <div class="loading_box">
       <div class="loading" v-if="isLoading">
-        <img src="../../assets/img/loading.gif" alt="">
+        <img src="../../assets/img/loading.gif" alt />
       </div>
     </div>
   </div>
@@ -38,68 +39,77 @@
 
 
 <script>
-import {getHotSong} from '@/api/hot-api'
-import {OK} from 'js/config'
-import transDate from '@/utils/transDate'
+import { getHotSong } from "@/api/hot-api";
+import { OK } from "js/config";
+import transDate from "@/utils/transDate";
+import MusicList from "@/components/Musiclist.vue";
+import {mapMutations} from 'vuex'
+
 export default {
   data() {
     return {
-      hotsongs: [],
-      songs:[],
+      tempSongs: [],  // 20个
+      hotsongs: [],  // 全部
       date: {
-          month:'',
-          day:''
+        month: "",
+        day: ""
       },
-      isLoading: true
+      isLoading: true,
+      musicH: {
+        song: [],
+        red: true,
+        rank: true,
+        SQ: true
+      }
     };
   },
-  computed:{
-      rank() {
-          return function(index) {
-              return index < 10 ? '0' + index : index
-          }
-      },
-      singers() {
-          return function(ar) {
-              if(ar.length === 1) {
-                  return ar[0].name
-              } else {
-                  let temp = []
-                  ar.forEach(singer => {
-                      temp.push(singer.name)
-                  });
-                  return temp.join(' / ')
-              }
-          }
-      },
-      updateDate() {
-        return `${this.date.month}月${this.date.day}日`
-      }
+  components: {
+    MusicList
   },
-  created() {
-      this._getHotSong()
+  computed: {
+    updateDate() {
+      return `${this.date.month}月${this.date.day}日`;
+    },
+    songs() {
+      return this.tempSongs.map(item => {
+        return {
+          id: item.id,
+          name: item.name,
+          alias: item.alia,
+          ar: item.ar,
+          al: {
+            id: item.al.id,
+            name: item.al.name
+          },
+          copyright: item.copyright
+        };
+      });
+    }
   },
   methods: {
-      _getHotSong() {
-          getHotSong().then(res=>{
-              if(res.status === OK) {
-                const time = transDate(res.data.playlist.updateTime)
-                this.date = {month:time.month, day: time.day}
-                this.songs = res.data.playlist.tracks
-                this.hotsongs = this.songs.slice(0,20)
-                this.isLoading = false
-              } else {
-                  console.log('hotsong-error')
-              }
-          })
-      },
+    _getHotSong() {
+      getHotSong().then(res => {
+        if (res.status === OK) {
+          const time = transDate(res.data.playlist.updateTime);
+          this.date = { month: time.month, day: time.day };
+          this.hotsongs = res.data.playlist.tracks;
+          this.tempSongs = this.hotsongs.slice(0, 20);
+          // console.log(this.hotsongs);
+          this.musicH.song = this.songs
+          this.setMusicList(this.musicH)
+          this.isLoading = false;
+        } else {
+          console.log("hotsong-error");
+        }
+      });
+    },
+    ...mapMutations({
+      setMusicList: 'SET_MUSIC_LIST',
+    })
   },
   activated() {
-    this._getHotSong()
+    this._getHotSong();
   },
-  deactivated() {
-    this.hotsongs = []
-  }
 };
 </script>
 
@@ -152,84 +162,18 @@ export default {
     }
   }
 
-  .hot_song {
-    .song_ul {
-      display: flex;
-      flex-direction: column;
-      .song_li {
-        display: flex;
-        .rank {
-              width: 40px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              &.red {
-                  color: #df3436;
-              }
-        }
-        .content {
-          flex: 1 1 auto;
-          display: flex;
-          position: relative;
-          &::after {
-            position: absolute;
-            content: "";
-            bottom: 0;
-            left: 0;
-            pointer-events: none;
-            box-sizing: border-box;
-            width: 100%;
-            border: 0 solid rgba(0, 0, 0, 0.1);
-            border-bottom-width: 1px;
-            transform: scaleY(0.2);
-          }
-          .left_part {
-            padding: 6px 0;
-            flex: 1 1 auto;
-            width: 0;
-            line-height: 21px;
-            .song_title {
-              font-size: 17px;
-              .text_overflow;
-              .alia {
-                  color: #888;
-              }
-            }
-            .song_details {
-              font-size: 12px;
-              color: #888;
-              .text_overflow;
-              i {
-                font-size: 12px;
-                color: #ffa54a;
-              }
-            }
-          }
-          .right_part {
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            i {
-              font-size: 26px;
-              color: #9f9f9f;
-            }
-          }
-        }
-      }
-    }
-  }
-
   .loading_box {
     width: 100%;
     height: 100vh;
     position: absolute;
     left: 0;
     top: 0;
+    z-index: -1;
     .loading {
       position: absolute;
       left: 50%;
       top: 50%;
-      transform: translate(-50%,-50%);
+      transform: translate(-50%, -50%);
       img {
         width: 50%;
       }

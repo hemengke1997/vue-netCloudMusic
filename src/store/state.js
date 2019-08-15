@@ -1,8 +1,7 @@
 
 
 const state = {
-    sheetList:[], // 推荐歌单
-
+    musicList: []
 }
 
 export default state

@@ -29,6 +29,18 @@
     word-break: normal;
 }
 
+// chrome两行显示
+.text_2() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.break_2() {
+    word-wrap: break-word;
+    white-space: normal;
+}
 
 .small_border() {
     content: "";
@@ -58,4 +70,14 @@
         height: 150%;
         transform: scale(.666666);
     }
+}
+
+
+.after() {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
 }

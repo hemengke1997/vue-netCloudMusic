@@ -20,22 +20,7 @@
       <div class="loading" v-if="isLoading">
         <div class="loading_img"></div>
       </div>
-      <ul class="song_ul">
-        <li class="song_li" v-for="item in songs" :key="item.id">
-          <div class="content">
-            <div class="left_part">
-              <div class="song_title">{{item.name}}</div>
-              <div class="song_details">
-                <i class="iconfont icon-sq"></i>
-                {{item.song.artists[0].name}} - {{item.song.album.name}}
-              </div>
-            </div>
-            <div class="right_part">
-              <i class="iconfont icon-bofang"></i>
-            </div>
-          </div>
-        </li>
-      </ul>
+      <music-list></music-list>
     </div>
     <recommend-footer></recommend-footer>
   </div>
@@ -45,21 +30,45 @@
 import { getSheetList, getNewSong, getSheetDetails } from "@/api/recommend-api";
 import { OK } from "@/assets/js/config";
 import RecommendFooter from "public/Footer.vue"
+import MusicList from '@/components/Musiclist.vue'
+import {mapMutations, mapActions} from 'vuex'
 
 export default {
   data() {
     return {
       sheetList: [], // 推荐歌单
-      songs: [],
-      isLoading: true
+      isLoading: true,
+      tempSongs: [],
+      musicD: {
+        song: [],
+        red: false,
+        SQ: true,
+        rank: false
+      }
     };
   },
   components: {
-    RecommendFooter
+    RecommendFooter,
+    MusicList
   },
   created() {
     this._getSheetList();
-    this._getNewSong()
+  },
+  computed:{
+    songs() {
+      return this.tempSongs.map(item => {
+        return {
+          id: item.id,
+          name: item.name,
+          alias: item.song.alias,
+          ar: item.song.artists,
+          al:{
+            name: item.song.album.name
+          },
+          copyright: item.song.copyright
+        }
+      });
+    }
   },
   methods: {
     selectList(id) {
@@ -67,6 +76,9 @@ export default {
         path: 'playlist/detail',
         query: {id:id}
       })
+      // this.$router.push({
+      //   path: `/playlist/detail?id=${id}`
+      // })
     },
     _getSheetList() {
       getSheetList().then(res => {
@@ -80,17 +92,23 @@ export default {
     _getNewSong() {
       getNewSong().then(res => {
         if(res.status === OK) {
-          this.songs = res.data.result
           this.isLoading = false
+          this.tempSongs = res.data.result
+          // console.log(this.tempSongs)
+          this.musicD.song = this.songs
+          this.setMusicList(this.musicD)
         }
       })
-    }
+    },
+    ...mapMutations({
+      setMusicList: 'SET_MUSIC_LIST',
+    }),
+    ...mapActions([
+
+    ])
   },
   activated() {
     this._getNewSong()
-  },
-  deactivated() {
-    this.songs = []
   },
 };
 </script>
@@ -184,59 +202,6 @@ export default {
       height: 100%;
       background: url('../../assets/img/loading.gif') 50% no-repeat;
       background-size: 20px;
-    }
-  }
-  .song_ul {
-    display: flex;
-    flex-direction: column;
-    .song_li {
-      display: flex;
-      .content {
-        flex: 1 1 auto;
-        display: flex;
-        position: relative;
-        padding-left: 10px;
-        &::after{
-          position: absolute;
-          content: "";
-          bottom: 0;
-          left: 0;
-          pointer-events: none;
-          box-sizing: border-box;
-          width: 100%;
-          border: 0 solid rgba(0,0,0,.1);
-          border-bottom-width: 1px;
-          transform: scaleY(0.2);
-        }
-        .left_part {
-          padding: 6px 0;
-          flex: 1 1 auto;
-          width: 0;
-          line-height: 21px;
-          .song_title {
-            font-size: 17px;
-            .text_overflow;
-          }
-          .song_details {
-            font-size: 12px;
-            color: #888;
-            .text_overflow;
-            i {
-              font-size: 12px;
-              color: #ffa54a;
-            }
-          }
-        }
-        .right_part {
-          display: flex;
-          align-items: center;
-          padding: 0 10px;
-          i {
-            font-size: 26px;
-            color: #9f9f9f;
-          }
-        }
-      }
     }
   }
 }

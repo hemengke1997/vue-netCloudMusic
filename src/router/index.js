@@ -4,8 +4,6 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 const Recommend = ()=> import('@/views/recommend/Recommend.vue')
-const MusicList = ()=> import('@/views/music-list/Musiclist.vue')
-const Singer = ()=> import('@/views/singer/Singer.vue')
 const Hot = ()=> import('@/views/hot/Hot.vue')
 const Index = ()=> import('@/views/index.vue')
 const Search = ()=> import('@/views/search/Search.vue')
@@ -62,7 +60,7 @@ export default new Router({
       ]
     },
     {
-      path:'/playlist/detail/:id',
+      path:'/playlist/detail',
       component: SheetDetails,
     }
   ]

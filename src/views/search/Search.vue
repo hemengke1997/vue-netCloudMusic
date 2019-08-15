@@ -12,8 +12,8 @@
           v-model="inputVal"
           @input="inputsome($event)"
           ref="input"
-          v-focus
-          autofocus
+         
+          
         />
         <figure class="ignore_close" v-show="inputdata||inputVal">
           <i class="iconfont icon-guanbi-" @click="clear"></i>
@@ -117,6 +117,7 @@ export default {
     }
   },
   activated() {
+    this.$refs.input.focus()
     this._getHotSearch()
   },
   deactivated() {

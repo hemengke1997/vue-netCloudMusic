@@ -6,28 +6,6 @@
         <div class="hot_time">更新日期：{{updateDate}}</div>
       </div>
     </div>
-    <!-- <div class="hot_song">
-      <ul class="song_ul">
-        <li class="song_li" v-for="(item,index) in hotsongs" :key="index">
-          <div class="rank" :class="{red: index<3}">{{rank(index+1)}}</div>
-          <div class="content">
-            <div class="left_part">
-              <div class="song_title">
-                  <span>{{item.name}}</span>
-                  <span v-if="item.alia.length" class="alia">({{item.alia[0]}})</span>
-              </div>
-              <div class="song_details">
-                <i class="iconfont icon-sq"></i>
-                {{singers(item.ar)}} - {{item.al.name}}
-              </div>
-            </div>
-            <div class="right_part">
-              <i class="iconfont icon-bofang"></i>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>-->
     <music-list></music-list>
     <div class="loading_box">
       <div class="loading" v-if="isLoading">
@@ -43,7 +21,7 @@ import { getHotSong } from "@/api/hot-api";
 import { OK } from "js/config";
 import transDate from "@/utils/transDate";
 import MusicList from "@/components/Musiclist.vue";
-import {mapMutations} from 'vuex'
+import {mapActions} from 'vuex'
 
 export default {
   data() {
@@ -96,20 +74,22 @@ export default {
           this.tempSongs = this.hotsongs.slice(0, 20);
           // console.log(this.hotsongs);
           this.musicH.song = this.songs
-          this.setMusicList(this.musicH)
-          this.isLoading = false;
+          this.setMusicList(this.musicH).then(this.isLoading = false)
         } else {
           console.log("hotsong-error");
         }
       });
     },
-    ...mapMutations({
-      setMusicList: 'SET_MUSIC_LIST',
-    })
+    ...mapActions([
+      'setMusicList'
+    ])
   },
   activated() {
     this._getHotSong();
   },
+  created() {
+    this._getHotSong()
+  }
 };
 </script>
 
@@ -163,11 +143,11 @@ export default {
   }
 
   .loading_box {
-    width: 100%;
-    height: 100vh;
     position: absolute;
     left: 0;
     top: 0;
+    right: 0;
+    bottom: 0;
     z-index: -1;
     .loading {
       position: absolute;

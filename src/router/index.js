@@ -62,6 +62,7 @@ export default new Router({
     {
       path:'/playlist/detail',
       component: SheetDetails,
+      name: 'sheetDetails'
     }
   ]
 })

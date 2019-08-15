@@ -835,3 +835,49 @@ this.$router.push({
 
 > 被激活的时候会触发 `activated()` 钩子  
 被销毁的时候会触发 `deactivated()` 钩子
+
+20. 本地node启动的一个接口服务，我想在手机上访问本地web项目，浏览器报错跨域问题
+
+> [解决方案](
+https://blog.csdn.net/zhangqun23/article/details/82855062)
+
+21. vue 动态绑定背景图
+
+> ` :style="background:'url('+ imgurl +')' no-repeat ..."`
+
+22. CSS3 filter滤镜
+
+> [使用方法](https://www.runoob.com/cssref/css3-pr-filter.html)
+
+23. `vertical-align`
+
+![1](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/6441F4741E904DE0BD571987B6ED8497/1832)
+
+24. vue-router路由跳转
+```
+this.$router.push({
+    path: 'playlist/detail',
+    query: {id:id}
+})
+this.$router.push({
+    name: 'sheetDetails',
+    params: { id: id }
+})
+this.$router.push({
+    path: `/playlist/detail?id=${id}`
+})
+```
+
+三种写法都可以跳转路由  但是各有不同  
+第一种写法： 有query  
+浏览器中的url：http://localhost:8088/#/playlist/detail?id=2902128439 刷新页面后 query参数不变
+
+![截图](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/ECE7B50B68DF4012B34D5A7CF99C1B3A/1842)
+
+第二种写法： 有params  
+浏览器中的url：http://localhost:8088/#/playlist/detail  
+页面刷新之后 params消失
+
+![截图](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/05ACD7F7F0E2428890E3BAF718AAE1F4/1844)
+
+第三种写法与第一种效果一样

@@ -12,7 +12,7 @@ function getNewSong() {  // 最新音乐
 }
 
 function getSheetDetails(id) {
-    const url = HOST + `/playlist/details?id=${id}`
+    const url = HOST + `/playlist/detail?id=${id}`
     return axios.get(url)
 }
 
@@ -20,6 +20,7 @@ function getBanner() {
     const url = HOST + '/banner'
     return axios.get(url)
 }
+
 
 export {
     getSheetList,

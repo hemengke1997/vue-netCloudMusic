@@ -77,8 +77,13 @@ export default {
         query: {id:id}
       })
       // this.$router.push({
+      //   name: 'sheetDetails',
+      //   params: { id: id }
+      // })
+      // this.$router.push({
       //   path: `/playlist/detail?id=${id}`
       // })
+
     },
     _getSheetList() {
       getSheetList().then(res => {

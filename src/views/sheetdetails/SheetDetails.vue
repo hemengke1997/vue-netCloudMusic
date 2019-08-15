@@ -7,9 +7,12 @@
             <div class="ignore_plhead_bg"></div>
             <div class="plhead_wrap">
               <div class="ignore_plhead_left">
-                <img src alt />
-                <i class="iconfont icon-erji">xxx万</i>
-                <span>歌单</span>
+                <img v-lazy="playlist.coverImgUrl"/>
+                <div class="plhead_top">
+                  <i class="iconfont icon-erji"></i>
+                  <span class="count">{{playCount}}万</span>
+                </div>
+                <span class="sheet_en"><span v-if="playlist.highQuality">精品</span>歌单</span>
               </div>
               <div class="plhead_right">
                 <h2 class="title">音乐强心剂</h2>
@@ -18,14 +21,15 @@
                     <div class="ignore_auth_header">
                       <img src="../../assets/img/logo.png" alt />
                       <span class="daren-icon"></span>
-                    </div>-情商雨夜-
+                    </div>
+                    -情商雨夜-
                   </div>
                 </div>
               </div>
             </div>
           </section>
           <section class="pllist_intro">
-            <div class="tags">
+            <div class="tags ignore_tag_bottom">
               标签：
               <span class="tag">华语</span>
               <span class="tag">治愈</span>
@@ -71,15 +75,45 @@
 
 <script>
 import MusicList from "@/components/Musiclist";
+import {getSheetDetails} from '@/api/recommend-api'
+import {OK} from 'js/config'
 export default {
   data() {
-    return {};
+    return {
+      playlist: {
+        playCount: 0
+      },
+    };
   },
   components: {
     MusicList
   },
+  computed: {
+    id() {
+      return this.$route.query.id
+    },
+    songs() {
+
+    },
+    playCount() {
+      return Math.floor(this.playlist.playCount/10000)
+    }
+  },
+  methods: {
+    _getSheetDetails(id) {
+      getSheetDetails(id).then(res=>{
+        if(res.status === OK) {
+          console.log(res.data.playlist)
+          this.playlist = res.data.playlist
+        }
+      })
+    }
+  },
+  created() {
+    this._getSheetDetails(this.id)
+  },
   mounted() {
-    console.log("play");
+    
   }
 };
 </script>
@@ -122,6 +156,16 @@ export default {
               width: 114px;
               height: 114px;
               background-color: #e2e2e3;
+              &::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 18px;
+                z-index: 2;
+                background-image: linear-gradient(90deg,transparent,rgba(0,0,0,.2));
+              }
               @media screen and (min-width: 360px) {
                 width: 126px;
                 height: 126px;
@@ -129,6 +173,46 @@ export default {
               @media screen and (min-width: 414px) {
                 width: 145px;
                 height: 145px;
+              }
+              img {
+                width: 100%;
+                vertical-align: middle;
+              }
+              .plhead_top {
+                position: absolute;
+                right: 2px;
+                top: 0;
+                z-index: 3;
+                padding-left: 15px;
+                color: #fff;
+                text-shadow: 1px 0 0 rgba(0,0,0,.15);
+                vertical-align: middle;
+                .icon-erji {
+                  font-size: 14px;
+                  &::before {
+                    position: absolute;
+                    left: -2px;
+                    top: 2px;
+                  }
+                }
+                .count {
+                  font-size: 12px;
+                }
+              }
+              .sheet_en {
+                position: absolute;
+                z-index: 3;
+                top: 10px;
+                left: 0;
+                padding: 0 8px;
+                height: 17px;
+                color: #fff;
+                font-size: 9px;
+                text-align: center;
+                line-height: 17px;
+                background-color: rgba(217,48,48,.8);
+                border-top-right-radius: 17px;
+                border-bottom-right-radius: 17px;
               }
             }
             .plhead_right {
@@ -153,6 +237,7 @@ export default {
                 .auth_wrap {
                   display: inline-block;
                   color: hsla(0, 0%, 100%, 0.7);
+                  font-size: 14px;
                   .ignore_auth_header {
                     display: inline-block;
                     width: 30px;
@@ -189,10 +274,14 @@ export default {
                 font-size: 12px;
                 position: relative;
                 &::after {
-                    .small_border;
-                    border-width: 1px;
-                    border-radius: 999px;
+                    .small_border;   
                 }
+            }
+            .ignore_tag_bottom {
+              &::after {
+                border-width: 1px;
+                border-radius: 80px;
+              }
             }
           }
           .u_intro {
@@ -213,6 +302,16 @@ export default {
                   float: right;
               }
           }
+        }
+      }
+      .music {
+        .list_title {
+          height: 23px;
+          line-height: 23px;
+          padding: 0 10px;
+          font-size: 12px;
+          color: #666;
+          background-color: #eeeff0;
         }
       }
     }

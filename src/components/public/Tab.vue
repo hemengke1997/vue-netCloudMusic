@@ -16,6 +16,7 @@
 
 <script>
 export default {
+  name:'tab',
   data() {
     return {
       flag: "",
@@ -27,7 +28,11 @@ export default {
     };
   },
 
-  methods: {}
+  methods: {},
+
+  activated() {
+    console.log('tab被复用了')
+  }
 };
 </script>
 

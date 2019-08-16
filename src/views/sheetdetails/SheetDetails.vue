@@ -32,13 +32,13 @@
               </div>
             </div>
           </section>
-          <section class="pllist_intro" ref="test">
+          <section class="pllist_intro">
             <div class="tags">
               标签：
               <span class="tag ignore_tag_bottom" v-for="(item,index) in playlist.tags" :key="index">{{item}}</span>
             </div>
             <div class="u_intro">
-              <div class="intro_3" :class="{three_line:overthree}"  ref="intro" @click="showDes">
+              <div class="intro_3" :class="{three_line:overthree}"  ref="intro" @touchend="showDes">
                 <span>
                   <i>简介：{{description_first}}</i>
                   <br />
@@ -48,7 +48,7 @@
                   <br/>
                 </span>
               </div>
-              <i class="iconfont icon-pull_down" v-if="overthree"></i>
+              <i class="iconfont icon-pull_down" v-if="arrow" :class="{arrow:!overthree}"></i>
             </div>
           </section>
         </div>
@@ -60,21 +60,32 @@
         <div class="fixed_footer"></div>
         <div class="footer_bn"></div>
       </div>
+
+      <div class="sheet_comment">
+        <h3 class="hot_comment">精彩评论</h3>
+
+        <h3 class="new_comment">最新评论</h3>
+      </div>
+
+      <collect-sheet></collect-sheet>
     </div>
   </div>
 </template>
 
 <script>
 import MusicList from "@/components/Musiclist";
+import CollectSheet from '@/components/CollectSheet';
 import { getSheetDetails } from "@/api/recommend-api";
 import { OK } from "js/config";
 import {mapActions} from 'vuex'
+
 export default {
   data() {
     return {
       lineheight: 19,   // 写死在样式里面的
       init: true,
       overthree: false,
+      arrow: false,
       playlist: {
         playCount: 0,
         coverImgUrl: "",
@@ -93,7 +104,8 @@ export default {
     };
   },
   components: {
-    MusicList
+    MusicList,
+    CollectSheet
   },
   computed: {
     id() {
@@ -132,6 +144,9 @@ export default {
         return this.playlist.description.split(/\n/)
       }
     },
+    isOverThree() {
+      return this.$refs.intro.offsetHeight / this.lineheight > 4
+    }
   },
   methods: {
     _getSheetDetails(id) {
@@ -146,8 +161,9 @@ export default {
       });
     },
     showDes() {
-      this.overthree = this.$refs.intro.offsetHeight / this.lineheight > 4
-      // this.overthree = !this.overthree
+      if(this.isOverThree) {
+        this.overthree = !this.overthree
+      }
     },
     ...mapActions([
       'setMusicList'
@@ -164,12 +180,9 @@ export default {
     if(this.init) {
       this.init = false
       this.$nextTick(()=>{
-      this.overthree = this.$refs.intro.offsetHeight / this.lineheight > 4 ? true  : false
+      this.arrow = this.overthree = this.isOverThree
       })
     }
-    this.$nextTick(()=>{
-      console.log('nextTick')
-    })
   }
 };
 </script>
@@ -377,6 +390,9 @@ export default {
             }
             .icon-pull_down {
               float: right;
+            }
+            .arrow {
+              transform: rotate(-180deg);
             }
           }
         }

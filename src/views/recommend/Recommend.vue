@@ -3,7 +3,7 @@
     <div class="songsheet">
       <h2 class="title">推荐歌单</h2>
       <ul class="sheet_ul">
-        <li class="sheet_li" v-for="item in sheetList" :key="item.id" @click="selectList(item.id)">
+        <li class="sheet_li" v-for="item in sheetList" :key="item.id" @touchend="selectList(item.id)">
           <div class="cover">
             <img v-lazy="item.picUrl" />
             <div class="play_count">
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { getSheetList, getNewSong, getSheetDetails } from "@/api/recommend-api";
+import { getSheetList, getNewSong } from "@/api/recommend-api";
 import { OK } from "@/assets/js/config";
 import RecommendFooter from "public/Footer.vue"
 import MusicList from '@/components/Musiclist.vue'
@@ -90,6 +90,7 @@ export default {
         if (res.status === OK) {
           this.sheetList = res.data.result.splice(0, 6);
         } else {
+          // eslint-disable-next-line no-undef
           alter("获取推荐歌单失败");
         }
       });

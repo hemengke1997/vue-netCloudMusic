@@ -19,12 +19,15 @@ export default {};
 
 <style lang="less" scoped>
 .wrapper {
-    background: url("../../assets/img/recommand_bg_2x.png") 1px 0 no-repeat;
+    background: url("../../assets/img/recommand_bg_2x.png") no-repeat;
     position: relative;
     background-size: contain;
     width: 100%;
     margin-top: 4px;
-    padding-top: 53%;
+    padding-top: 53.3%;
+    @media screen and (-webkit-device-pixel-ratio: 3){
+      background-image: url('../../assets/img/recommand_bg_3x.png');
+    }
   .recommend_footer {
     position: absolute;
     left: 0;

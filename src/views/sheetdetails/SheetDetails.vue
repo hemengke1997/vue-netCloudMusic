@@ -4,60 +4,51 @@
       <div class="playlist u-paddlr u-paddbm">
         <div class="top">
           <section class="header">
-            <div class="ignore_plhead_bg"></div>
+            <div
+              class="ignore_plhead_bg"
+              :style="{backgroundImage:'url('+ playlist.coverImgUrl +')'}"
+            ></div>
             <div class="plhead_wrap">
               <div class="ignore_plhead_left">
-                <img v-lazy="playlist.coverImgUrl"/>
+                <img :src="playlist.coverImgUrl" />
                 <div class="plhead_top">
                   <i class="iconfont icon-erji"></i>
                   <span class="count">{{playCount}}万</span>
                 </div>
-                <span class="sheet_en"><span v-if="playlist.highQuality">精品</span>歌单</span>
+                <span class="sheet_en">
+                  <span v-if="playlist.highQuality">精品</span>歌单
+                </span>
               </div>
               <div class="plhead_right">
-                <h2 class="title">音乐强心剂</h2>
+                <h2 class="title">{{playlist.name}}</h2>
                 <div class="auth">
                   <div class="auth_wrap">
                     <div class="ignore_auth_header">
-                      <img src="../../assets/img/logo.png" alt />
-                      <span class="daren-icon"></span>
-                    </div>
-                    -情商雨夜-
+                      <img :src="playlist.creator.avatarUrl" alt />
+                      <span class="ignore_creator_icon" v-if="playlist.creator.vipType"></span>
+                    </div>{{playlist.creator.nickname}}
                   </div>
                 </div>
               </div>
             </div>
           </section>
-          <section class="pllist_intro">
-            <div class="tags ignore_tag_bottom">
+          <section class="pllist_intro" ref="test">
+            <div class="tags">
               标签：
-              <span class="tag">华语</span>
-              <span class="tag">治愈</span>
+              <span class="tag ignore_tag_bottom" v-for="(item,index) in playlist.tags" :key="index">{{item}}</span>
             </div>
             <div class="u_intro">
-              <div class="intro_3">
+              <div class="intro_3" :class="{three_line:overthree}"  ref="intro" @click="showDes">
                 <span>
-                  <i>简介：我们怀着美好的希望</i>
+                  <i>简介：{{description_first}}</i>
                   <br />
                 </span>
-                <span>
-                  <i>我们怀着美好的希望</i>
-                  <br />
-                </span>
-                <span>
-                  <i>我们怀着美好的希望</i>
-                  <br />
-                </span>
-                <span>
-                  <i>我们怀着美好的希望</i>
-                  <br />
-                </span>
-                <span>
-                  <i>我们怀着美好的希望</i>
-                  <br />
+                <span v-for="(item,index) in description_last" :key="index">
+                  <i>{{item}}</i>
+                  <br/>
                 </span>
               </div>
-              <i class="iconfont icon-pull_down"></i>
+              <i class="iconfont icon-pull_down" v-if="overthree"></i>
             </div>
           </section>
         </div>
@@ -75,13 +66,29 @@
 
 <script>
 import MusicList from "@/components/Musiclist";
-import {getSheetDetails} from '@/api/recommend-api'
-import {OK} from 'js/config'
+import { getSheetDetails } from "@/api/recommend-api";
+import { OK } from "js/config";
+import {mapActions} from 'vuex'
 export default {
   data() {
     return {
+      lineheight: 19,   // 写死在样式里面的
+      init: true,
+      overthree: false,
       playlist: {
-        playCount: 0
+        playCount: 0,
+        coverImgUrl: "",
+        creator: {
+          avatarUrl: '',
+          vipType: 0
+        }
+      },
+      tempSongs: [],
+      musicS: {
+        song: [],
+        red: false,
+        SQ: false,
+        rank: true
       },
     };
   },
@@ -90,30 +97,79 @@ export default {
   },
   computed: {
     id() {
-      return this.$route.query.id
+      return this.$route.query.id;
     },
     songs() {
-
+      return this.tempSongs.map(item=>{
+        return {
+          id: item.id,
+          name: item.name,
+          alias: item.alia,
+          ar: item.ar,
+          al: {
+            name: item.al.name,
+            id: item.al.id
+          },
+          copyright: item.copyright
+        }
+      })
     },
     playCount() {
-      return Math.floor(this.playlist.playCount/10000)
-    }
+      return Math.floor(this.playlist.playCount / 10000);
+    },
+    description_first() {
+      if(this.description){
+        return this.description[0]
+      }
+    },
+    description_last() {
+      if(this.description){
+        return this.description.slice(1)
+      }
+    },
+    description() {
+      if(this.playlist.description){
+        return this.playlist.description.split(/\n/)
+      }
+    },
   },
   methods: {
     _getSheetDetails(id) {
-      getSheetDetails(id).then(res=>{
-        if(res.status === OK) {
-          console.log(res.data.playlist)
-          this.playlist = res.data.playlist
+      getSheetDetails(id).then(res => {
+        if (res.status === OK) {
+          console.log(res.data.playlist);
+          this.playlist = res.data.playlist;
+          this.tempSongs = res.data.playlist.tracks
+          this.musicS.song = this.songs
+          this.setMusicList(this.musicS)
         }
-      })
-    }
+      });
+    },
+    showDes() {
+      this.overthree = this.$refs.intro.offsetHeight / this.lineheight > 4
+      // this.overthree = !this.overthree
+    },
+    ...mapActions([
+      'setMusicList'
+    ])
   },
   created() {
-    this._getSheetDetails(this.id)
+    this._getSheetDetails(this.id);
   },
-  mounted() {
-    
+  beforeRouteUpdate(to, from, next) {
+    this._getSheetDetails(to.query.id)
+    next()
+  },
+  updated() {
+    if(this.init) {
+      this.init = false
+      this.$nextTick(()=>{
+      this.overthree = this.$refs.intro.offsetHeight / this.lineheight > 4 ? true  : false
+      })
+    }
+    this.$nextTick(()=>{
+      console.log('nextTick')
+    })
   }
 };
 </script>
@@ -164,7 +220,11 @@ export default {
                 width: 100%;
                 height: 18px;
                 z-index: 2;
-                background-image: linear-gradient(90deg,transparent,rgba(0,0,0,.2));
+                background-image: linear-gradient(
+                  90deg,
+                  transparent,
+                  rgba(0, 0, 0, 0.2)
+                );
               }
               @media screen and (min-width: 360px) {
                 width: 126px;
@@ -185,7 +245,7 @@ export default {
                 z-index: 3;
                 padding-left: 15px;
                 color: #fff;
-                text-shadow: 1px 0 0 rgba(0,0,0,.15);
+                text-shadow: 1px 0 0 rgba(0, 0, 0, 0.15);
                 vertical-align: middle;
                 .icon-erji {
                   font-size: 14px;
@@ -210,7 +270,7 @@ export default {
                 font-size: 9px;
                 text-align: center;
                 line-height: 17px;
-                background-color: rgba(217,48,48,.8);
+                background-color: rgba(217, 48, 48, 0.8);
                 border-top-right-radius: 17px;
                 border-bottom-right-radius: 17px;
               }
@@ -250,6 +310,21 @@ export default {
                       border-radius: 50%;
                       width: 100%;
                     }
+                    .ignore_creator_icon {
+                      position: absolute;
+                      right: -5px;
+                      bottom: 0;
+                      width: 12px;
+                      height: 12px;
+                      background-position: 0 0;
+                      background-repeat: no-repeat;
+                      background-size: 75px auto;
+                      background-image: url('../../assets/img/usericn_2x.png');
+                      @media screen and(-webkit-device-pixel-ratio: 3){
+                        background-image: url('../../assets/img/usericn_3x.png');
+                        background-size: 70px auto;
+                      }
+                    }
                   }
                 }
               }
@@ -268,14 +343,14 @@ export default {
             line-height: 20px;
             font-size: 14px;
             .tag {
-                display: inline-block;
-                margin-right: 10px;
-                padding: 1px 8px;
-                font-size: 12px;
-                position: relative;
-                &::after {
-                    .small_border;   
-                }
+              display: inline-block;
+              margin-right: 10px;
+              padding: 1px 8px;
+              font-size: 12px;
+              position: relative;
+              &::after {
+                .small_border;
+              }
             }
             .ignore_tag_bottom {
               &::after {
@@ -285,22 +360,24 @@ export default {
             }
           }
           .u_intro {
-              padding-bottom: 18px;
-              position: relative;
-              color: #666;
-              line-height: 19px; 
-              .intro_3 {
-                  .text_2;
-                  -webkit-line-clamp: 3;
-                  .break_2;
-                  i {
-                      font-style: normal;
-                      font-size: 14px;
-                  }
+            padding-bottom: 18px;
+            position: relative;
+            color: #666;
+            line-height: 19px;
+            .three_line {
+              .text_2;
+            -webkit-line-clamp: 3;
+            } 
+            .intro_3 {
+              .break_2;
+              i {
+                font-style: normal;
+                font-size: 14px;
               }
-              .icon-pull_down {
-                  float: right;
-              }
+            }
+            .icon-pull_down {
+              float: right;
+            }
           }
         }
       }

@@ -12,7 +12,8 @@ import 'less/base.less'  // 引入全局less
 
 Vue.use(VueLazyLoad,{
   loading: require('@/assets/img/default.png'),
-  error: require('@/assets/img/default.jpg')
+  error: require('@/assets/img/default.jpg'),
+  attempt: 3
 })
 
 // Vue.directive('focus',{

@@ -16,7 +16,34 @@
 </template>
 
 <script>
-export default {};
+import {mapActions} from 'vuex'
+import {getHotComment,getNewComment} from
+export default {
+  data() {
+    return {
+
+    }
+  },
+  props:{
+    type: {
+      type: Number,
+      required: true
+    },
+    id: {
+      type: Number,
+      required: true
+    }
+  },
+  methods: {
+    _getComment() {
+
+    },
+    ...mapActions([
+      'setHotComment',
+      'setNewComment'
+    ])
+  }
+};
 </script>
 
 <style lang="less" scoped>

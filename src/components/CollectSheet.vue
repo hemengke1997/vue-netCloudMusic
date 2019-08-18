@@ -46,8 +46,6 @@ export default {};
         font-size: 26px;
         margin-right: 2px;
       }
-      .collect_logo {
-      }
     }
   }
 }

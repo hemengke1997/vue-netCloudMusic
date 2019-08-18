@@ -871,7 +871,7 @@ this.$router.push({
 
 三种写法都可以跳转路由  但是各有不同  
 第一种写法： 有query  
-浏览器中的url：http://localhost:8088/#/playlist/detail?id=2902128439 刷新页面后 query参数不变
+浏览器中的url：http://localhost:8088/#/playlist/detail?id=2902128439 刷新页面后 query参数不变                                                                               
 
 ![截图](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/ECE7B50B68DF4012B34D5A7CF99C1B3A/1842)
 

@@ -1,5 +1,8 @@
 <template>
   <div id="j-app" class="u-height">
+    <div class="loading_box" v-if="isLoading">
+      <img src="../../assets/img/loading.gif">
+    </div>
     <div class="root">
       <div class="playlist u-paddlr u-paddbm">
         <div class="top">
@@ -37,8 +40,8 @@
               标签：
               <span class="tag ignore_tag_bottom" v-for="(item,index) in playlist.tags" :key="index">{{item}}</span>
             </div>
-            <div class="u_intro">
-              <div class="intro_3" :class="{three_line:overthree}"  ref="intro" @touchend="showDes">
+            <div class="u_intro" @touchend="showDes">
+              <div class="intro_3" :class="{three_line:overthree}"  ref="intro">
                 <span>
                   <i>简介：{{description_first}}</i>
                   <br />
@@ -56,18 +59,18 @@
           <h3 class="list_title">歌曲列表</h3>
           <music-list></music-list>
         </div>
-        <div class="comment"></div>
-        <div class="fixed_footer"></div>
+        <div class="sheet_comment">
+          <h3 class="hot_comment">精彩评论</h3>
+          <comment :type="1" :id="id"></comment>
+          <h3 class="new_comment">最新评论</h3>
+          <comment :type="2" :id="id"></comment>
+        </div>
+        <collect-sheet></collect-sheet>
         <div class="footer_bn"></div>
       </div>
 
-      <div class="sheet_comment">
-        <h3 class="hot_comment">精彩评论</h3>
-
-        <h3 class="new_comment">最新评论</h3>
-      </div>
-
-      <collect-sheet></collect-sheet>
+      
+      <div class="bottom"></div>
     </div>
   </div>
 </template>
@@ -78,6 +81,7 @@ import CollectSheet from '@/components/CollectSheet';
 import { getSheetDetails } from "@/api/recommend-api";
 import { OK } from "js/config";
 import {mapActions} from 'vuex'
+import Comment from '@/components/Comment'
 
 export default {
   data() {
@@ -101,11 +105,13 @@ export default {
         SQ: false,
         rank: true
       },
+      isLoading: true
     };
   },
   components: {
     MusicList,
-    CollectSheet
+    CollectSheet,
+    Comment
   },
   computed: {
     id() {
@@ -156,7 +162,7 @@ export default {
           this.playlist = res.data.playlist;
           this.tempSongs = res.data.playlist.tracks
           this.musicS.song = this.songs
-          this.setMusicList(this.musicS)
+          this.setMusicList(this.musicS).then(this.isLoading = false)
         }
       });
     },
@@ -191,6 +197,12 @@ export default {
 #j-app {
   padding-bottom: env(safe-area-inset-bottom);
   box-sizing: border-box;
+  .loading_box {
+    .after;
+    img {
+      .loading_img;
+    }
+  }
   .root {
     position: relative;
     background-color: #fcfcfd;
@@ -407,6 +419,22 @@ export default {
           background-color: #eeeff0;
         }
       }
+      .sheet_comment {
+        .hot_comment,
+        .new_comment {
+          background-color: rgba(0,0,0,.05);
+          padding: 0 10px;
+          height: 23px;
+          line-height: 23px;
+          margin: 0;
+          color: #666;
+          font-size: 12px;
+          font-weight: 400;
+        }
+      }
+      .footer_bn {
+        height: 56px;
+      }
     }
     .u-paddlr {
       padding-left: env(safe-area-inset-left);
@@ -415,6 +443,7 @@ export default {
     .u-paddbm {
       padding-bottom: env(safe-area-inset-bottom);
     }
+    
   }
 }
 </style>

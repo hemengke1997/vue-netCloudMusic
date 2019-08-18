@@ -1,5 +1,6 @@
 <template>
   <div class="hot">
+    
     <div class="hot_top">
       <div class="banner">
         <div class="ignore_hot_icon"></div>
@@ -7,10 +8,8 @@
       </div>
     </div>
     <music-list></music-list>
-    <div class="loading_box">
-      <div class="loading" v-if="isLoading">
-        <img src="../../assets/img/loading.gif" alt />
-      </div>
+    <div class="loading_box" v-if="isLoading">
+      <img src="../../assets/img/loading.gif" alt />
     </div>
   </div>
 </template>
@@ -143,20 +142,9 @@ export default {
   }
 
   .loading_box {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    .loading {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      img {
-        width: 50%;
-      }
+    .after;
+    img {
+      .loading_img;
     }
   }
 }

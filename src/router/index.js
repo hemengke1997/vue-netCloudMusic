@@ -8,6 +8,7 @@ const Hot = ()=> import('@/views/hot/Hot.vue')
 const Index = ()=> import('@/views/index.vue')
 const Search = ()=> import('@/views/search/Search.vue')
 const SheetDetails = ()=> import('@/views/sheetdetails/SheetDetails')
+const User = ()=> import('@/views/user/User')
 
 export default new Router({
   // mode: 'history',   // 需要服务器支持
@@ -45,6 +46,7 @@ export default new Router({
         }
       ]
     },
+    // 搜索
     {
       path: '/search',
       component:Index,
@@ -59,10 +61,17 @@ export default new Router({
         }
       ]
     },
+    // 歌单详情
     {
       path:'/playlist/detail',
       component: SheetDetails,
       name: 'sheetDetails'
+    },
+    // 用户主页
+    {
+      path: '/user/detail',
+      component: User,
+      name: 'user'
     }
   ]
 })

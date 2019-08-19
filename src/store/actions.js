@@ -6,14 +6,14 @@ const actions = {
             commit(types.SET_MUSIC_LIST,music)
         })
     },
-    setHotComment({commit},comment) {
+    setComment({commit},comments) {
         return new Promise(()=>{
-            commit(types.SET_HOT_COMMENT,comment)
+            commit(types.SET_COMMENT,comments)
         })
     },
-    setNewComment({commit},comment) {
-        return new Promise(()=>{
-            commit(types.SET_NEW_COMMENT,comment)
+    setHotCommentLength({commit},length) {
+        return new Promise(()=> {
+            commit(types.SET_HOT_COMMENT_LENGTH,length)
         })
     }
 }

@@ -50,7 +50,8 @@ export default {
   },
   components: {
     RecommendFooter,
-    MusicList
+    MusicList,MusicList
+    
   },
   created() {
     this._getSheetList();

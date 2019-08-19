@@ -50,6 +50,10 @@ export default {
   },
   components: {
     RecommendFooter,
+    MusicList,MusicList
+    MusicList
+    MusicList
+    MusicList
     MusicList
   },
   created() {

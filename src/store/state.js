@@ -2,8 +2,8 @@
 
 const state = {
     musicList: [],
-    hotComment: [],
-    newComment: []
+    comments: [],
+    commentLength: 0,
 }
 
 export default state

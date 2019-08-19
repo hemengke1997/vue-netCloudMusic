@@ -1,9 +1,9 @@
 <template>
-  <div id="j-app" class="u-height">
+  <div class="u-height">
     <div class="loading_box" v-if="isLoading">
-      <img src="../../assets/img/loading.gif">
+      <img src="../../assets/img/loading.gif" />
     </div>
-    <div class="root">
+    <div class="root" v-show="!isLoading">
       <div class="playlist u-paddlr u-paddbm">
         <div class="top">
           <section class="header">
@@ -29,47 +29,53 @@
                     <div class="ignore_auth_header">
                       <img :src="playlist.creator.avatarUrl" alt />
                       <span class="ignore_creator_icon" v-if="playlist.creator.vipType"></span>
-                    </div>{{playlist.creator.nickname}}
+                    </div>
+                    {{playlist.creator.nickname}}
                   </div>
                 </div>
               </div>
             </div>
           </section>
-          <section class="pllist_intro">
-            <div class="tags">
+          <section class="pllist_intro" v-if="playlist.description||tagslength">
+            <div class="tags" v-if="tagslength">
               标签：
-              <span class="tag ignore_tag_bottom" v-for="(item,index) in playlist.tags" :key="index">{{item}}</span>
+              <span
+                class="tag ignore_tag_bottom"
+                v-for="(item,index) in playlist.tags"
+                :key="index"
+              >{{item}}</span>
             </div>
-            <div class="u_intro" @touchend="showDes">
-              <div class="intro_3" :class="{three_line:overthree}"  ref="intro">
+            <div class="u_intro" @touchend="showDes" v-if="playlist.description">
+              <div class="intro_3" :class="{three_line:overthree}" ref="intro">
                 <span>
                   <i>简介：{{description_first}}</i>
                   <br />
                 </span>
                 <span v-for="(item,index) in description_last" :key="index">
                   <i>{{item}}</i>
-                  <br/>
+                  <br />
                 </span>
               </div>
               <i class="iconfont icon-pull_down" v-if="arrow" :class="{arrow:!overthree}"></i>
             </div>
           </section>
         </div>
-        <div class="music">
-          <h3 class="list_title">歌曲列表</h3>
-          <music-list></music-list>
-        </div>
-        <div class="sheet_comment">
-          <h3 class="hot_comment">精彩评论</h3>
-          <comment :type="1" :id="id"></comment>
-          <h3 class="new_comment">最新评论</h3>
-          <comment :type="2" :id="id"></comment>
-        </div>
-        <collect-sheet></collect-sheet>
-        <div class="footer_bn"></div>
+    
+          <div class="music">
+            <h3 class="list_title">歌曲列表</h3>
+            <music-list></music-list>
+          </div>
+          <div class="sheet_comment">
+            <h3 class="hot_comment">精彩评论</h3>
+            <comment :type="1" :id="id"></comment>
+            <h3 class="new_comment" v-if="commentLength<15">{{commentLength}}</h3>
+            <comment :type="2" :id="id"></comment>
+          </div>
+          <collect-sheet></collect-sheet>
+          <div class="footer_bn"></div>
+        
       </div>
 
-      
       <div class="bottom"></div>
     </div>
   </div>
@@ -77,16 +83,16 @@
 
 <script>
 import MusicList from "@/components/Musiclist";
-import CollectSheet from '@/components/CollectSheet';
+import CollectSheet from "@/components/CollectSheet";
 import { getSheetDetails } from "@/api/recommend-api";
 import { OK } from "js/config";
-import {mapActions} from 'vuex'
-import Comment from '@/components/Comment'
+import { mapActions, mapGetters } from "vuex";
+import Comment from "@/components/Comment";
 
 export default {
   data() {
     return {
-      lineheight: 19,   // 写死在样式里面的
+      lineheight: 19, // 写死在样式里面的
       init: true,
       overthree: false,
       arrow: false,
@@ -94,9 +100,10 @@ export default {
         playCount: 0,
         coverImgUrl: "",
         creator: {
-          avatarUrl: '',
+          avatarUrl: "",
           vipType: 0
-        }
+        },
+        tags: []
       },
       tempSongs: [],
       musicS: {
@@ -105,7 +112,7 @@ export default {
         SQ: false,
         rank: true
       },
-      isLoading: true
+      isLoading: true,
     };
   },
   components: {
@@ -118,7 +125,7 @@ export default {
       return this.$route.query.id;
     },
     songs() {
-      return this.tempSongs.map(item=>{
+      return this.tempSongs.map(item => {
         return {
           id: item.id,
           name: item.name,
@@ -129,74 +136,87 @@ export default {
             id: item.al.id
           },
           copyright: item.copyright
-        }
-      })
+        };
+      });
     },
     playCount() {
       return Math.floor(this.playlist.playCount / 10000);
     },
     description_first() {
-      if(this.description){
-        return this.description[0]
+      if (this.description) {
+        return this.description[0];
       }
+      return "";
     },
     description_last() {
-      if(this.description){
-        return this.description.slice(1)
+      if (this.description) {
+        return this.description.slice(1);
       }
+      return "";
     },
     description() {
-      if(this.playlist.description){
-        return this.playlist.description.split(/\n/)
+      if (this.playlist.description) {
+        return this.playlist.description.split(/\n/);
       }
+      return "";
     },
     isOverThree() {
-      return this.$refs.intro.offsetHeight / this.lineheight > 4
-    }
+      if(this.playlist.description) {
+        return this.$refs.intro.offsetHeight / this.lineheight > 4;
+      } else {
+        return null
+      }
+    },
+    tagslength() {
+      return this.playlist.tags.length
+    },
+    // comments(){
+    //   return this.$store.getters.comments && this.$store.getters.comments.hotComments && this.$store.getters.comments.hotComments.length > 15
+    // }
+    ...mapGetters({
+      commentLength: 'commentLength'
+    })
   },
   methods: {
     _getSheetDetails(id) {
       getSheetDetails(id).then(res => {
         if (res.status === OK) {
-          console.log(res.data.playlist);
+          // console.log(res.data.playlist);
           this.playlist = res.data.playlist;
-          this.tempSongs = res.data.playlist.tracks
-          this.musicS.song = this.songs
-          this.setMusicList(this.musicS).then(this.isLoading = false)
+          this.tempSongs = res.data.playlist.tracks;
+          this.musicS.song = this.songs;
+          this.setMusicList(this.musicS).then((this.isLoading = false));
         }
       });
     },
     showDes() {
-      if(this.isOverThree) {
-        this.overthree = !this.overthree
+      if (this.isOverThree) {
+        this.overthree = !this.overthree;
       }
     },
-    ...mapActions([
-      'setMusicList'
-    ])
+    ...mapActions(["setMusicList"])
   },
   created() {
     this._getSheetDetails(this.id);
   },
   beforeRouteUpdate(to, from, next) {
-    this._getSheetDetails(to.query.id)
-    next()
+    this._getSheetDetails(to.query.id);
+    next();
   },
   updated() {
-    if(this.init) {
-      this.init = false
-      this.$nextTick(()=>{
-      this.arrow = this.overthree = this.isOverThree
-      })
+    if (this.init) {
+      this.init = false;
+      this.$nextTick(() => {
+        this.arrow = this.overthree = this.isOverThree;
+      });
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-#j-app {
-  padding-bottom: env(safe-area-inset-bottom);
-  box-sizing: border-box;
+.u-height {
+  .safe;
   .loading_box {
     .after;
     img {
@@ -344,9 +364,9 @@ export default {
                       background-position: 0 0;
                       background-repeat: no-repeat;
                       background-size: 75px auto;
-                      background-image: url('../../assets/img/usericn_2x.png');
-                      @media screen and(-webkit-device-pixel-ratio: 3){
-                        background-image: url('../../assets/img/usericn_3x.png');
+                      background-image: url("../../assets/img/usericn_2x.png");
+                      @media screen and(-webkit-device-pixel-ratio: 3) {
+                        background-image: url("../../assets/img/usericn_3x.png");
                         background-size: 70px auto;
                       }
                     }
@@ -391,8 +411,8 @@ export default {
             line-height: 19px;
             .three_line {
               .text_2;
-            -webkit-line-clamp: 3;
-            } 
+              -webkit-line-clamp: 3;
+            }
             .intro_3 {
               .break_2;
               i {
@@ -422,7 +442,7 @@ export default {
       .sheet_comment {
         .hot_comment,
         .new_comment {
-          background-color: rgba(0,0,0,.05);
+          background-color: rgba(0, 0, 0, 0.05);
           padding: 0 10px;
           height: 23px;
           line-height: 23px;
@@ -443,7 +463,6 @@ export default {
     .u-paddbm {
       padding-bottom: env(safe-area-inset-bottom);
     }
-    
   }
 }
 </style>

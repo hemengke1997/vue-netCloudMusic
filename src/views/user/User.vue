@@ -17,15 +17,29 @@
                 <p class="fans_ch">粉丝数</p>
               </div>
             </div>
+            <div class="usrhd_info">
+              <div class="usrhd_name">
+                <h1 class="username">贺梦柯</h1>
+              </div>
+              <div class="ignore_usrhd_follow">
+                <span class="follow">关注</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+      <user-playlist></user-playlist>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import UserPlaylist from '@/components/UserPlaylist'
+export default {
+  components:{
+    UserPlaylist
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -33,7 +47,6 @@ export default {};
   .safe;
   .root {
     position: relative;
-    background-color: #fcfcfd;
     height: 100%;
     .user_header {
       padding-bottom: 64.49%;
@@ -100,9 +113,60 @@ export default {};
               }
             }
           }
+          .usrhd_info {
+            width: 100%;
+            padding: 0 9.7%;
+            box-sizing: border-box;
+            .usrhd_name {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              margin-top: 9px;
+              font-size: 17px;
+              .username {
+                .text_overflow;
+                font-size: 17px;
+                color: #fff;
+              }
+            }
+            .ignore_usrhd_follow {
+              width: 126px;
+              height: 30px;
+              margin: 6px auto;
+              border: 1px solid hsla(0,0%,100%,.8);
+              border-radius: 15px;
+              line-height: 28px;
+              box-sizing: border-box;
+              font-size: 13px;
+              color: #fff;
+              text-align: center;
+              position: relative;
+              padding-left: 15px;
+              &::before,
+              &::after {
+                content: "";
+                position: absolute;
+                background-color: #fff;
+              }
+              &:before {
+                width: 1px;
+                height: 13px;
+                left: 47px;
+                top: 6px;
+              }
+              &:after {
+                width: 13px;
+                height: 1px;
+                left: 41px;
+                top: 12px;
+              }
+            }
+          }
         }
       }
     }
+    
   }
 }
 .number,

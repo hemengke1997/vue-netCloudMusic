@@ -7,6 +7,18 @@ function getComments(id) {
     return axios.get(url)
 }
 
+function getUserPlaylist(id) {
+    const url = HOST + `/user/playlist?uid=${id}`
+    return axios.get(url)
+}
+
+function getUser(id) {
+    const url = HOST + `/user/detail?uid=${id}`
+    return axios.get(url)
+}
+
 export  {
-    getComments
+    getComments,
+    getUserPlaylist,
+    getUser
 }

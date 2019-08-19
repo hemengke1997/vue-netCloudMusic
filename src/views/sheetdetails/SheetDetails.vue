@@ -68,7 +68,7 @@
           <div class="sheet_comment">
             <h3 class="hot_comment">精彩评论</h3>
             <comment :type="1" :id="id"></comment>
-            <h3 class="new_comment" v-if="commentLength<15">{{commentLength}}</h3>
+            <h3 class="new_comment" v-if="commentLength<15">最新评论</h3>
             <comment :type="2" :id="id"></comment>
           </div>
           <collect-sheet></collect-sheet>

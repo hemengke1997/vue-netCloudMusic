@@ -15,6 +15,16 @@ const actions = {
         return new Promise(()=> {
             commit(types.SET_HOT_COMMENT_LENGTH,length)
         })
+    },
+    setUser({commit},user) {
+        return new Promise(()=>{
+            commit(types.SET_USER,user)
+        })
+    },
+    setUserPlaylist({commit},playlist) {
+        return new Promise(()=>{
+            commit(types.SET_USER_PLAYLIST,playlist)
+        })
     }
 }
 

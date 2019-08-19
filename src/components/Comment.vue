@@ -1,14 +1,14 @@
 <template>
   <ul class="comment_list">
     <li class="comment" v-for="(item,index) in comment" :key="index">
-      <div class="cmt_head">
+      <div class="cmt_head" @touchend="gotoUser(item.user.userId)">
         <img :src="item.user.avatarUrl" alt class="ignore_img" />
       </div>
       <div class="cmt_wrap">
         <div class="cmt_header">
           <div class="cmt_meta">
             <span class="cmt_username">
-              <a class="nickname">{{item.user.nickname}}</a>
+              <a class="nickname" @touchend="gotoUser(item.user.userId)">{{item.user.nickname}}</a>
               <i class="ignore_vip" v-if="item.user.vipRights"></i>
             </span>
             <div class="cmt_time">{{commentTime(item.time)}}</div>
@@ -79,7 +79,7 @@ export default {
         return `${date.year}年${date.month}月${date.day}日`
       }
     },
-    // 评论中艾特了别人的效果暂时没想到怎么做
+    // 评论中艾特了别人的效果暂时没想到怎么做  想到了  用正则表达式匹配 @xxx  @[^\s]+\s?
     // at() {
     //   return function(content) {
     //     if(content.indexOf('@') != -1) {
@@ -104,6 +104,7 @@ export default {
           this.comments = res.data
           if(type === 1) {
             this.comment = res.data.hotComments
+            console.log(this.comment)
           } else if (type === 2 && res.data.hotComments.length < this.sum) {
             this.comment = res.data.comments.slice(0, this.sum - res.data.hotComments.length)
           }
@@ -111,10 +112,14 @@ export default {
       });
     },
     gotoUser(id) {
+      this.$router.push({
+        path: '/user/playlist',
+        query: {uid:id}
+      })
     },
     ...mapActions([
       'setComment',
-      'setHotCommentLength'
+      'setHotCommentLength',
     ])
   },
   created() {

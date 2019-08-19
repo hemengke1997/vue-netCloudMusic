@@ -69,7 +69,7 @@ export default new Router({
     },
     // 用户主页
     {
-      path: '/user/detail',
+      path: '/user/playlist',
       component: User,
       name: 'user'
     }

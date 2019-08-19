@@ -1,3 +1,5 @@
 export const SET_MUSIC_LIST = 'SET_MUSIC_LIST'
 export const SET_COMMENT = 'SET_COMMENT'
 export const SET_HOT_COMMENT_LENGTH = 'SET_HOT_COMMENT_LENGTH'
+export const SET_USER = 'SET_USER'
+export const SET_USER_PLAYLIST = 'SET_USER_PLAYLIST'

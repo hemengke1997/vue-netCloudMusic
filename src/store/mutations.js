@@ -8,6 +8,12 @@ const mutations = {
     },
     [types.SET_HOT_COMMENT_LENGTH](state,length) {
         state.commentLength = length
+    },
+    [types.SET_USER](state,user) {
+        state.user = user
+    },
+    [types.SET_USER_PLAYLIST](state,playlist) {
+        state.playlist = playlist
     }
 }
 export default mutations

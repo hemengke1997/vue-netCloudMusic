@@ -3,7 +3,7 @@
     <div class="songsheet">
       <h2 class="title">推荐歌单</h2>
       <ul class="sheet_ul">
-        <li class="sheet_li" v-for="item in sheetList" :key="item.id" @touchend="selectList(item.id)">
+        <li class="sheet_li" v-for="item in sheetList" :key="item.id" @click="selectList(item.id)">
           <div class="cover">
             <img v-lazy="item.picUrl" />
             <div class="play_count">
@@ -31,7 +31,6 @@ import { getSheetList, getNewSong } from "@/api/recommend-api";
 import { OK } from "@/assets/js/config";
 import RecommendFooter from "public/Footer.vue"
 import MusicList from '@/components/Musiclist.vue'
-import {mapMutations, mapActions} from 'vuex'
 
 
 export default {
@@ -66,7 +65,8 @@ export default {
           al:{
             name: item.song.album.name
           },
-          copyright: item.song.copyright
+          copyright: item.song.copyright,
+          
         }
       });
     }
@@ -84,15 +84,13 @@ export default {
       // this.$router.push({
       //   path: `/playlist/detail?id=${id}`
       // })
-
     },
     _getSheetList() {
       getSheetList().then(res => {
         if (res.status === OK) {
           this.sheetList = res.data.result.splice(0, 6);
         } else {
-          // eslint-disable-next-line no-undef
-          alter("获取推荐歌单失败");
+          console.log("获取推荐歌单失败");
         }
       });
     },
@@ -101,18 +99,12 @@ export default {
         if(res.status === OK) {
           this.isLoading = false
           this.tempSongs = res.data.result
-          // console.log(this.tempSongs)
+          console.log(this.tempSongs,'musiclist')
           this.musicD.song = this.songs
-          this.setMusicList(this.musicD)
+          this.$store.dispatch('playlist/setMusicList',this.musicD)
         }
       })
     },
-    ...mapMutations({
-      setMusicList: 'SET_MUSIC_LIST',
-    }),
-    ...mapActions([
-
-    ])
   },
   activated() {
     this._getNewSong()

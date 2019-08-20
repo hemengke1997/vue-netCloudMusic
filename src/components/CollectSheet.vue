@@ -1,16 +1,30 @@
 <template>
   <div class="collect_fixed collect_bottom">
     <div class="collect_wrapper">
-      <div class="collect_inner">
+      <div class="collect_inner" @click="download">
         <i class="iconfont icon-wangyiyunyinle"></i>
-        <span class="collect_logo">收藏歌单</span>
+        <span class="collect_logo">{{text}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props:{
+    text: {
+      type: String,
+      required: true
+    }
+  },
+  methods: {
+    download() {
+      this.$router.push({
+        path: '/download'
+      })
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>

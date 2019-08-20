@@ -30,9 +30,6 @@ export default {
 
   methods: {},
 
-  activated() {
-    console.log('tab被复用了')
-  }
 };
 </script>
 

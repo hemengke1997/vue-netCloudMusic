@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueLazyLoad from 'vue-lazyload'
+import fastclick from 'fastclick'
 
 Vue.config.productionTip = false
 
@@ -16,11 +17,7 @@ Vue.use(VueLazyLoad,{
   attempt: 3
 })
 
-// Vue.directive('focus',{
-//   inserted: function(el) {
-//     el.focus()
-//   }
-// })
+fastclick.attach(document.body)
 
 new Vue({
   router,

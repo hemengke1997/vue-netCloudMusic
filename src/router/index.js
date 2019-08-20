@@ -9,6 +9,8 @@ const Index = ()=> import('@/views/index.vue')
 const Search = ()=> import('@/views/search/Search.vue')
 const SheetDetails = ()=> import('@/views/sheetdetails/SheetDetails')
 const User = ()=> import('@/views/user/User')
+const Download = () => import('@/views/download/Download')
+const PlaySong = ()=> import('@/views/playsong/Playsong')
 
 export default new Router({
   // mode: 'history',   // 需要服务器支持
@@ -72,6 +74,18 @@ export default new Router({
       path: '/user/playlist',
       component: User,
       name: 'user'
+    },
+    // 下载界面
+    {
+      path: '/download',
+      component: Download,
+      name: 'download'
+    },
+    // 听歌界面
+    {
+      path: '/song',
+      component: PlaySong,
+      name: 'playsong'
     }
   ]
 })

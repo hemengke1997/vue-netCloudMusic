@@ -1,29 +1,17 @@
 <template>
   <div class="user_playlist">
-    <h3 class="title">歌单({{}})</h3>
+    <h3 class="title">歌单({{ownPlaylist.length}})</h3>
     <ul class="playlist">
-        <li class="song">
+        <li class="song" v-for="(item,index) in ownPlaylist" :key="index" @click="gotoPlaylist(item.id)">
             <div class="ignore_left">
-                <img src="../assets/img/default.jpg" alt="playlist">
-                <div class="love">
+                <img v-lazy="item.coverImgUrl">
+                <div class="love" v-if="index===0">
                     <i class="iconfont icon-iconfontlove"></i>
                 </div>
             </div>
             <div class="right">
-              <h3 class="playlist_title">贺梦柯喜欢的音乐</h3>
-              <div class="bottom">15首，播放2000次</div>
-            </div>
-        </li>
-        <li class="song">
-            <div class="ignore_left">
-                <img src="../assets/img/default.jpg" alt="playlist">
-                <div class="love">
-                    <i class="iconfont icon-iconfontlove"></i>
-                </div>
-            </div>
-            <div class="right">
-              <h3 class="playlist_title">贺梦柯喜欢的音乐</h3>
-              <div class="bottom">15首，播放2000次</div>
+              <h3 class="playlist_title">{{item.name}}</h3>
+              <div class="bottom">{{item.trackCount}}首，播放{{item.playCount}}次</div>
             </div>
         </li>
     </ul>
@@ -31,13 +19,13 @@
 </template>
 
 <script>
-import {mapGetters,mapActions} from 'vuex'
-import { getUserPlaylist,getUser } from "@/api/comment-api"
+import { getUserPlaylist } from "@/api/comment-api"
 import {OK} from 'js/config'
+import {mapGetters} from 'vuex'
 export default {
   data() {
     return {
-      
+      playlist: []
     }
   },
   computed: {
@@ -46,37 +34,31 @@ export default {
     },
     ownPlaylist() {
       return this.playlist.filter(item=>{
-        item.creator.userId === this.user.profile.userId
+        return item.creator.userId === this.userId
       })
     },
-    ...mapGetters([
-      'user',
-      'playlist'
-    ])
+    ...mapGetters({
+      userId: 'userId'
+    })
   },
   methods: {
     _getUserPlaylist(id){
       getUserPlaylist(id).then(res=>{
         if(res.status === OK) {
-          this.setUserPlaylist(res.data.playlist)
+          // console.log(res.data)
+          this.playlist = res.data.playlist
         }
       })
     },
-    _getUser(id) {
-      getUser(id).then(res=>{
-        if(res.status === OK) {
-          this.setUser(res.data)
-        }
+    gotoPlaylist(id) {
+      this.$router.push({
+        path: '/playlist/detail',
+        query: {id:id}
       })
-    },
-    ...mapActions([
-      'setUser',
-      'setUserPlaylist'
-    ])
+    }
   },
   created() {
     this._getUserPlaylist(this.uid)
-    this._getUser(this.uid)
   }
 };
 </script>

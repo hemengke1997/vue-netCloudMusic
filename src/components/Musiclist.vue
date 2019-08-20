@@ -1,6 +1,6 @@
 <template>
   <ul class="song_ul">
-    <li class="song_li" v-for="(item,index) in musicList.song" :key="index" @click="playsong">
+    <li class="song_li" v-for="(item,index) in musicList.song" :key="index" @click="playsong(item.id)">
       <div class="ignore_rank" :class="{red: red(index)}" v-if="musicList.rank">{{rank(index+1)}}</div>
       <div class="content">
         <div class="left_part">
@@ -22,18 +22,19 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters} from "vuex";
 
 export default {
   data() {
     return {};
   },
   methods: {
-    playsong() {},
-
-    ...mapMutations({
-      setMusicList: "SET_MUSIC_LIST"
-    })
+    playsong(id) {
+      this.$router.push({
+        path: '/song',
+        query: {id: id}
+      })
+    },
   },
   computed: {
     rank() {
@@ -64,7 +65,7 @@ export default {
     })
   },
   deactivated() {
-    this.setMusicList([]);
+    this.$store.dispatch('playlist/setMusicList',[])
   }
 };
 </script>

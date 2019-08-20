@@ -71,9 +71,8 @@ export default {
           this.date = { month: time.month, day: time.day };
           this.hotsongs = res.data.playlist.tracks;
           this.tempSongs = this.hotsongs.slice(0, 20);
-          // console.log(this.hotsongs);
           this.musicH.song = this.songs
-          this.setMusicList(this.musicH).then(this.isLoading = false)
+          this.$store.dispatch('playlist/setMusicList',this.musicH).then(this.isLoading = false)
         } else {
           console.log("hotsong-error");
         }

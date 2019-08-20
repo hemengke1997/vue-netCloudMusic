@@ -1,14 +1,14 @@
 <template>
   <ul class="comment_list">
     <li class="comment" v-for="(item,index) in comment" :key="index">
-      <div class="cmt_head" @touchend="gotoUser(item.user.userId)">
+      <div class="cmt_head" @click="gotoUser(item.user.userId)">
         <img :src="item.user.avatarUrl" alt class="ignore_img" />
       </div>
       <div class="cmt_wrap">
         <div class="cmt_header">
           <div class="cmt_meta">
             <span class="cmt_username">
-              <a class="nickname" @touchend="gotoUser(item.user.userId)">{{item.user.nickname}}</a>
+              <a class="nickname" @click="gotoUser(item.user.userId)">{{item.user.nickname}}</a>
               <i class="ignore_vip" v-if="item.user.vipRights"></i>
             </span>
             <div class="cmt_time">{{commentTime(item.time)}}</div>
@@ -16,12 +16,12 @@
           <div class="ignore_cmt_like">
             <span class="cmt_likearea">
               <span class="cmt_count">{{item.likedCount}}</span>
-              <i class="iconfont icon-zan1"></i>
+              <i class="iconfont icon-zan1" @click="download"></i>
             </span>
           </div>
         </div>
         <div class="cmt_content">
-          <span v-if="item.beReplied.length" class="cmt_text">回复<a class="at" @touchend="gotoUser(item.beReplied[0].user.userId)">@{{item.beReplied[0].user.nickname}}</a>:</span>
+          <span v-if="item.beReplied.length" class="cmt_text">回复<a class="at" @click="gotoUser(item.beReplied[0].user.userId)">@{{item.beReplied[0].user.nickname}}</a>:</span>
           <span class="cmt_text">
             {{item.content}}
           </span>
@@ -34,8 +34,8 @@
         </div>
       </div>
     </li>
-    <li class="cmt_more" v-if="judgement">
-      <span class="box">
+    <li class="cmt_more" v-if="judgement && total > sum">
+      <span class="box" @click="download">
         查看全部{{total}}条评论
         <i class="iconfont icon-pull_down"></i>
       </span>
@@ -47,16 +47,15 @@
 import { getComments } from "@/api/comment-api";
 import transDate from '@/utils/transDate';
 import {OK} from 'js/config'
-import {mapActions} from 'vuex'
 
 export default {
   data() {
     return {
       comment: [],
       sum: 15,
-      total: Number,
-      comments: {
-        hotComments:[]
+      total: 0,
+      comments: {    // 总的comments对象
+        hotComments:[],
       }
     };
   },
@@ -98,13 +97,13 @@ export default {
     _getComment(id,type) {
       getComments(id).then(res => {
         if(res.status === OK) {
-          this.setComment(res.data)
-          this.setHotCommentLength(res.data.hotComments.length)
+          this.$store.dispatch('comment/setHotcommentLength',res.data.hotComments.length)
+          this.$store.dispatch('comment/setNewcommentLength',res.data.comments.length)
           this.total = res.data.total
           this.comments = res.data
+          // console.log(this.comments)
           if(type === 1) {
             this.comment = res.data.hotComments
-            console.log(this.comment)
           } else if (type === 2 && res.data.hotComments.length < this.sum) {
             this.comment = res.data.comments.slice(0, this.sum - res.data.hotComments.length)
           }
@@ -117,10 +116,11 @@ export default {
         query: {uid:id}
       })
     },
-    ...mapActions([
-      'setComment',
-      'setHotCommentLength',
-    ])
+    download() {
+      this.$router.push({
+        path: '/download'
+      })
+    }
   },
   created() {
     this._getComment(this.id,this.type)

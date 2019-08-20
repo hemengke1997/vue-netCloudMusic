@@ -5,7 +5,7 @@
         <i class="iconfont icon-wangyiyunyinle"></i>
         <span class="name">网易云音乐</span>
       </div>
-      <div class="ignore_app_link">
+      <div class="ignore_app_link" @click="download">
         下载APP
       </div>
     </div>
@@ -15,7 +15,13 @@
 <script>
 export default {
   computed: {},
-  methods: {},
+  methods: {
+    download() {
+      this.$router.push({
+        path:'/download'
+      })
+    }
+  },
   mounted() {}
 };
 </script>

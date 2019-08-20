@@ -1,25 +1,28 @@
 <template>
   <div class="user_container">
+    <div class="loading_box" v-if="isLoading">
+      <img src="../../assets/img/loading.gif">
+    </div>
     <div class="root">
       <section class="user_header">
-        <div class="userhd_wrap">
+        <div class="userhd_wrap" :style="{backgroundImage:'url('+user.profile.backgroundUrl+')'}">
           <div class="userhd_in">
             <div class="userhd_top">
               <div class="listen_count">
-                <p class="number">123</p>
+                <p class="number">{{user.listenSongs}}</p>
                 <p class="number_ch">听歌数</p>
               </div>
               <div class="ignore_userhd_avatar">
-                <img src="../../assets/img/logo.png">
+                <img :src="user.profile.avatarUrl">
               </div>
               <div class="followed">
-                <p class="fans">2</p>
+                <p class="fans">{{user.profile.followeds}}</p>
                 <p class="fans_ch">粉丝数</p>
               </div>
             </div>
             <div class="usrhd_info">
               <div class="usrhd_name">
-                <h1 class="username">贺梦柯</h1>
+                <h1 class="username">{{user.profile.nickname}}</h1>
               </div>
               <div class="ignore_usrhd_follow">
                 <span class="follow">关注</span>
@@ -29,16 +32,57 @@
         </div>
       </section>
       <user-playlist></user-playlist>
+      <collect-sheet :text="text"></collect-sheet>
+      <div class="footer_bn"></div>
     </div>
   </div>
 </template>
 
 <script>
 import UserPlaylist from '@/components/UserPlaylist'
+import {getUser} from "@/api/comment-api"
+import {OK} from 'js/config'
+import CollectSheet from '@/components/CollectSheet'
 export default {
+  data() {
+    return {
+      user:{
+        profile: {
+          backgroundUrl:'',
+          avatarUrl: '',
+          nickname: '',
+          followeds: 0
+        },
+        listenSongs: 0
+      },
+      text: '去TA的个人主页',
+      isLoading: true
+    }
+  },
   components:{
-    UserPlaylist
-  }
+    UserPlaylist,
+    CollectSheet
+  },
+  computed: {
+    uid() {
+      return this.$route.query.uid
+    },
+  },
+  methods: {
+    _getUser(id) {
+      getUser(id).then(res=>{
+        if(res.status === OK) {
+          this.user = res.data
+          this.isLoading = false
+          // console.log(this.isLoading)
+          this.$store.dispatch('user/setUserId',res.data.profile.userId)
+        }
+      })
+    },
+  },
+  created() {
+    this._getUser(this.uid)
+  },
 };
 </script>
 
@@ -53,7 +97,6 @@ export default {
       width: 100%;
       position: relative;
       .userhd_wrap {
-        background-image: url("../../assets/img/hot_music_bg_2x.jpg");
         position: absolute;
         left: 0;
         top: 0;
@@ -166,7 +209,15 @@ export default {
         }
       }
     }
-    
+    .footer_bn {
+      height: 56px;
+    }
+  }
+  .loading_box {
+    .after;
+    img {
+      .loading_img;
+    }
   }
 }
 .number,

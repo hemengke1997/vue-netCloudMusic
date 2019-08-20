@@ -16,7 +16,7 @@
                 <img :src="playlist.coverImgUrl" />
                 <div class="plhead_top">
                   <i class="iconfont icon-erji"></i>
-                  <span class="count">{{playCount}}万</span>
+                  <span class="count">{{playCount}}</span>
                 </div>
                 <span class="sheet_en">
                   <span v-if="playlist.highQuality">精品</span>歌单
@@ -25,7 +25,7 @@
               <div class="plhead_right">
                 <h2 class="title">{{playlist.name}}</h2>
                 <div class="auth">
-                  <div class="auth_wrap">
+                  <div class="auth_wrap" @click="gotoUser(playlist.creator.userId)">
                     <div class="ignore_auth_header">
                       <img :src="playlist.creator.avatarUrl" alt />
                       <span class="ignore_creator_icon" v-if="playlist.creator.vipType"></span>
@@ -45,7 +45,7 @@
                 :key="index"
               >{{item}}</span>
             </div>
-            <div class="u_intro" @touchend="showDes" v-if="playlist.description">
+            <div class="u_intro" @click="showDes" v-if="playlist.description">
               <div class="intro_3" :class="{three_line:overthree}" ref="intro">
                 <span>
                   <i>简介：{{description_first}}</i>
@@ -66,12 +66,12 @@
             <music-list></music-list>
           </div>
           <div class="sheet_comment">
-            <h3 class="hot_comment">精彩评论</h3>
+            <h3 class="hot_comment" v-if="hotCommentLength">精彩评论</h3>
             <comment :type="1" :id="id"></comment>
-            <h3 class="new_comment" v-if="commentLength<15">最新评论</h3>
+            <h3 class="new_comment" v-if="hotCommentLength<15&&newCommentLength">最新评论</h3>
             <comment :type="2" :id="id"></comment>
           </div>
-          <collect-sheet></collect-sheet>
+          <collect-sheet :text="text"></collect-sheet>
           <div class="footer_bn"></div>
         
       </div>
@@ -86,16 +86,18 @@ import MusicList from "@/components/Musiclist";
 import CollectSheet from "@/components/CollectSheet";
 import { getSheetDetails } from "@/api/recommend-api";
 import { OK } from "js/config";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import Comment from "@/components/Comment";
 
 export default {
+  name:'SheetDetails',
   data() {
     return {
       lineheight: 19, // 写死在样式里面的
       init: true,
       overthree: false,
       arrow: false,
+      flag: false,
       playlist: {
         playCount: 0,
         coverImgUrl: "",
@@ -113,6 +115,7 @@ export default {
         rank: true
       },
       isLoading: true,
+      text: '收藏歌单',
     };
   },
   components: {
@@ -140,7 +143,11 @@ export default {
       });
     },
     playCount() {
-      return Math.floor(this.playlist.playCount / 10000);
+      if(this.playlist.playCount > 10000) {
+        return Math.floor(this.playlist.playCount / 10000) + '万';
+      } else {
+        return Math.floor(this.playlist.playCount)
+      }
     },
     description_first() {
       if (this.description) {
@@ -160,21 +167,12 @@ export default {
       }
       return "";
     },
-    isOverThree() {
-      if(this.playlist.description) {
-        return this.$refs.intro.offsetHeight / this.lineheight > 4;
-      } else {
-        return null
-      }
-    },
     tagslength() {
       return this.playlist.tags.length
     },
-    // comments(){
-    //   return this.$store.getters.comments && this.$store.getters.comments.hotComments && this.$store.getters.comments.hotComments.length > 15
-    // }
     ...mapGetters({
-      commentLength: 'commentLength'
+      hotCommentLength: 'hotCommentLength',
+      newCommentLength: 'newCommentLength'
     })
   },
   methods: {
@@ -185,16 +183,31 @@ export default {
           this.playlist = res.data.playlist;
           this.tempSongs = res.data.playlist.tracks;
           this.musicS.song = this.songs;
-          this.setMusicList(this.musicS).then((this.isLoading = false));
+          this.$store.dispatch('playlist/setMusicList',this.musicS).then(this.updateHeight())
         }
       });
     },
     showDes() {
-      if (this.isOverThree) {
+      if (this.flag) {
         this.overthree = !this.overthree;
       }
     },
-    ...mapActions(["setMusicList"])
+    updateHeight() {
+      this.isLoading = false
+      this.$nextTick(()=>{
+        if(this.$refs.intro && this.$refs.intro.offsetHeight / this.lineheight > 4){
+          this.arrow = true
+          this.overthree = true
+          this.flag = true
+        }
+      })
+    },
+    gotoUser(id) {
+      this.$router.push({
+        path: '/user/playlist',
+        query: {uid:id}
+      })
+    }
   },
   created() {
     this._getSheetDetails(this.id);
@@ -203,19 +216,12 @@ export default {
     this._getSheetDetails(to.query.id);
     next();
   },
-  updated() {
-    if (this.init) {
-      this.init = false;
-      this.$nextTick(() => {
-        this.arrow = this.overthree = this.isOverThree;
-      });
-    }
-  }
 };
 </script>
 
 <style lang="less" scoped>
 .u-height {
+  height: 100%;
   .safe;
   .loading_box {
     .after;

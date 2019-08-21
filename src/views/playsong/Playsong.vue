@@ -4,7 +4,7 @@
       <div class="song">
         <div class="song_bg"></div>
         <div class="scroll_wrapper">
-          <div class="scroll_content">
+          <div class="scroll_content"  @touchmove="touchmove($event)" @touchstart="touchstart($event)" @touchend="touchend($event)" :style="{transform:`translateY(${yScroll}px)`}">
             <div>
               <div class="m-song_newfst">
                 <div class="top_logo">
@@ -112,7 +112,11 @@ export default {
     return {
       newComments: [],
       hotComments: [],
-      song: "song"
+      song: "song",
+      yBegin: 0,
+      yScroll: 0,
+      yEnd: 0,
+      init: true
     };
   },
   components: {
@@ -135,6 +139,16 @@ export default {
       this.$router.push({
         path: "/download"
       });
+    },
+    touchstart(e) {
+      this.yBegin = e.touches[0].pageY
+    },
+    touchmove(e) {
+      // console.log(e)
+      this.yScroll = this.yEnd + e.touches[0].pageY - this.yBegin
+    },
+    touchend(e) {
+      this.yEnd = this.yScroll
     }
   },
   created() {

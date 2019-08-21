@@ -99,7 +99,7 @@ export default {
         if(res.status === OK) {
           this.isLoading = false
           this.tempSongs = res.data.result
-          console.log(this.tempSongs,'musiclist')
+          // console.log(this.tempSongs,'musiclist')
           this.musicD.song = this.songs
           this.$store.dispatch('playlist/setMusicList',this.musicD)
         }

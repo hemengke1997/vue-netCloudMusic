@@ -121,6 +121,7 @@ export default {
             height: 20px;
             line-height: 20px;
             margin-top: 6px;
+            .text_overflow;
           }
           .bottom {
             margin-top: 5px;

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {HOST} from 'js/config'
 
-// 可选参数：limit： 取出评论数量 , 默认为 20
+// 可选参数：limit： 取出评论数量 , 默认为 20  歌单评论
 function getComments(id) {
     const url = HOST + `/comment/playlist?id=${id}&limit=15`
     return axios.get(url)
@@ -17,8 +17,15 @@ function getUser(id) {
     return axios.get(url)
 }
 
+// 获取单曲的评论 （取十条
+function getSongComments(id) {
+    const url = HOST + `/comment/music?id=${id}&limit=10`
+    return axios.get(url)
+}
+
 export  {
     getComments,
     getUserPlaylist,
-    getUser
+    getUser,
+    getSongComments,
 }

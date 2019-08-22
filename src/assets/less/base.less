@@ -196,4 +196,23 @@ body {
     -webkit-text-size-adjust: none;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
-    
+
+@mixin iphonex-css {
+    padding-top: constant(safe-area-inset-top); //为导航栏+状态栏的高度 88px
+    padding-top: env(safe-area-inset-top); //为导航栏+状态栏的高度 88px
+    padding-left: constant(safe-area-inset-left); //如果未竖屏时为0
+    padding-left: env(safe-area-inset-left); //如果未竖屏时为0
+    padding-right: constant(safe-area-inset-right); //如果未竖屏时为0
+    padding-right: env(safe-area-inset-right); //如果未竖屏时为0
+    padding-bottom: constant(safe-area-inset-bottom); //为底下圆弧的高度 34px
+    padding-bottom: env(safe-area-inset-bottom); //为底下圆弧的高度 34px
+}
+
+// iphonex 适配
+@mixin iphonex-media {
+    @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        body.iphonex {
+            @include iphonex-css;
+        }
+    }
+}

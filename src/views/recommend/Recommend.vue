@@ -122,13 +122,7 @@ export default {
   padding-left: 9px;
   position: relative;
   &::after {
-    content: "";
-    background-color: #d33a31;
-    position: absolute;
-    width: 2px;
-    height: 16px;
-    left: 0;
-    top: 1px;
+    .title_after;
   }
 }
 
@@ -159,14 +153,7 @@ export default {
           width: 100%;
         }
         .play_count {
-          z-index: 33;
-          position: absolute;
-          right: 3px;
-          top: 4px;
-          font-size: 12px;
-          color: #fff;
-          text-shadow: 1px 0 0 rgba(0, 0, 0, 0.15);
-
+          .listen_count;
           .icon-erji {
             font-size: 12px;
           }

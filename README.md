@@ -643,11 +643,10 @@ export default new Router({
 ```
 ---
 ## 现在是2019/8/7
-思来想去，还是想做一个类似网易云的移动端web。（毕竟我是网易云音乐的忠实听众  
+思来想去，还是想做一个类似网易云的webapp。（毕竟我是网易云音乐的忠实听众  
 
 于是在网上搜了一下相关的教程，找到某课网上的一个视频教程，价格399。买不起！T.T  
 在github上搜了一下，发现有人照着视频写了一遍，那么我也来模仿一下。  
-原型是模仿网易云官方web移动端写的
 
 ### 记录问题 —— 2019/8/7  
 
@@ -844,7 +843,7 @@ https://blog.csdn.net/zhangqun23/article/details/82855062)
 
 21. vue 动态绑定背景图
 
-> ` :style="background:'url('+ imgurl +')' no-repeat ..."`
+> ` :style="background:'url('+ imgurl +')' no-repeat ..." `
 
 22. CSS3 filter滤镜
 
@@ -871,7 +870,7 @@ this.$router.push({
 
 三种写法都可以跳转路由  但是各有不同  
 第一种写法： 有query  
-浏览器中的url：http://localhost:8088/#/playlist/detail?id=2902128439 刷新页面后 query参数不变                                                                               
+浏览器中的url：http://localhost:8088/#/playlist/detail?id=2902128439 刷新页面后 query参数不变
 
 ![截图](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/ECE7B50B68DF4012B34D5A7CF99C1B3A/1842)
 
@@ -882,3 +881,147 @@ this.$router.push({
 ![截图](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/05ACD7F7F0E2428890E3BAF718AAE1F4/1844)
 
 第三种写法与第一种效果一样
+
+25. 后端传过来的文字 怎么 转换成emoji
+
+> 暂未解决
+
+26. tranform： rotate不生效
+
+> 因为transform不适用于inline元素
+
+27. filter方法的使用
+
+> 先来一次错误示范，我是这样写的 
+
+```
+A() {
+  return this.xxx.filter(item=>{
+    item.yyy === zzz
+  })
+```
+
+##### 上面这种写法是不对滴！ 仔细想想ES6的箭头函数的简写语法呢
+
+> 正确写法：  
+
+``` javascript
+A() {
+  return this.xxx.filter(item=>
+    item.yyy === zzz
+  )
+```
+
+或
+
+```javascript
+A() {
+  return this.xxx.filter(item=>{
+    return item.yyy === zzz
+  })
+```
+
+28. 点击一个盒子跳转路由时，url上id乱码，我是这样子写的
+
+```
+playsong(id) {
+  this.$router.push({
+    path: '/song',
+    query: {id: id}
+  })
+},
+```
+
+> 解决方法： @click.stop  阻止事件向上传播 父级盒子有点击事件
+
+29. 惯性滚动的实现
+
+首先要知道 HMTL是怎么画的 其实跟轮播图差不多 父盒子只占了一屏，overflow hidden，子盒子定位在父盒子上。
+
+> 解决办法主要有三种
+- 原生JS 使用touch事件 获取坐标 用滑动距离，滑动时间，滑动速度来实现
+- 模拟浏览器的自身滚动
+- 使用[better-scroll](http://ustbhuangyi.github.io/better-scroll/doc/zh-hans/#better-scroll%20%E6%98%AF%E4%BB%80%E4%B9%88)插件 `npm better-scroll -S`
+
+``` 
+父盒子：
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 60px;
+    overflow: hidden;
+    z-index: 20;
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar {
+        display: none; // 隐藏滚动条
+    }
+}
+
+子盒子：
+position: absolute;
+left: 0;
+top: 0;
+width: 100%;
+min-height: 100%;
+overflow-y: scroll;
+```
+上述方法可以模拟实现惯性滚动，但是当滚动到底部或顶部的时候，就滚不动了
+
+30. css3 animation中的steps逐帧动画
+
+> 当背景图类似这种的时候，但是我们只取两个箭头（或者几个）可以使用逐帧动画，实现动画效果， `steps(1)` 表示每1.2s 执行一次shine函数（0% -> 15%算一次）
+
+![bg](https://note.youdao.com/yws/public/resource/202e81f1551b8e4682fd5a1a4b70dfb0/xmlnote/1A4AC217B73A4C0680A9261589DFEBA0/2031)
+
+```
+@keyframes shine {
+  0% {
+    background-position: 0 0;
+  }
+  15% {
+    background-position: 0 -12px;
+  }
+  30% {
+    background-position: 0 -24px;
+  }
+  45% {
+    background-position: 0 -36px;
+  }
+  60% {
+    background-position: 0 -48px;
+  }
+  75% {
+    background-position: 0 -60px;
+  }
+  90% {
+    background-position: 0 -72px;
+  }
+  100% {
+    background-position: 0 -84px;
+  }
+}
+animation: shine 1.2s steps(1) infinite;
+```
+31. 题外话： 今天老板亲自讲了一下如何做好SEO，我的总结如下：
+
+- 外部影响
+- 内部影响
+- 用户体验
+
+其一，外部影响。 可以商业合作，找一些高质量的链接，写在我们的网站里面
+其二，内部影响。 （服务端渲染
+
+- `title`, `description` , `keywords` ，爬虫对着三项的权重逐渐减小。其中 `title` 不要太长，强调重点即可，`description` 把页面内容高度概括，长度合适，不可过分堆砌关键词，不同页面 `description` 有所不同， `keywords` 列举出重要关键词即可， 比如说现在有个界面主要是DOTA2剑圣的皮肤，关键词可以写成DOTA2，剑圣，皮肤
+- 网站架构。最好是分三层，首页，首页下的页面，详情页。每个页面指向首页，会增加首页的权重
+- 语义化的 HTML 代码，符合 W3C 规范：语义化代码让搜索引擎容易理解网页
+- 非装饰性图片必须加 `alt`
+- 提高网站速度：网站速度是搜索引擎排序的一个重要指标
+- 重要内容不要用 `js` 输出：爬虫不会执行 `js` 获取内容
+
+其三，用户体验。当用户搜索 比如说 浏览器 ，用户点击了第一个结果，然后迅速退出来点击第二个结果，然后在这里面浏览，第二个结果的权重就会增强。所以良好的用户体验可以优化SEO
+
+32. [关于Apple设备私有的apple-touch-icon属性详解](https://blog.csdn.net/aaa333qwe/article/details/79470644)
+
+

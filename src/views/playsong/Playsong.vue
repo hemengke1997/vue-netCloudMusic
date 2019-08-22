@@ -2,7 +2,7 @@
   <div class="u-height">
     <div class="root">
       <div class="song">
-        <div class="song_bg"></div>
+        <div class="song_bg" :style="{backgroundImage:`url('${songs.al.picUrl}')`,opacity:1}"></div>
         <scroll
           class="scroll_wrapper"
           ref="scroll"
@@ -24,7 +24,7 @@
                     <div class="m-song-turn">
                       <div class="ignore_rollwrap">
                         <div class="song_img">
-                          <img src="../../assets/img/logo.png" alt />
+                          <img :src="songs.al.picUrl" alt="songpic" />
                         </div>
                       </div>
                       <div class="song_lgour">
@@ -37,9 +37,7 @@
                 </div>
                 <div class="song_info">
                   <h2 class="song_h2">
-                    <span class="song_title">{{songs.name}}</span>
-                    <span class="song_gap">-</span>
-                    <span class="song_autr">{{singers(songs.ar)}}</span>
+                    <span class="song_title">{{songs.name}}</span><span class="song_gap">-</span><span class="song_autr">{{singers(songs.ar)}}</span>
                   </h2>
                   <div class="song_lrc">
                     <p class="song_pure song_top" v-if="noLrc">
@@ -60,7 +58,50 @@
                   <i class="ignore_arr ani" @click="gotoNext"></i>
                 </div>
               </div>
-              <div class="m_newcomm" ref="target">
+              <div class="m_morelist" ref="target">
+                <h3 class="u_title">包含这首歌的歌单</h3>
+                <ul>
+                  <li>
+                    <figure class="cover">
+                      <img src="../../assets/img/logo.png" alt="playlist" />
+                      <div class="play_count">
+                        <i class="iconfont icon-erji"></i>
+                        <span>1231</span>
+                      </div>
+                    </figure>
+                    <h3 class="playlist_title">Taylor Swift | 霉霉免费套餐</h3>
+                    <p class="sub">
+                      <span class="author">by</span>
+                    </p>
+                  </li>
+                  <li>
+                    <figure class="cover">
+                      <img src="../../assets/img/logo.png" alt="playlist" />
+                    </figure>
+                  </li>
+                  <li>
+                    <figure class="cover">
+                      <img src="../../assets/img/logo.png" alt="playlist" />
+                    </figure>
+                  </li>
+                </ul>
+              </div>
+              <div class="m_moresongs">
+                <h3 class="u_title">喜欢这首歌的人也听</h3>
+                <ul>
+                  <li>
+                    <figure class="ignore_cover">
+                      <img src="../../assets/img/logo.png" alt="song" />
+                    </figure>
+                    <article>
+                      <h3 class="song_title">Supermarket Flowers</h3>
+                      <p class="song_des">singer - album</p>
+                    </article>
+                    <i class="iconfont icon-bofang"></i>
+                  </li>
+                </ul>
+              </div>
+              <div class="m_newcomm">
                 <div class="talk_song" v-if="hotComments.length||newComments.length">
                   <div class="m_comments">
                     <div v-if="hotComments.length">
@@ -134,7 +175,11 @@ export default {
       },
       flag: 0,
 
-      songs: []
+      songs: {
+        al: {
+          picUrl: ""
+        }
+      }
     };
   },
   components: {
@@ -175,7 +220,7 @@ export default {
       });
     },
     setLrcHeight(h) {
-      if (h > 375) {
+      if (h >= 375) {
         this.lrc_height = 88;
       } else {
         this.lrc_height = 67;
@@ -192,15 +237,15 @@ export default {
       });
     },
     _getLyric(id) {
-        getLyric(id).then(res => {
-            console.log(res.data,'lrc')
-        })
+      getLyric(id).then(res => {
+        console.log(res.data, "lrc");
+      });
     }
   },
   created() {
     this._getSongComments(this.id);
     this._getSong(this.id);
-    this._getLyric(this.id)
+    this._getLyric(this.id);
   },
   mounted() {
     const _this = this;
@@ -237,6 +282,8 @@ export default {
         background-color: #161824;
         background-position: 50%;
         background-repeat: no-repeat;
+        background-size: auto 100%;
+        filter: blur(5px) saturate(20%) ;
         position: fixed;
         left: 0;
         top: 0;
@@ -248,10 +295,9 @@ export default {
         z-index: 1;
         transform: scale(1.5);
         transition: opacity 0.3s linear;
-        background-image: url("../../assets/img/logo.png");
         &::before {
           .after;
-          background-color: rgba(0, 0, 0, 0.5);
+          background-color: rgba(0, 0, 0, 0.25);
         }
       }
       .scroll_wrapper {
@@ -448,13 +494,18 @@ export default {
                 margin-top: 25px;
               }
               .song_h2 {
-                font-size: 15px;
+                font-size: 0;
                 text-align: center;
                 color: #fefefe;
                 line-height: 1.1;
+                overflow: hidden;
                 .text_overflow;
-                @media screen and (min-width: 375px) {
-                  font-size: 18px;
+                .song_title ,
+                .song_gap {
+                  font-size: 15px;
+                  @media screen and (min-width: 375px){
+                    font-size: 18px;
+                  }
                 }
                 .song_gap {
                   margin: 0 4px;
@@ -463,6 +514,9 @@ export default {
                   font-size: 13px;
                   // color: hsla(0, 0%, 100%, .6);
                   color: rgba(255, 255, 255, 0.6);
+                  @media screen and (min-width: 375px) {
+                    font-size: 16px;
+                  }
                 }
               }
               .song_lrc {
@@ -578,6 +632,141 @@ export default {
                   }
                 }
                 animation: shine 1.2s steps(1) infinite;
+              }
+            }
+          }
+          .m_morelist {
+            padding-top: 40px;
+            padding-bottom: 30px;
+            line-height: 1.6;
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            .u_title {
+              position: relative;
+              padding-left: 10px;
+              line-height: 18px;
+              color: #fff;
+              font-size: 16px;
+              &::after {
+                .title_after;
+              }
+            }
+            ul {
+              display: flex;
+              margin-top: 12px;
+              li {
+                flex: auto;
+                width: 1%;
+                margin-left: 3px;
+                &:first-child {
+                  margin-left: 0;
+                }
+                .cover {
+                  position: relative;
+                  padding-bottom: 100%;
+                  overflow: hidden;
+                  img {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    left: 0;
+                    top: 0;
+                    z-index: 1;
+                  }
+                  .play_count {
+                    .listen_count;
+                    .icon-erji {
+                      font-size: 12px;
+                    }
+                  }
+                }
+                .playlist_title {
+                  margin: 2px 0 -1px;
+                  padding: 0 6px;
+                  color: #fff;
+                  font-size: 13px;
+                  .text_overflow;
+                }
+                .sub {
+                  position: relative;
+                  padding: 0 19px 0 6px;
+                  color: hsla(0, 0%, 100%, 0.6);
+                  font-size: 12px;
+                  height: 20px;
+                  overflow: hidden;
+                  .author {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 1;
+                    -webkit-box-orient: vertical;
+                    position: relative;
+                    float: left;
+                  }
+                }
+              }
+            }
+          }
+          .m_moresongs {
+            margin-top: 10px;
+            padding-bottom: 30px;
+            line-height: 1.6;
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            .u_title {
+              position: relative;
+              padding-left: 10px;
+              line-height: 18px;
+              color: #fff;
+              font-size: 16px;
+              &::after {
+                .title_after;
+              }
+            }
+            ul {
+              margin-top: 10px;
+              li {
+                padding: 7px 0 10px 10px;
+                height: 40px;
+                position: relative;
+                overflow: hidden;
+                .ignore_cover {
+                  width: 40px;
+                  height: 40px;
+                  float: left;
+                  margin-right: 10px;
+                  img {
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+                article {
+                  padding-bottom: 7px;
+                  padding-right: 40px;
+                  height: 100%;
+                  position: relative;
+                  .song_title {
+                    line-height: 18px;
+                    font-size: 15px;
+                    color: #fff;
+                    .text_overflow;
+                  }
+                  .song_des {
+                    margin-top: 2px;
+                    color: hsla(0, 0%, 100%, 0.6);
+                    .text_overflow;
+                  }
+                  &:after {
+                    .small_border;
+                    border-bottom: 1px solid hsla(0, 0%, 100%, 0.1);
+                  }
+                }
+                .icon-bofang {
+                  position: absolute;
+                  right: 12px;
+                  color: hsla(0, 0%, 100%, 0.5);
+                  top: 50%;
+                  transform: translateY(-50%);
+                  font-size: 26px;
+                }
               }
             }
           }

@@ -98,8 +98,9 @@ export default {
   .cmt_wrap {
     position: relative;
     flex: auto;
-    padding-right: 2px;
+    padding-right: 10px;
     padding-bottom: 11px;
+    width: 1%;
     &::after {
       .small_border;
       border-bottom-width: 1px;
@@ -193,6 +194,10 @@ export default {
         &.cmt_replied_black {
           color: hsla(0, 0%, 100%, 0.6);
           background-color: hsla(0, 0%, 100%, 0.05);
+          &::after {
+            .small_border;
+            border-color: hsla(0,0%,100%,.1);
+          }
         }
         .cmt_replied_user {
           vertical-align: middle;

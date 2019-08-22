@@ -3,8 +3,16 @@
     <div class="root">
       <div class="song">
         <div class="song_bg"></div>
-        <div class="scroll_wrapper">
-          <div class="scroll_content"  @touchmove="touchmove($event)" @touchstart="touchstart($event)" @touchend="touchend($event)" :style="{transform:`translateY(${yScroll}px)`}">
+        <scroll
+          class="scroll_wrapper"
+          ref="scroll"
+          :lazy="true"
+          :element="target.element"
+          :time="target.time"
+          :pos="target.pos"
+          :flag="flag"
+        >
+          <div class="scroll_content">
             <div>
               <div class="m-song_newfst">
                 <div class="top_logo">
@@ -29,16 +37,16 @@
                 </div>
                 <div class="song_info">
                   <h2 class="song_h2">
-                    <span class="song_title">歌曲名</span>
+                    <span class="song_title">{{songs.name}}</span>
                     <span class="song_gap">-</span>
-                    <span class="song_autr">歌手名</span>
+                    <span class="song_autr">{{singers(songs.ar)}}</span>
                   </h2>
                   <div class="song_lrc">
-                    <p class="song_pure song_top" v-if="0">
+                    <p class="song_pure song_top" v-if="noLrc">
                       暂无歌词，
                       <span class="helplrc">求歌词</span>
                     </p>
-                    <div class="songlrc_scroll" v-if="1">
+                    <div class="songlrc_scroll" v-if="1" :style="{height:`${lrc_height}px`}">
                       <div class="lrc_inner">
                         <p class="lrc_item">作曲Songwriting：苏紫旭&安志华</p>
                         <p class="lrc_item">编曲Songbook Arrangements：苏紫旭&安志华</p>
@@ -47,12 +55,12 @@
                     </div>
                   </div>
                 </div>
-                <div class="link_download">查看完整歌词 ></div>
+                <div class="link_download" v-if="!noLrc">查看完整歌词 ></div>
                 <div class="guide">
-                  <i class="ignore_arr ani"></i>
+                  <i class="ignore_arr ani" @click="gotoNext"></i>
                 </div>
               </div>
-              <div class="m_newcomm">
+              <div class="m_newcomm" ref="target">
                 <div class="talk_song" v-if="hotComments.length||newComments.length">
                   <div class="m_comments">
                     <div v-if="hotComments.length">
@@ -91,11 +99,11 @@
               </div>
             </div>
           </div>
-        </div>
+        </scroll>
         <div class="footer">
           <div class="footer_wrap">
-            <div class="u_btn">打 开</div>
-            <div class="u_btn red">下 载</div>
+            <div class="u_btn" @click="download">打 开</div>
+            <div class="u_btn red" @click="download">下 载</div>
           </div>
         </div>
       </div>
@@ -106,6 +114,8 @@
 <script>
 import CommentItem from "@/components/CommentItem";
 import { getSongComments } from "@/api/comment-api";
+import Scroll from "public/Scroll";
+import { getSong, getLyric } from "@/api/song-api";
 
 export default {
   data() {
@@ -113,18 +123,42 @@ export default {
       newComments: [],
       hotComments: [],
       song: "song",
-      yBegin: 0,
-      yScroll: 0,
-      yEnd: 0,
-      init: true
+      scroll: Object,
+      screenWidth: document.body.clientWidth,
+      lrc_height: Number,
+      noLrc: false,
+      target: {
+        element: "",
+        time: 500,
+        pos: 0
+      },
+      flag: 0,
+
+      songs: []
     };
   },
   components: {
-    CommentItem
+    CommentItem,
+    Scroll
   },
   computed: {
     id() {
       return this.$route.query.id;
+    },
+    singers() {
+      return function(ar) {
+        if (ar) {
+          if (ar.length === 1) {
+            return ar[0].name;
+          } else {
+            let temp = [];
+            ar.forEach(singer => {
+              temp.push(singer.name);
+            });
+            return temp.join(" / ");
+          }
+        }
+      };
     }
   },
   methods: {
@@ -140,19 +174,48 @@ export default {
         path: "/download"
       });
     },
-    touchstart(e) {
-      this.yBegin = e.touches[0].pageY
+    setLrcHeight(h) {
+      if (h > 375) {
+        this.lrc_height = 88;
+      } else {
+        this.lrc_height = 67;
+      }
     },
-    touchmove(e) {
-      // console.log(e)
-      this.yScroll = this.yEnd + e.touches[0].pageY - this.yBegin
+    gotoNext() {
+      this.target.element = this.$refs.target;
+      this.flag++;
     },
-    touchend(e) {
-      this.yEnd = this.yScroll
+    _getSong(id) {
+      getSong(id).then(res => {
+        console.log(res.data);
+        this.songs = res.data.songs[0];
+      });
+    },
+    _getLyric(id) {
+        getLyric(id).then(res => {
+            console.log(res.data,'lrc')
+        })
     }
   },
   created() {
     this._getSongComments(this.id);
+    this._getSong(this.id);
+    this._getLyric(this.id)
+  },
+  mounted() {
+    const _this = this;
+    window.onresize = () => {
+      return (() => {
+        window.screenWidth = document.body.clientWidth;
+        _this.screenWidth = window.screenWidth;
+      })();
+    };
+    this.setLrcHeight(this.screenWidth);
+  },
+  watch: {
+    screenWidth(h) {
+      this.setLrcHeight(h);
+    }
   }
 };
 </script>
@@ -199,6 +262,12 @@ export default {
         bottom: 60px;
         overflow: hidden;
         z-index: 20;
+        // 用浏览器原生的滚动模拟
+        // overflow-y: scroll;
+        // -webkit-overflow-scrolling: touch;
+        // &::-webkit-scrollbar {
+        //   display: none;  隐藏滚动条
+        // }
         .scroll_content {
           position: absolute;
           left: 0;
@@ -206,7 +275,7 @@ export default {
           width: 100%;
           min-height: 100%;
           .m-song_newfst {
-            height: 752px;  // 临时值
+            height: calc(~"100vh-66px");
             position: relative;
             padding-bottom: 12px;
             box-sizing: border-box;
@@ -424,11 +493,9 @@ export default {
                   text-decoration: underline;
                 }
                 .songlrc_scroll {
-                  height: 88px; // 临时值
-
+                  height: 72px;
                   line-height: 1.5;
                   font-size: 13px;
-                  height: 72px;
                   overflow: hidden;
                   text-align: center;
                   // color: hsla(0, 0%, 100%, 0.6);

@@ -16,17 +16,12 @@ function getSheetDetails(id) {
     return axios.get(url)
 }
 
-function getBanner() {
-    const url = HOST + '/banner'
-    return axios.get(url)
-}
 
 
 export {
     getSheetList,
     getNewSong,
     getSheetDetails,
-    getBanner
 }
 
 

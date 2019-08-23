@@ -1,163 +1,165 @@
 <template>
-  <div class="u-height">
-    <div class="root">
-      <div class="song">
-        <div class="song_bg" :style="{backgroundImage:`url('${songs.al.picUrl}')`,opacity:1}"></div>
-        <scroll
-          class="scroll_wrapper"
-          ref="scroll"
-          :lazy="true"
-          :element="target.element"
-          :time="target.time"
-          :pos="target.pos"
-          :flag="flag"
-        >
-          <div class="scroll_content">
-            <div>
-              <div class="m-song_newfst">
-                <div class="top_logo">
-                  <i class="iconfont icon-wangyiyunyinle1"></i>
-                  <span class="logo_ch">网易云音乐</span>
+  <transition name="fade-top" mode="out-in">
+    <div class="u-height">
+      <div class="root">
+        <div class="song">
+          <div class="song_bg" :style="{backgroundImage:`url('${songs.al.picUrl}')`,opacity:1}"></div>
+          <scroll class="scroll_wrapper" ref="scrollContainer">
+            <div class="scroll_content">
+              <div>
+                <div class="m-song_newfst">
+                  <div class="top_logo">
+                    <i class="iconfont icon-wangyiyunyinle1"></i>
+                    <span class="logo_ch">网易云音乐</span>
+                  </div>
+                  <transition name="fade-disc">
+                    <div class="m-song-wrap">
+                      <div class="ignore_disc">
+                        <div class="m-song-turn">
+                          <div class="ignore_rollwrap">
+                            <div class="song_img circling" :class="{circling_paused:!playing}">
+                              <img :src="songs.al.picUrl" alt="songpic" />
+                            </div>
+                          </div>
+                          <div class="song_lgour circling" :class="{circling_paused:!playing}">
+                            <div class="song_light"></div>
+                          </div>
+                        </div>
+                        <span class="ignore_plybtn" v-show="!playing"></span>
+                      </div>
+                      <div class="song_clickarea" @click="playsong"></div>
+                    </div>
+                  </transition>
+                  <div class="song_info">
+                    <h2 class="song_h2">
+                      <span class="song_title">{{songs.name}}</span>
+                      <span class="song_gap">-</span>
+                      <span class="song_autr">{{singers(songs.ar)}}</span>
+                    </h2>
+                    <div class="song_lrc">
+                      <p class="song_pure song_top" v-if="noLrc">
+                        暂无歌词，
+                        <span class="helplrc">求歌词</span>
+                      </p>
+                      <scroll
+                        class="songlrc_scroll"
+                        v-if="!noLrc"
+                        :style="{height:`${lrc_height}px`}"
+                        ref="scrollLyr"
+                      >
+                        <div class="lrc_inner">
+                          <p class="lrc_item" v-for="(item,index) in lyric" :key="index" :class="{light:lycActive}">{{lyric[index]}}</p>
+                        </div>
+                      </scroll>
+                    </div>
+                  </div>
+                  <div class="link_download" v-if="!noLrc">查看完整歌词 ></div>
+                  <div class="guide">
+                    <i class="ignore_arr ani" @click="gotoNext"></i>
+                  </div>
                 </div>
-                <div class="m-song-wrap">
-                  <div class="ignore_disc">
-                    <div class="m-song-turn">
-                      <div class="ignore_rollwrap">
-                        <div class="song_img">
-                          <img :src="songs.al.picUrl" alt="songpic" />
+                <div class="m_morelist" ref="target">
+                  <h3 class="u_title">包含这首歌的歌单</h3>
+                  <ul>
+                    <li
+                      v-for="(item,index) in simiPlaylists"
+                      :key="index"
+                      @click="gotoPlaylist(item.id)"
+                    >
+                      <figure class="cover">
+                        <img v-lazy="item.coverImgUrl" alt="playlist" />
+                        <div class="play_count">
+                          <i class="iconfont icon-erji"></i>
+                          <span>{{count(item.playCount)}}</span>
+                        </div>
+                      </figure>
+                      <h3 class="playlist_title">{{item.name}}</h3>
+                      <p class="sub">
+                        <span class="author">by {{item.creator.nickname}}</span>
+                      </p>
+                    </li>
+                  </ul>
+                </div>
+                <div class="m_moresongs">
+                  <h3 class="u_title">喜欢这首歌的人也听</h3>
+                  <ul>
+                    <li v-for="(item,index) in simiSongs" :key="index" @click="gotoSong(item.id)">
+                      <figure class="ignore_cover">
+                        <img v-lazy="item.album.picUrl" alt="song" />
+                      </figure>
+                      <article>
+                        <h3 class="song_title">{{item.name}}</h3>
+                        <p class="song_des">{{singers(item.artists)}} - {{item.album.name}}</p>
+                      </article>
+                      <i class="iconfont icon-bofang"></i>
+                    </li>
+                  </ul>
+                </div>
+                <div class="m_newcomm">
+                  <div class="talk_song" v-if="hotComments.length||newComments.length">
+                    <div class="m_comments">
+                      <div v-if="hotComments.length">
+                        <h3 class="cmt_title">精彩评论</h3>
+                        <div class="cmt_list">
+                          <comment-item
+                            v-for="(item,index) in hotComments"
+                            :key="index"
+                            :item="item"
+                            :type="song"
+                          ></comment-item>
                         </div>
                       </div>
-                      <div class="song_lgour">
-                        <div class="song_light"></div>
+                      <div v-if="hotComments.length<10">
+                        <h3 class="cmt_title">最新评论{{newComments.length}}</h3>
+                        <div class="cmt_list">
+                          <comment-item
+                            v-for="(item,index) in newComments"
+                            :key="index"
+                            :item="item"
+                            :type="song"
+                          ></comment-item>
+                        </div>
                       </div>
                     </div>
-                    <span class="ignore_plybtn"></span>
-                  </div>
-                  <div class="song_clickarea" @click="playsong"></div>
-                </div>
-                <div class="song_info">
-                  <h2 class="song_h2">
-                    <span class="song_title">{{songs.name}}</span><span class="song_gap">-</span><span class="song_autr">{{singers(songs.ar)}}</span>
-                  </h2>
-                  <div class="song_lrc">
-                    <p class="song_pure song_top" v-if="noLrc">
-                      暂无歌词，
-                      <span class="helplrc">求歌词</span>
-                    </p>
-                    <div class="songlrc_scroll" v-if="1" :style="{height:`${lrc_height}px`}">
-                      <div class="lrc_inner">
-                        <p class="lrc_item">作曲Songwriting：苏紫旭&安志华</p>
-                        <p class="lrc_item">编曲Songbook Arrangements：苏紫旭&安志华</p>
-                        <p class="lrc_item">吉他Guitar&人声Vocals：苏紫旭</p>
-                      </div>
+                    <div class="cmt_more">
+                      <span class="box" @click="download">打开云音乐查看更多精彩评论</span>
                     </div>
                   </div>
-                </div>
-                <div class="link_download" v-if="!noLrc">查看完整歌词 ></div>
-                <div class="guide">
-                  <i class="ignore_arr ani" @click="gotoNext"></i>
-                </div>
-              </div>
-              <div class="m_morelist" ref="target">
-                <h3 class="u_title">包含这首歌的歌单</h3>
-                <ul>
-                  <li>
-                    <figure class="cover">
-                      <img src="../../assets/img/logo.png" alt="playlist" />
-                      <div class="play_count">
-                        <i class="iconfont icon-erji"></i>
-                        <span>1231</span>
-                      </div>
-                    </figure>
-                    <h3 class="playlist_title">Taylor Swift | 霉霉免费套餐</h3>
-                    <p class="sub">
-                      <span class="author">by</span>
-                    </p>
-                  </li>
-                  <li>
-                    <figure class="cover">
-                      <img src="../../assets/img/logo.png" alt="playlist" />
-                    </figure>
-                  </li>
-                  <li>
-                    <figure class="cover">
-                      <img src="../../assets/img/logo.png" alt="playlist" />
-                    </figure>
-                  </li>
-                </ul>
-              </div>
-              <div class="m_moresongs">
-                <h3 class="u_title">喜欢这首歌的人也听</h3>
-                <ul>
-                  <li>
-                    <figure class="ignore_cover">
-                      <img src="../../assets/img/logo.png" alt="song" />
-                    </figure>
-                    <article>
-                      <h3 class="song_title">Supermarket Flowers</h3>
-                      <p class="song_des">singer - album</p>
-                    </article>
-                    <i class="iconfont icon-bofang"></i>
-                  </li>
-                </ul>
-              </div>
-              <div class="m_newcomm">
-                <div class="talk_song" v-if="hotComments.length||newComments.length">
-                  <div class="m_comments">
-                    <div v-if="hotComments.length">
-                      <h3 class="cmt_title">精彩评论</h3>
-                      <div class="cmt_list">
-                        <comment-item
-                          v-for="(item,index) in hotComments"
-                          :key="index"
-                          :item="item"
-                          :type="song"
-                        ></comment-item>
-                      </div>
+                  <div v-if="!hotComments.length&&!newComments.length">
+                    <h3 class="cmt_title">最新评论</h3>
+                    <div class="song_cmemp">
+                      <p class="song_nocomment">暂无歌曲评论</p>
                     </div>
-                    <div v-if="hotComments.length<10">
-                      <h3 class="cmt_title">最新评论(19)</h3>
-                      <div class="cmt_list">
-                        <comment-item
-                          v-for="(item,index) in newComments"
-                          :key="index"
-                          :item="item"
-                          :type="song"
-                        ></comment-item>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="cmt_more">
-                    <span class="box" @click="download">打开云音乐查看更多精彩评论</span>
-                  </div>
-                </div>
-                <div v-if="!hotComments.length&&!newComments.length">
-                  <h3 class="cmt_title">最新评论</h3>
-                  <div class="song_cmemp">
-                    <p class="song_nocomment">暂无歌曲评论</p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </scroll>
-        <div class="footer">
-          <div class="footer_wrap">
-            <div class="u_btn" @click="download">打 开</div>
-            <div class="u_btn red" @click="download">下 载</div>
+          </scroll>
+          <div class="footer">
+            <div class="footer_wrap">
+              <div class="u_btn" @click="download">打 开</div>
+              <div class="u_btn red" @click="download">下 载</div>
+            </div>
           </div>
         </div>
       </div>
+      <audio id="music-audio" ref="audio" @ended="ended" @error="error"></audio>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
 import CommentItem from "@/components/CommentItem";
 import { getSongComments } from "@/api/comment-api";
 import Scroll from "public/Scroll";
-import { getSong, getLyric } from "@/api/song-api";
-
+import {
+  getSong,
+  getLyric,
+  getSimiSongs,
+  getSimiPlaylist,
+  getSongUrl
+} from "@/api/song-api";
+import { OK } from "js/config";
 export default {
   data() {
     return {
@@ -168,18 +170,17 @@ export default {
       screenWidth: document.body.clientWidth,
       lrc_height: Number,
       noLrc: false,
-      target: {
-        element: "",
-        time: 500,
-        pos: 0
-      },
-      flag: 0,
-
       songs: {
         al: {
           picUrl: ""
         }
-      }
+      },
+      simiSongs: [],
+      simiPlaylists: [],
+      songUrl: "",
+      playing: false,
+      duration: 0,
+      lyric: []
     };
   },
   components: {
@@ -204,10 +205,30 @@ export default {
           }
         }
       };
+    },
+    count() {
+      return ct => {
+        if (ct / 10000 >= 1) {
+          return Math.floor(ct / 10000) + "万";
+        } else if (ct / 10000 < 1) {
+          return ct;
+        }
+      };
+    },
+    lycActive() {
+      return false
     }
   },
   methods: {
-    playsong() {},
+    playsong() {
+      if (this.playing) {
+        this.$refs.audio.pause();
+        this.playing = !this.playing;
+      } else {
+        this.$refs.audio.play();
+        this.playing = !this.playing;
+      }
+    },
     _getSongComments(id) {
       getSongComments(id).then(res => {
         this.newComments = res.data.comments;
@@ -227,32 +248,81 @@ export default {
       }
     },
     gotoNext() {
-      this.target.element = this.$refs.target;
-      this.flag++;
+      this.$refs.scrollContainer.scrollToElement(this.$refs.target, 500);
     },
     _getSong(id) {
       getSong(id).then(res => {
-        console.log(res.data);
         this.songs = res.data.songs[0];
+        // console.log(this.songs)
       });
     },
     _getLyric(id) {
       getLyric(id).then(res => {
-        console.log(res.data, "lrc");
+        if(res.data.lrc.lyric) {
+          this.noLrc = false
+          this.lyric = res.data.lrc.lyric
+          console.log(this.lyric)
+          let pattern1 =  /\[\d{2}:\d{2}\.\d{3}\]/g
+          let time = this.lyric.match(pattern1)
+          this.lyric = this.lyric.replace(pattern1,'').split(/[\n]/)
+          console.log(time,'时间戳')
+          console.log(this.lyric,'歌词')
+        } else {
+          this.noLrc = true
+        }
       });
-    }
+    },
+    _getSimiSongs(id) {
+      getSimiSongs(id).then(res => {
+        if (res.status === OK) {
+          this.simiSongs = res.data.songs;
+        }
+      });
+    },
+    _getSimiPlaylist(id) {
+      getSimiPlaylist(id).then(res => {
+        if (res.status === OK) {
+          this.simiPlaylists = res.data.playlists;
+        }
+      });
+    },
+    _getSongUrl(id) {
+      getSongUrl(id)
+        .then(res => {
+          if (res.status === OK) {
+            this.songUrl = res.data.data[0].url;
+            this.$refs.audio.src = this.songUrl;
+          }
+        })
+    },
+    gotoSong(id) {
+      this.$router.push({
+        path: "song",
+        query: { id: id }
+      });
+    },
+    gotoPlaylist(id) {
+      this.$router.push({
+        path: "/playlist/detail",
+        query: { id: id }
+      });
+    },
+    ended() {},
+    error() {}
   },
   created() {
     this._getSongComments(this.id);
     this._getSong(this.id);
     this._getLyric(this.id);
+    this._getSimiSongs(this.id);
+    this._getSimiPlaylist(this.id);
+    this._getSongUrl(this.id);
   },
   mounted() {
     const _this = this;
     window.onresize = () => {
       return (() => {
-        window.screenWidth = document.body.clientWidth;
-        _this.screenWidth = window.screenWidth;
+        _this.screenWidth = document.body.clientWidth;
       })();
     };
     this.setLrcHeight(this.screenWidth);
@@ -261,11 +331,41 @@ export default {
     screenWidth(h) {
       this.setLrcHeight(h);
     }
+  },
+  deactivated() {
+    this.$refs.audio.src = "";
+    this.playing = false;
+  },
+  activated() {
+    this.$refs.audio.src = this.songUrl;
   }
 };
 </script>
 
 <style lang="less" scoped>
+// 整个界面的过渡效果
+.fade-top-leave-active,
+.fade-top-enter-active {
+  transition: all 0.3s;
+}
+.fade-top-enter {
+  opacity: 0;
+  transform: translateY(-40px);
+}
+.fade-top-leave-to {
+  opacity: 0;
+  transform: translateY(40px);
+}
+// 播放器的过渡效果
+.fade-disc-leave-active,
+.fade-disc-enter-active {
+  transition: all 0.5s;
+}
+.fade-disc-enter,
+.fade-disc-leave-to {
+  opacity: 0;
+}
+
 .u-height {
   width: 100%;
   height: 100%;
@@ -283,7 +383,7 @@ export default {
         background-position: 50%;
         background-repeat: no-repeat;
         background-size: auto 100%;
-        filter: blur(5px) saturate(20%) ;
+        filter: blur(5px);
         position: fixed;
         left: 0;
         top: 0;
@@ -428,6 +528,20 @@ export default {
                       background: url("../../assets/img/disc_default.png")
                         no-repeat;
                       background-size: contain;
+                      &.circling {
+                        @keyframes circling {
+                          0% {
+                            transform: rotate(0)
+                          }
+                          100% {
+                            transform: rotate(1turn)
+                          }
+                        }
+                        animation: circling 20s linear infinite;
+                      }
+                      &.circling_paused {
+                        animation-play-state: paused;
+                      }
                       img {
                         width: 100%;
                         vertical-align: middle;
@@ -437,6 +551,20 @@ export default {
                   .song_lgour {
                     .after;
                     z-index: 3;
+                    &.circling {
+                      @keyframes circling {
+                        0% {
+                          transform: rotate(0)
+                        }
+                        100% {
+                          transform: rotate(1turn)
+                        }
+                      }
+                      animation: circling 20s linear infinite;
+                    }
+                    &.circling_paused {
+                        animation-play-state: paused;
+                    }
                     .song_light {
                       .after;
                       z-index: 3;
@@ -494,16 +622,16 @@ export default {
                 margin-top: 25px;
               }
               .song_h2 {
-                font-size: 0;
+                font-size: 1px;
                 text-align: center;
                 color: #fefefe;
                 line-height: 1.1;
                 overflow: hidden;
                 .text_overflow;
-                .song_title ,
+                .song_title,
                 .song_gap {
                   font-size: 15px;
-                  @media screen and (min-width: 375px){
+                  @media screen and (min-width: 375px) {
                     font-size: 18px;
                   }
                 }
@@ -563,6 +691,9 @@ export default {
                       padding-bottom: 5px;
                       @media screen and (min-width: 375px) {
                         padding-bottom: 8px;
+                      }
+                      &.light {
+                        color: rgb(255, 255, 255);
                       }
                     }
                   }
@@ -665,6 +796,27 @@ export default {
                   position: relative;
                   padding-bottom: 100%;
                   overflow: hidden;
+                  &::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 25px;
+                    z-index: 1;
+                    background: -webkit-gradient(
+                      linear,
+                      left top,
+                      left bottom,
+                      from(rgba(0, 0, 0, 0.3)),
+                      to(transparent)
+                    );
+                    background: linear-gradient(
+                      180deg,
+                      rgba(0, 0, 0, 0.3),
+                      transparent
+                    );
+                  }
                   img {
                     position: absolute;
                     width: 100%;

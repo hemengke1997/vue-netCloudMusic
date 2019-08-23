@@ -15,6 +15,8 @@ const getters = {
     // backgroundUrl: state => state.user.backgroundUrl,   // 用户背景图
     // listencount: state => state.user.listencount,   // 用户听歌数
     userId: state => state.user.userId, // 用户id
+
+    // relatedPlaylistId = > state.
 }
 
 export default getters

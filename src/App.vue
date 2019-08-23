@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <transition>
-      <router-view/>
-    </transition>
+    <keep-alive>
+      <router-view :key="$route.fullPath" />
+    </keep-alive>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ export default {
     //   return this.$route.
     // }
   }
-}
+};
 </script>
 <style lang="less" scoped>
 #app {

@@ -1,6 +1,7 @@
 const state = {
     musicList: [],  // 歌曲（推荐歌曲，热门歌曲，歌单歌曲）
     playlist: [],   // 用户歌单详情
+
 }
 
 const mutations = {
@@ -31,3 +32,5 @@ export default {
     mutations,
     actions
 }
+
+

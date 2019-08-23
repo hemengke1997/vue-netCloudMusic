@@ -40,24 +40,6 @@ export default {
       type: Number,
       default: 20
     },
-    lazy: {
-      type: Boolean,
-      default: false
-    },
-    element: {
-        default: ''
-    },
-    time: {
-        type: Number,
-        default: 0
-    },
-    pos: {
-        type: Number,
-        default: 0
-    },
-    flag: {
-        type: Number
-    }
   },
   methods: {
     _initScroll() {
@@ -97,13 +79,14 @@ export default {
     refresh() {
       this.scroll && this.scroll.refresh();
     },
-    // 滚动到指定的位置
+    // 滚动到指定的位置  代理
     scrollTo() {
-      this.scroll && this.scrollTo.apply(this.scroll, arguments);
+      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
     },
-    // 滚动到指定的目标元素。
-    scrollToElement(element,time,x,pos) {
-      this.scroll.scrollToElement(element, time, x, pos);
+    // 滚动到指定的目标元素。  代理
+    // 使用方法见Playsong.vue
+    scrollToElement() {
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
     }
   },
   watch: {
@@ -111,9 +94,6 @@ export default {
       setTimeout(() => {
         this.refresh();
       }, this.refreshDelay);
-    },
-    flag() {
-        this.scrollToElement(this.element,this.time,0,this.pos)
     }
   },
   mounted() {

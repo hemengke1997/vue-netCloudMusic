@@ -216,6 +216,12 @@ export default {
     this._getSheetDetails(to.query.id);
     next();
   },
+  activated() {
+    this._getSheetDetails(this.id);
+  },
+  deactivated() {
+    this.$store.dispatch('playlist/setMusicList',[])
+  }
 };
 </script>
 

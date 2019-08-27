@@ -10,7 +10,7 @@
                 <div class="m-song_newfst">
                   <div class="top_logo">
                     <i class="iconfont icon-wangyiyunyinle1"></i>
-                    <span class="logo_ch">网易云音乐</span>
+                    <span class="logo_ch">minko音乐</span>
                   </div>
                   <transition name="fade-disc">
                     <div class="m-song-wrap">
@@ -349,25 +349,26 @@ export default {
     },
     ended() {
       this.playing = false;
+      this.lyc_time_index = 0;
       this.lyc_translateY = 0;
+      this.lycNeedScroll = 0;
     },
     error() {
       this.$router.replace(this.$route.fullPath);
     },
     updateTime(e) {
       // console.log(e)
-      
+
       for (let i = this.lycNeedScroll; i < this.currentTime.length; i++) {
         if (e.target.currentTime >= this.currentTime[i]) {
           this.lycNeedScroll = i + 1;
           this.lyc_time_index = i;
           if (i > 1) {
-            this.lyc_translateY -= this.$refs[i-2][0].offsetHeight;
+            this.lyc_translateY -= this.$refs[i - 2][0].offsetHeight;
           }
+          break;
         }
       }
-
-      
     },
     // 处理JS float精度问题
     myAdd(n1, n2) {
@@ -410,7 +411,7 @@ export default {
   },
   activated() {
     this.$refs.audio.src = this.songUrl;
-  },
+  }
   // destroyed() {
   //   this.$refs.audio.src = "";
   //   this.playing = false;

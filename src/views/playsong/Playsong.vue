@@ -14,7 +14,7 @@
                   </div>
                   <transition name="fade-disc">
                     <div class="m-song-wrap">
-                      <div class="ignore_disc">
+                      <div class="ignore_disc" :class="{playing:playing}">
                         <div class="m-song-turn">
                           <div class="ignore_rollwrap">
                             <div class="song_img circling" :class="{circling_paused:!playing}">
@@ -41,16 +41,25 @@
                         暂无歌词，
                         <span class="helplrc">求歌词</span>
                       </p>
-                      <scroll
+                      <div
                         class="songlrc_scroll"
                         v-if="!noLrc"
                         :style="{height:`${lrc_height}px`}"
                         ref="scrollLyr"
                       >
-                        <div class="lrc_inner">
-                          <p class="lrc_item" v-for="(item,index) in lyric" :key="index" :class="{light:lycActive}">{{lyric[index]}}</p>
+                        <div
+                          class="lrc_inner"
+                          :style="{transform:`translateY(${lyc_translateY}px)`}"
+                        >
+                          <p
+                            class="lrc_item"
+                            v-for="(item,index) in lyric"
+                            :key="index"
+                            :class="{light:lycActive(index)}"
+                            :ref="index"
+                          >{{lyc(index)}}</p>
                         </div>
-                      </scroll>
+                      </div>
                     </div>
                   </div>
                   <div class="link_download" v-if="!noLrc">查看完整歌词 ></div>
@@ -143,7 +152,13 @@
           </div>
         </div>
       </div>
-      <audio id="music-audio" ref="audio" @ended="ended" @error="error"></audio>
+      <audio
+        id="music-audio"
+        ref="audio"
+        @ended="ended"
+        @error="error"
+        @timeupdate="updateTime($event)"
+      ></audio>
     </div>
   </transition>
 </template>
@@ -151,7 +166,6 @@
 <script>
 import CommentItem from "@/components/CommentItem";
 import { getSongComments } from "@/api/comment-api";
-import Scroll from "public/Scroll";
 import {
   getSong,
   getLyric,
@@ -160,6 +174,7 @@ import {
   getSongUrl
 } from "@/api/song-api";
 import { OK } from "js/config";
+import Scroll from "public/Scroll";
 export default {
   data() {
     return {
@@ -180,7 +195,12 @@ export default {
       songUrl: "",
       playing: false,
       duration: 0,
-      lyric: []
+      lyric: [],
+      author: [],
+      currentTime: [],
+      lyc_time_index: 0, // 当前歌词跟时间戳的index
+      lyc_translateY: 0, // 歌词上移的距离
+      lycNeedScroll: 0 //  播放时间改变时 总会触发updateTime方法 为了避免每次触发方法时都去遍历时间戳，就立了这个flag
     };
   },
   components: {
@@ -216,7 +236,14 @@ export default {
       };
     },
     lycActive() {
-      return false
+      return index => {
+        return index === this.lyc_time_index;
+      };
+    },
+    lyc() {
+      return index => {
+        return this.lyric[index] === "" ? "......" : this.lyric[index];
+      };
     }
   },
   methods: {
@@ -258,17 +285,31 @@ export default {
     },
     _getLyric(id) {
       getLyric(id).then(res => {
-        if(res.data.lrc.lyric) {
-          this.noLrc = false
-          this.lyric = res.data.lrc.lyric
-          console.log(this.lyric)
-          let pattern1 =  /\[\d{2}:\d{2}\.\d{3}\]/g
-          let time = this.lyric.match(pattern1)
-          this.lyric = this.lyric.replace(pattern1,'').split(/[\n]/)
-          console.log(time,'时间戳')
-          console.log(this.lyric,'歌词')
+        if (res.data.lrc.lyric) {
+          this.noLrc = false;
+          this.lyric = res.data.lrc.lyric;
+          let pattern1 = /\[\d{2}:\d{2}\.\d{2,3}\]/g;
+          this.currentTime = this.lyric.match(pattern1);
+          this.currentTime = this.currentTime.map(item => {
+            return this.myAdd(
+              parseInt(item.slice(1, -2).split(":")[0] * 60),
+              item.slice(2, -1).split(":")[1]
+            );
+          });
+          // other: 除开时间  剩下的
+          let other = this.lyric.replace(pattern1, "");
+          let pattern2 = /\[.*\]/g;
+          this.author = other.match(pattern2);
+          this.lyric = other
+            .replace(pattern2, "")
+            .split(/[\n]/)
+            .slice((this.author && this.author.length) || 0, -1);
+          // console.log(this.currentTime)
+          // console.log(other, "剩下的");
+          // console.log(this.lyric, "歌词");
+          // console.log(this.author, "作者");
         } else {
-          this.noLrc = true
+          this.noLrc = true;
         }
       });
     },
@@ -287,13 +328,12 @@ export default {
       });
     },
     _getSongUrl(id) {
-      getSongUrl(id)
-        .then(res => {
-          if (res.status === OK) {
-            this.songUrl = res.data.data[0].url;
-            this.$refs.audio.src = this.songUrl;
-          }
-        })
+      getSongUrl(id).then(res => {
+        if (res.status === OK) {
+          this.songUrl = res.data.data[0].url;
+          this.$refs.audio.src = this.songUrl;
+        }
+      });
     },
     gotoSong(id) {
       this.$router.push({
@@ -307,8 +347,37 @@ export default {
         query: { id: id }
       });
     },
-    ended() {},
-    error() {}
+    ended() {
+      this.playing = false;
+      this.lyc_translateY = 0;
+    },
+    error() {
+      this.$router.replace(this.$route.fullPath);
+    },
+    updateTime(e) {
+      // console.log(e)
+      
+      for (let i = this.lycNeedScroll; i < this.currentTime.length; i++) {
+        if (e.target.currentTime >= this.currentTime[i]) {
+          this.lycNeedScroll = i + 1;
+          this.lyc_time_index = i;
+          if (i > 1) {
+            this.lyc_translateY -= this.$refs[i-2][0].offsetHeight;
+          }
+        }
+      }
+
+      
+    },
+    // 处理JS float精度问题
+    myAdd(n1, n2) {
+      let len = n2.split(".")[1].length;
+      let x = n1 * Math.pow(10, len);
+      let y = parseInt(
+        n2.toString().split(".")[0] + n2.toString().split(".")[1]
+      );
+      return (x + y) / Math.pow(10, len);
+    }
   },
   created() {
     this._getSongComments(this.id);
@@ -335,10 +404,20 @@ export default {
   deactivated() {
     this.$refs.audio.src = "";
     this.playing = false;
+    this.lyc_time_index = 0;
+    this.lyc_translateY = 0;
+    this.lycNeedScroll = 0;
   },
   activated() {
     this.$refs.audio.src = this.songUrl;
-  }
+  },
+  // destroyed() {
+  //   this.$refs.audio.src = "";
+  //   this.playing = false;
+  //   this.currentTime = [];
+  //   this.lyc_time_index = 0;
+  //   this.lyc_translateY = 0;
+  // }
 };
 </script>
 
@@ -383,7 +462,7 @@ export default {
         background-position: 50%;
         background-repeat: no-repeat;
         background-size: auto 100%;
-        filter: blur(5px);
+        filter: blur(60px);
         position: fixed;
         left: 0;
         top: 0;
@@ -472,6 +551,8 @@ export default {
                   height: 122px;
                   background: url("../../assets/img/needle.png") no-repeat;
                   background-size: contain;
+                  transition: transform 0.2s linear;
+                  transform-origin: top left;
                   @media screen and (min-width: 360px) {
                     width: 96px;
                     height: 137px;
@@ -486,6 +567,10 @@ export default {
                     left: 150px;
                     background-image: url("../../assets/img/needle-plus.png");
                   }
+                }
+                &.playing::after {
+                  transform: rotate(-17deg);
+                  transform-origin: left top;
                 }
                 .m-song-turn {
                   width: 100%;
@@ -531,10 +616,10 @@ export default {
                       &.circling {
                         @keyframes circling {
                           0% {
-                            transform: rotate(0)
+                            transform: rotate(0);
                           }
                           100% {
-                            transform: rotate(1turn)
+                            transform: rotate(1turn);
                           }
                         }
                         animation: circling 20s linear infinite;
@@ -554,16 +639,16 @@ export default {
                     &.circling {
                       @keyframes circling {
                         0% {
-                          transform: rotate(0)
+                          transform: rotate(0);
                         }
                         100% {
-                          transform: rotate(1turn)
+                          transform: rotate(1turn);
                         }
                       }
                       animation: circling 20s linear infinite;
                     }
                     &.circling_paused {
-                        animation-play-state: paused;
+                      animation-play-state: paused;
                     }
                     .song_light {
                       .after;
@@ -649,12 +734,12 @@ export default {
               }
               .song_lrc {
                 position: relative;
-                margin-top: 14px;
+                margin-top: 40px;
                 @media screen and (min-width: 414px) {
-                  margin-top: 6px;
+                  margin-top: 45px;
                 }
                 @media screen and (min-height: 672px) {
-                  margin-top: 14px;
+                  margin-top: 55px;
                 }
                 .song_pure {
                   font-size: 13px;
@@ -686,7 +771,7 @@ export default {
                     font-size: 16px;
                   }
                   .lrc_inner {
-                    transition: transform 0.3s ease-out;
+                    transition: transform 0.2s linear;
                     .lrc_item {
                       padding-bottom: 5px;
                       @media screen and (min-width: 375px) {

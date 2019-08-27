@@ -1025,3 +1025,11 @@ animation: shine 1.2s steps(1) infinite;
 32. [关于Apple设备私有的apple-touch-icon属性详解](https://blog.csdn.net/aaa333qwe/article/details/79470644)
 
 
+## 暂时没做的功能
+
+- 搜索功能
+- 歌词滚动功能
+
+## 还有很大的空间可以优化组件 分离组件 有空我会优化一下
+
+溜了溜了 上班了

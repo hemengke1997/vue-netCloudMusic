@@ -16,7 +16,10 @@ const getters = {
     // listencount: state => state.user.listencount,   // 用户听歌数
     userId: state => state.user.userId, // 用户id
 
-    // relatedPlaylistId = > state.
+    //  搜索
+    searchSongs: state => state.searchcontent.musicList,
+    keyword: state => state.searchcontent.keyword
+
 }
 
 export default getters

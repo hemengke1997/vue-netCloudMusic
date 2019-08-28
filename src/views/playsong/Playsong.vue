@@ -396,29 +396,20 @@ export default {
       })();
     };
     this.setLrcHeight(this.screenWidth);
+     this.$refs.audio.src = this.songUrl;
   },
   watch: {
     screenWidth(h) {
       this.setLrcHeight(h);
     }
   },
-  deactivated() {
+  destroyed() {
     this.$refs.audio.src = "";
     this.playing = false;
+    this.currentTime = [];
     this.lyc_time_index = 0;
     this.lyc_translateY = 0;
-    this.lycNeedScroll = 0;
-  },
-  activated() {
-    this.$refs.audio.src = this.songUrl;
   }
-  // destroyed() {
-  //   this.$refs.audio.src = "";
-  //   this.playing = false;
-  //   this.currentTime = [];
-  //   this.lyc_time_index = 0;
-  //   this.lyc_translateY = 0;
-  // }
 };
 </script>
 

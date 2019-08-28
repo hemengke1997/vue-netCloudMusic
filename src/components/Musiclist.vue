@@ -64,7 +64,7 @@ export default {
       musicList: "musicList"
     })
   },
-  deactivated() {
+  destroyed() {
     this.$store.dispatch('playlist/setMusicList',[])
   }
 };

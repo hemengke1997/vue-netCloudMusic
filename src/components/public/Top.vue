@@ -3,7 +3,7 @@
     <div class="top">
       <div class="ignore_logo">
         <i class="iconfont icon-wangyiyunyinle"></i>
-        <span class="name">网易云音乐</span>
+        <span class="name">minko-music</span>
       </div>
       <div class="ignore_app_link" @click="download">
         下载APP

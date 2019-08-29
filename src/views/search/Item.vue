@@ -1,7 +1,7 @@
 <template>
   <router-link class="link_cover" to="xxx">
     <figure class="ignore_piccover" :class="{album:type!=1}">
-      <img :src="coverSrc" />
+      <img :src="coverSrc" :class="{hasMV:hasMV}"/>
     </figure>
     <article class="desc">
       <h4 class="maindes">
@@ -29,7 +29,8 @@ export default {
       highlight: true,
       titleHasKey: false,
       authorHasKey: false,
-      data: {}
+      data: {},
+      hasMV: true
     };
   },
   props: {
@@ -200,6 +201,11 @@ export default {
     img {
       width: 100%;
       height: 100%;
+    }
+    .hasMV {
+      &::after {
+        
+      }
     }
   }
   .desc {

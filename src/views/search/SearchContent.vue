@@ -17,7 +17,7 @@
     </section>
     <div class="dialog" v-if="!more">
       <div class="info_box">
-        <span>已经滑到底啦~</span>
+        <span>没有更多歌曲了. T^T</span>
       </div>
     </div>
     <div class="loading" v-if="isLoading">

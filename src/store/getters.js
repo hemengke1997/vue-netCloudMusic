@@ -19,6 +19,7 @@ const getters = {
     //  搜索
     keyword: state => state.searchcontent.keyword,
     hasAlbum: state => state.searchcontent.hasAlbum,
+    hasMV: state => state.searchcontent.hasMV,
 
     searchLoading: state => state.searchcontent.searchLoading,
 }

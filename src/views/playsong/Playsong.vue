@@ -403,13 +403,13 @@ export default {
       this.setLrcHeight(h);
     }
   },
-  destroyed() {
-    this.$refs.audio.src = "";
-    this.playing = false;
-    this.currentTime = [];
-    this.lyc_time_index = 0;
-    this.lyc_translateY = 0;
-  }
+  // destroyed() {
+  //   this.$refs.audio.src = "";
+  //   this.playing = false;
+  //   this.currentTime = [];
+  //   this.lyc_time_index = 0;
+  //   this.lyc_translateY = 0;
+  // }
 };
 </script>
 

@@ -6,19 +6,14 @@
     <article class="desc">
       <h4 class="maindes">
         {{maindes}}
-        <p class="hcover" v-if="hasKey">
-          <span v-for="(item,index) in title" :key="index">
-            <span :class="{highlight:0}">{{item}}</span>
-          </span>
+        <p class="hcover">
+            <span v-html="newHtml(data.name)"></span>
         </p>
-        <p class="hcover" v-else>{{title}}</p>
       </h4>
-      <p class="author" v-if="type!=1&&authorHasKey">
-        <span v-for="(item,index) in author" :key="index">
-          <span :class="{highlight:highlight}">{{item}}</span>
-        </span>
+
+      <p class="author" v-if="type!=1">
+          <span v-html="newHtml(getArtists(data.artists))"></span>
       </p>
-      <p class="author" v-if="type!=1&&!authorHasKey">{{singers(album.artists)}}</p>
     </article>
     <i class="iconfont icon-pull_down"></i>
   </router-link>
@@ -31,13 +26,9 @@ export default {
   data() {
     return {
       highlight: true,
-      hasKey: false,
+      titleHasKey: false,
       authorHasKey: false,
-      title: "",
-      singer: {},
-      album: {
-        alias: []
-      }
+      data: {}
     };
   },
   props: {
@@ -50,15 +41,29 @@ export default {
       return this.type === 1 ? "歌手:" : "专辑:";
     },
     coverSrc() {
-      return this.type === 1 ? this.singer.img1v1Url : this.album.picUrl;
+      return this.type === 1 ? this.data.img1v1Url : this.data.picUrl;
     },
-    author() {
-      return 0;
+    newHtml() {
+      return name => {
+        if (!name) {
+          return "";
+        }
+        const index = name.indexOf(this.keyword);
+        if (index != -1) {
+          let reg = new RegExp(this.keyword, "g");
+          return name.replace(
+            reg,
+            `<span class="highlight">${this.keyword}</span>`
+          );
+        } else {
+          return name;
+        }
+      };
     },
-    singers() {
-      return function(ar) {
+    getArtists() {
+      return ar => {
         if (!ar) {
-          return;
+          return "";
         }
         if (ar.length === 1) {
           return ar[0].name;
@@ -76,63 +81,63 @@ export default {
     })
   },
   methods: {
-    getTitle() {
+    getTitle(data) {
       // 歌手
       if (this.type === 1) {
-        if (this.singer.alia) {
-          this.title = `${this.singer.name} (${this.singer.alia[0]})`;
-        } else if (this.singer.transNames) {
-          this.title = `${this.singer.name} (${this.singer.transNames[0]})`;
-        } else if (this.singer.name) {
-          this.title = this.singer.name;
+        if (data.transNames && data.transNames[0]) {
+          return `${data.name} (${data.transNames[0]})`;
+        } else if (data.alias && data.alias[0]) {
+          return `${data.name} (${data.alias[0]})`;
+        } else {
+          return data.name.trim();
         }
-        this.hasKeyword(this.title)
       } else {
-        this.title = this.album.alias.length > 0 ? `${this.album.name} (${this.album.alias[0]})` : this.album.name
-        this.hasKeyword(this.title)
+        if (data.alias && data.alias[0]) {
+          return `${data.name} (${data.alias[0]})`.trim();
+        } else {
+          return data.name.trim();
+        }
       }
     },
     _searchSinger() {
       searchSinger(this.keyword).then(res => {
-        this.singer = res.data.result.artists[0];
+        let data = res.data.result.artists[0];
+        this.data = data;
+        this.$set(this.data, "name", this.getTitle(data));
       });
     },
     _searchAlbum() {
       searchAlbum(this.keyword).then(res => {
-        this.album = res.data.result.albums[0];
+        let data = res.data.result.albums[0];
+        this.data = data;
+        this.$set(this.data, "name", this.getTitle(data));
       });
     },
     hasKeyword(k) {
-        if(k.indexOf(this.keyword) != -1) {
-            this.hasKey = true
-        } else {
-            this.hasKey = false
-        }
+      if (k.indexOf(this.keyword) != -1) {
+        this.hasKey = true;
+        return true;
+      } else {
+        this.hasKey = false;
+        return false;
+      }
     }
   },
   created() {
-    this._searchSinger();
-    this._searchAlbum();
-  },
+    if (this.type === 1) {
+      this._searchSinger();
+    } else {
+      this._searchAlbum();
+    }
+  }
   //   destroyed() {
   //     this.singer = {},
   //     this.album = {}
   //   }
-  watch: {
-    singer() {
-      this.getTitle();
-    },
-    album() {
-      this.getTitle();
-    }
-  }
 };
 </script>
 
 <style lang="less" scoped>
-.highlight {
-  color: #507daf;
-}
 .link_cover {
   display: flex;
   align-items: center;
@@ -160,10 +165,10 @@ export default {
       height: 46px;
       background-repeat: no-repeat;
       background-size: 166px 97px;
-      background-image: url('../../assets/img/index_icon_2x.png');
+      background-image: url("../../assets/img/index_icon_2x.png");
       background-position: 0 -30px;
-      @media screen and (-webkit-min-device-pixel-ratio: 3){
-          background-image: url('../../assets/img/index_icon_3x.png');
+      @media screen and (-webkit-min-device-pixel-ratio: 3) {
+        background-image: url("../../assets/img/index_icon_3x.png");
       }
     }
     img {

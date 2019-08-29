@@ -82,11 +82,11 @@ export default {
       'setMusicList'
     ])
   },
-  activated() {
-    this._getHotSong();
-  },
   created() {
     this._getHotSong()
+  },
+  destroyed() {
+    this.$store.dispatch('playlist/setMusicList',{})
   }
 };
 </script>

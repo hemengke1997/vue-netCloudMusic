@@ -17,7 +17,6 @@ const getters = {
     userId: state => state.user.userId, // 用户id
 
     //  搜索
-    searchSongs: state => state.searchcontent.musicList,
     keyword: state => state.searchcontent.keyword
 
 }

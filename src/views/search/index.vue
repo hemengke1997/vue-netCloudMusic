@@ -23,7 +23,12 @@
       <section class="hot_list">
         <h3 class="title">热门搜索</h3>
         <ul class="list">
-          <li class="item ignore_item_bottom" v-for="(item,index) in hotsearch" :key="index" @click="gotoItem(item.first)">{{item.first}}</li>
+          <li
+            class="item ignore_item_bottom"
+            v-for="(item,index) in hotsearch"
+            :key="index"
+            @click="gotoItem(item.first)"
+          >{{item.first}}</li>
         </ul>
       </section>
       <section class="history_wrapper" v-if="0">
@@ -43,7 +48,12 @@
     <section class="s_content" v-show="showSearch&&inputVal">
       <h3 class="title t_bottom">搜索"{{inputVal}}"</h3>
       <ul>
-        <li class="recomitem" v-for="(item,index) in searchresult" :key="index" @click.prevent="gotoItem(item.keyword)">
+        <li
+          class="recomitem"
+          v-for="(item,index) in searchresult"
+          :key="index"
+          @click.prevent="gotoItem(item.keyword)"
+        >
           <i class="iconfont icon-sousuo"></i>
           <span class="link link_bottom">{{item.keyword}}</span>
         </li>
@@ -59,10 +69,10 @@
 <script>
 import { getHotSearch } from "@/api/hot-api";
 import { clearTimeout, setTimeout } from "timers";
-import { getSearchList,searchSong } from "@/api/search-api";
-import SearchContent from './SearchContent'
+import { getSearchList } from "@/api/search-api";
+import SearchContent from "./SearchContent";
 export default {
-  name: 'SearchIndex',
+  name: "SearchIndex",
   data() {
     return {
       hotsearch: [],
@@ -71,27 +81,20 @@ export default {
       timeout: null,
       isLoading: false,
       searchresult: [],
-      showSearch: true,  // 显示搜索结果
-      musicS: {          //  传到store中的歌曲列表
-        song: [],
-        rank: false,
-        red: false,
-        SQ: false
-      },
-
+      showSearch: true // 显示搜索结果
     };
   },
   components: {
     SearchContent
   },
   mounted() {
-      this.$refs.input.focus()
-      this._getHotSearch()
+    this.$refs.input.focus();
+    this._getHotSearch();
   },
   directives: {
     focus: {
       inserted: function(el) {
-        el.focus()
+        el.focus();
       }
     }
   },
@@ -108,43 +111,36 @@ export default {
     },
     inputsome(e) {
       this.inputdata = e.data;
+      console.log(e)
     },
     _getSearchList(v) {
       getSearchList(v).then(res => {
         this.searchresult = res.data.result.allMatch;
-        this.isLoading = false;
       });
     },
     gotoItem(keyword) {
-      this.inputVal = keyword
-      this.$store.dispatch('searchcontent/setKeyword',keyword)
-      this.showSearch = false
-      this.isLoading = true
-      searchSong(keyword).then(res=>{
-        this.musicS.song = res.data.songs
-        this.$store.dispatch('searchcontent/setMusicList',this.musicS)
-      }).then(()=>{this.isLoading = false})
-    },
+      this.inputVal = keyword;
+      this.$store
+        .dispatch("searchcontent/setKeyword", keyword);
+      this.showSearch = false;
+    }
   },
   watch: {
     inputVal(v) {
-      this.searchresult = []
+      this.searchresult = [];
       if (v) {
         this.isLoading = true;
         clearTimeout(this.timeout);
         this.timeout = setTimeout(() => {
-          this._getSearchList(v);
+          this._getSearchList(v)
         }, 300);
       } else {
         this.showSearch = true;
       }
     }
   },
-  destroyed() {
-    this.hotsearch = []
-  },
   created() {
-    this._getHotSearch()
+    this._getHotSearch();
   }
 };
 </script>
@@ -152,7 +148,7 @@ export default {
 <style lang="less" scoped>
 .search {
   width: 100%;
-
+  height: 100%;
   .loading {
     position: absolute;
     left: 50%;
@@ -252,7 +248,6 @@ export default {
             border-radius: 60px;
           }
         }
-
       }
     }
     .history_wrapper {

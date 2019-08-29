@@ -5,12 +5,12 @@
       <div class="content">
         <div class="left_part">
           <div class="song_title">
-            <span>{{item.name}}</span>
-            <span v-if="item.alias.length" class="alias">({{item.alias[0]}})</span>
+            <span v-html="newHtml(item.name)"></span>
+            <span v-if="item.alias.length" class="alias" v-html="newHtml(item.alias[0])">()</span>
           </div>
           <div class="song_details">
             <i class="iconfont icon-sq" v-if="musicList.SQ"></i>
-            {{singers(item.ar)}} - {{item.al.name}}
+            <span v-html="newHtml(singers(item.ar))"></span> - <span v-html="newHtml(item.al.name)"></span>
           </div>
         </div>
         <div class="right_part">
@@ -26,7 +26,15 @@ import { mapGetters} from "vuex";
 
 export default {
   data() {
-    return {};
+    return {
+
+    };
+  },
+  props: {
+    type: {
+      type: String,
+      required: false
+    }
   },
   methods: {
     playsong(id) {
@@ -44,6 +52,9 @@ export default {
     },
     singers() {
       return function(ar) {
+        if(!ar) {
+          return ''
+        }
         if (ar.length === 1) {
           return ar[0].name;
         } else {
@@ -60,13 +71,28 @@ export default {
         return index < 3 && this.musicList.red;
       };
     },
+    newHtml() {
+      return name => {
+        if(!name) {
+          return ''
+        }
+        const index = name.indexOf(this.keyword);
+        if (index != -1) {
+          let reg = new RegExp(this.keyword, "g");
+          return name.replace(
+            reg,
+            `<span class="highlight">${this.keyword}</span>`
+          );
+        } else {
+          return name;
+        }
+      }
+    },
     ...mapGetters({
-      musicList: "musicList"
+      musicList: "musicList",
+      keyword: "keyword"
     })
   },
-  destroyed() {
-    this.$store.dispatch('playlist/setMusicList',[])
-  }
 };
 </script>
 

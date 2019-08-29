@@ -26,4 +26,7 @@ export default {
 //   opacity: 0;
 //   transform: translateX(30px);
 // }
+.app-main {
+  height: calc(100% - 124px);
+}
 </style>

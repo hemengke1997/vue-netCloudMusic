@@ -6,9 +6,10 @@
         <li class="artist">
           <item :type="1"></item>
         </li>
-        <li class="album">
+        <li class="album" v-if="hasAlbum" :type="2">
           <item></item>
         </li>
+        <li class="MV" v-if="hasMV" :type="3"></li>
       </ul>
     </section>
     <section class="song_list">
@@ -33,7 +34,7 @@ import Item from "./Item";
 import MusicList from "@/components/Musiclist";
 import { searchSong } from "@/api/search-api";
 import { mapGetters } from "vuex";
-import { setTimeout } from "timers";
+import { setTimeout, clearTimeout } from "timers";
 import { Promise } from "q";
 export default {
   name: "SearchContent",
@@ -73,19 +74,25 @@ export default {
       });
     },
     ...mapGetters({
-      keyword: "keyword"
+      keyword: "keyword",
+      hasAlbum: "hasAlbum",
+      hasMV: "hasMV"
     })
   },
   methods: {
     _searchSong(keyword) {
-      searchSong(keyword, this.limit, this.offset).then(res => {
-        if (res.data.result.songs.length < 20) {
-          this.more = false;
-        }
-        this.tempSongs.push(...res.data.result.songs);
-        this.musicS.song = this.songs;
-        this.$store.dispatch("playlist/setMusicList", this.musicS);
-        if (this.offset < res.data.result.songCount / this.limit) this.offset++;
+      return new Promise(resolve => {
+        searchSong(keyword, this.limit, this.offset).then(res => {
+          if (res.data.result.songs.length < 20) {
+            this.more = false;
+          }
+          this.tempSongs.push(...res.data.result.songs);
+          // console.log(this.tempSongs);
+          this.musicS.song = this.songs;
+          this.$store.dispatch("playlist/setMusicList", this.musicS);
+          this.offset++;
+          resolve();
+        });
       });
     },
     eventFn() {
@@ -97,15 +104,14 @@ export default {
         document.documentElement.scrollTop || document.body.scrollTop;
       if (scrollTop + clientHeight === scrollHeight) {
         // 异步请求歌曲
-        if (this.more) {
+        if (this.more && !this.isLoading) {
           this.isLoading = true;
           new Promise(resolve => {
             setTimeout(() => {
-              this._searchSong(this.keyword);
-              resolve();
+              this._searchSong(this.keyword).then(() => {
+                this.isLoading = false;
+              });
             }, 300);
-          }).then(() => {
-            this.isLoading = false;
           });
         }
       }

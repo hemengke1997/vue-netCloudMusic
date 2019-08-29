@@ -17,8 +17,10 @@ const getters = {
     userId: state => state.user.userId, // 用户id
 
     //  搜索
-    keyword: state => state.searchcontent.keyword
+    keyword: state => state.searchcontent.keyword,
+    hasAlbum: state => state.searchcontent.hasAlbum,
 
+    searchLoading: state => state.searchcontent.searchLoading,
 }
 
 export default getters

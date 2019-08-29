@@ -59,7 +59,7 @@
         </li>
       </ul>
     </section>
-    <div class="loading" v-if="isLoading&&inputVal">
+    <div class="loading" v-if="(isLoading&&inputVal) || searchLoading">
       <img src="../../assets/img/loading.gif" alt />
     </div>
     <search-content v-if="!showSearch"></search-content>
@@ -71,6 +71,8 @@ import { getHotSearch } from "@/api/hot-api";
 import { clearTimeout, setTimeout } from "timers";
 import { getSearchList } from "@/api/search-api";
 import SearchContent from "./SearchContent";
+import { Promise } from 'q';
+import {mapGetters} from 'vuex'
 export default {
   name: "SearchIndex",
   data() {
@@ -98,6 +100,11 @@ export default {
       }
     }
   },
+  computed:{
+    ...mapGetters({
+      searchLoading: 'searchLoading'
+    })
+  },
   methods: {
     _getHotSearch() {
       getHotSearch().then(res => {
@@ -111,7 +118,22 @@ export default {
     },
     inputsome(e) {
       this.inputdata = e.data;
-      console.log(e)
+      
+      this.searchresult = []
+      if(this.inputVal) {
+        this.isLoading = true
+        clearTimeout(this.timeout)
+        new Promise((resolve)=>{
+          this.timeout = setTimeout(() => {
+          this._getSearchList(this.inputVal)
+          resolve()
+        }, 300);
+        }).then(()=>{
+          this.isLoading = false
+        })
+      } else {
+        this.showSearch = true
+      }
     },
     _getSearchList(v) {
       getSearchList(v).then(res => {
@@ -120,23 +142,10 @@ export default {
     },
     gotoItem(keyword) {
       this.inputVal = keyword;
+      this.$store.dispatch('searchcontent/setSearchLoading',true)
       this.$store
         .dispatch("searchcontent/setKeyword", keyword);
       this.showSearch = false;
-    }
-  },
-  watch: {
-    inputVal(v) {
-      this.searchresult = [];
-      if (v) {
-        this.isLoading = true;
-        clearTimeout(this.timeout);
-        this.timeout = setTimeout(() => {
-          this._getSearchList(v)
-        }, 300);
-      } else {
-        this.showSearch = true;
-      }
     }
   },
   created() {

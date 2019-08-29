@@ -21,9 +21,15 @@ function searchAlbum(keyword) {
     return axios.get(url)
 }
 
+function searchMV(keyword) {
+    const url = HOST + `/search?keywords=${keyword}&type=1004`
+    return axios.get(url)
+}
+
 export {
     getSearchList,
     searchSong,
     searchSinger,
-    searchAlbum
+    searchAlbum,
+    searchMV
 }

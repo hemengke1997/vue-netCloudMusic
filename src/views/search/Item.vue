@@ -7,12 +7,12 @@
       <h4 class="maindes">
         {{maindes}}
         <p class="hcover">
-            <span v-html="newHtml(data.name)"></span>
+          <span v-html="newHtml(data.name)"></span>
         </p>
       </h4>
 
       <p class="author" v-if="type!=1">
-          <span v-html="newHtml(getArtists(data.artists))"></span>
+        <span v-html="newHtml(getArtists(data.artists))"></span>
       </p>
     </article>
     <i class="iconfont icon-pull_down"></i>
@@ -22,6 +22,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { searchSinger, searchAlbum } from "@/api/search-api";
+import { Promise } from "q";
 export default {
   data() {
     return {
@@ -33,15 +34,28 @@ export default {
   },
   props: {
     type: {
-      type: Number
+      type: Number,
+      required: true
     }
   },
   computed: {
     maindes() {
-      return this.type === 1 ? "歌手:" : "专辑:";
+      if(this.type === 1) {
+        return "歌手:"
+      } else if (this.type === 2) {
+        return "专辑:"
+      } else if (this.type === 3) {
+        return "MV："
+      }
     },
     coverSrc() {
-      return this.type === 1 ? this.data.img1v1Url : this.data.picUrl;
+      if(this.type === 1) {
+        return this.data.img1v1Url
+      } else if (this.type === 2) {
+        return this.data.picUrl
+      } else if (this.type === 3) {
+        return ;
+      }
     },
     newHtml() {
       return name => {
@@ -100,17 +114,29 @@ export default {
       }
     },
     _searchSinger() {
-      searchSinger(this.keyword).then(res => {
-        let data = res.data.result.artists[0];
-        this.data = data;
-        this.$set(this.data, "name", this.getTitle(data));
+      return new Promise(resolve => {
+        searchSinger(this.keyword).then(res => {
+          console.log(res.data)
+          let data = res.data.result.artists[0];
+          this.data = data;
+          this.$set(this.data, "name", this.getTitle(data));
+        });
+        resolve()
       });
     },
     _searchAlbum() {
-      searchAlbum(this.keyword).then(res => {
-        let data = res.data.result.albums[0];
-        this.data = data;
-        this.$set(this.data, "name", this.getTitle(data));
+      return new Promise(resolve => {
+        searchAlbum(this.keyword).then(res => {
+          if (res.data.result.albums && res.data.result.albums[0]) {
+            this.$store.dispatch("searchcontent/hasAlbumOrNot", true);
+            let data = res.data.result.albums[0];
+            this.data = data;
+            this.$set(this.data, "name", this.getTitle(data));
+          } else {
+            this.$store.dispatch("searchcontent/hasAlbumOrNot", false);
+          }
+          resolve();
+        });
       });
     },
     hasKeyword(k) {
@@ -125,15 +151,15 @@ export default {
   },
   created() {
     if (this.type === 1) {
-      this._searchSinger();
+      this._searchSinger().then(() => {
+        this.$store.dispatch("searchcontent/setSearchLoading", false);
+      });
     } else {
-      this._searchAlbum();
+      this._searchAlbum().then(() => {
+        this.$store.dispatch("searchcontent/setSearchLoading", false);
+      });
     }
   }
-  //   destroyed() {
-  //     this.singer = {},
-  //     this.album = {}
-  //   }
 };
 </script>
 

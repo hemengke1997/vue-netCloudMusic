@@ -6,10 +6,12 @@
         <li class="artist">
           <item :type="1"></item>
         </li>
-        <li class="album" v-if="hasAlbum" :type="2">
-          <item></item>
+        <li class="album" v-if="hasAlbum">
+          <item :type="2"></item>
         </li>
-        <li class="MV" v-if="hasMV" :type="3"></li>
+        <li class="MV" v-if="hasMV">
+          <item :type="3"></item>
+        </li>
       </ul>
     </section>
     <section class="song_list">
@@ -34,7 +36,7 @@ import Item from "./Item";
 import MusicList from "@/components/Musiclist";
 import { searchSong } from "@/api/search-api";
 import { mapGetters } from "vuex";
-import { setTimeout, clearTimeout } from "timers";
+import { setTimeout } from "timers";
 import { Promise } from "q";
 export default {
   name: "SearchContent",
@@ -74,9 +76,9 @@ export default {
       });
     },
     ...mapGetters({
-      keyword: "keyword",
       hasAlbum: "hasAlbum",
-      hasMV: "hasMV"
+      hasMV: "hasMV",
+      keyword: 'keyword'
     })
   },
   methods: {
@@ -106,7 +108,7 @@ export default {
         // 异步请求歌曲
         if (this.more && !this.isLoading) {
           this.isLoading = true;
-          new Promise(resolve => {
+          new Promise(() => {
             setTimeout(() => {
               this._searchSong(this.keyword).then(() => {
                 this.isLoading = false;
@@ -123,7 +125,6 @@ export default {
     document.addEventListener("scroll", this.eventFn);
   },
   destroyed() {
-    this.$store.dispatch("searchcontent/setKeyword", "");
     this.$store.dispatch("playlist/setMusicList", {});
     document.removeEventListener("scroll", this.eventFn);
   }
@@ -141,7 +142,8 @@ export default {
       color: #666;
     }
     .artist,
-    .album {
+    .album
+    .MV {
       position: relative;
       height: 66px;
     }

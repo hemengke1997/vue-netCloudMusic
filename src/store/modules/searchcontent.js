@@ -22,7 +22,7 @@ const mutations = {
 
 const actions = {
     setKeyword({commit},keyword) {
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve)=>{
             commit('SET_KEYWORD',keyword)
             resolve()
         })
@@ -38,8 +38,9 @@ const actions = {
         })
     },
     setSearchLoading({commit},isLoading) {
-        return new Promise(()=>{
+        return new Promise((resolve)=>{
             commit('SET_SEARCH_LOADING',isLoading)
+            resolve()
         })
     }
 }

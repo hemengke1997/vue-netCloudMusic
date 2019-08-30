@@ -1,8 +1,6 @@
 <template>
   <div class="u-height">
-    <div class="loading_box" v-if="isLoading">
-      <img src="../../assets/img/loading.gif" />
-    </div>
+    <loading v-if="isLoading"></loading>
     <div class="root" v-show="!isLoading">
       <div class="playlist u-paddlr u-paddbm">
         <div class="top">
@@ -36,47 +34,22 @@
               </div>
             </div>
           </section>
-          <section class="pllist_intro" v-if="playlist.description||tagslength">
-            <div class="tags" v-if="tagslength">
-              标签：
-              <span
-                class="tag ignore_tag_bottom"
-                v-for="(item,index) in playlist.tags"
-                :key="index"
-              >{{item}}</span>
-            </div>
-            <div class="u_intro" @click="showDes" v-if="playlist.description">
-              <div class="intro_3" :class="{three_line:overthree}" ref="intro">
-                <span>
-                  <i>简介：{{description_first}}</i>
-                  <br />
-                </span>
-                <span v-for="(item,index) in description_last" :key="index">
-                  <i>{{item}}</i>
-                  <br />
-                </span>
-              </div>
-              <i class="iconfont icon-pull_down" v-if="arrow" :class="{arrow:!overthree}"></i>
-            </div>
-          </section>
+          <detail-des v-if="playlist.description || tagslength" ref="child"></detail-des>
         </div>
-    
-          <div class="music">
-            <h3 class="list_title">歌曲列表</h3>
-            <music-list></music-list>
-          </div>
-          <div class="sheet_comment">
-            <h3 class="hot_comment" v-if="hotCommentLength">精彩评论</h3>
-            <comment :type="1" :id="id"></comment>
-            <h3 class="new_comment" v-if="hotCommentLength<15&&newCommentLength">最新评论</h3>
-            <comment :type="2" :id="id"></comment>
-          </div>
-          <collect-sheet :text="text"></collect-sheet>
-          <div class="footer_bn"></div>
-        
-      </div>
 
-      <div class="bottom"></div>
+        <div class="music">
+          <h3 class="list_title">歌曲列表</h3>
+          <music-list></music-list>
+        </div>
+        <div class="sheet_comment">
+          <h3 class="hot_comment" v-if="hotCommentLength">精彩评论</h3>
+          <comment :type="1" :id="id"></comment>
+          <h3 class="new_comment" v-if="hotCommentLength<15&&newCommentLength">最新评论</h3>
+          <comment :type="2" :id="id"></comment>
+        </div>
+        <collect-sheet :text="text"></collect-sheet>
+        <div class="footer_bn"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -84,20 +57,17 @@
 <script>
 import MusicList from "@/components/Musiclist";
 import CollectSheet from "@/components/CollectSheet";
+import DetailDes from "@/components/DetailDes";
 import { getSheetDetails } from "@/api/recommend-api";
 import { OK } from "js/config";
 import { mapGetters } from "vuex";
 import Comment from "@/components/Comment";
+import Loading from 'public/Loading'
 
 export default {
-  name:'SheetDetails',
+  name: "SheetDetails",
   data() {
     return {
-      lineheight: 19, // 写死在样式里面的
-      init: true,
-      overthree: false,
-      arrow: false,
-      flag: false,
       playlist: {
         playCount: 0,
         coverImgUrl: "",
@@ -115,13 +85,15 @@ export default {
         rank: true
       },
       isLoading: true,
-      text: '收藏歌单',
+      text: "收藏歌单"
     };
   },
   components: {
     MusicList,
     CollectSheet,
-    Comment
+    Comment,
+    DetailDes,
+    Loading
   },
   computed: {
     id() {
@@ -142,71 +114,44 @@ export default {
         };
       });
     },
-    playCount() {
-      if(this.playlist.playCount > 10000) {
-        return Math.floor(this.playlist.playCount / 10000) + '万';
-      } else {
-        return Math.floor(this.playlist.playCount)
-      }
-    },
-    description_first() {
-      if (this.description) {
-        return this.description[0];
-      }
-      return "";
-    },
-    description_last() {
-      if (this.description) {
-        return this.description.slice(1);
-      }
-      return "";
-    },
-    description() {
-      if (this.playlist.description) {
-        return this.playlist.description.split(/\n/);
-      }
-      return "";
-    },
     tagslength() {
-      return this.playlist.tags.length
+      return this.playlist.tags.length;
+    },
+    playCount() {
+      if (this.playlist.playCount > 10000) {
+        return Math.floor(this.playlist.playCount / 10000) + "万";
+      } else {
+        return Math.floor(this.playlist.playCount);
+      }
     },
     ...mapGetters({
-      hotCommentLength: 'hotCommentLength',
-      newCommentLength: 'newCommentLength'
+      hotCommentLength: "hotCommentLength",
+      newCommentLength: "newCommentLength"
     })
   },
   methods: {
     _getSheetDetails(id) {
       getSheetDetails(id).then(res => {
         if (res.status === OK) {
-          // console.log(res.data.playlist);
           this.playlist = res.data.playlist;
           this.tempSongs = res.data.playlist.tracks;
           this.musicS.song = this.songs;
-          this.$store.dispatch('playlist/setMusicList',this.musicS).then(this.updateHeight())
+          this.$store
+            .dispatch("playlist/setMusicList", this.musicS)
+            .then(() => {
+              this.$store.dispatch("playlist/setPlaylist", this.playlist);
+            })
+            .then(() => {
+              this.isLoading = false;
+            });
         }
       });
     },
-    showDes() {
-      if (this.flag) {
-        this.overthree = !this.overthree;
-      }
-    },
-    updateHeight() {
-      this.isLoading = false
-      this.$nextTick(()=>{
-        if(this.$refs.intro && this.$refs.intro.offsetHeight / this.lineheight > 4){
-          this.arrow = true
-          this.overthree = true
-          this.flag = true
-        }
-      })
-    },
     gotoUser(id) {
       this.$router.push({
-        path: '/user/playlist',
-        query: {uid:id}
-      })
+        path: "/user/playlist",
+        query: { uid: id }
+      });
     }
   },
   created() {
@@ -217,7 +162,7 @@ export default {
     next();
   },
   destroyed() {
-    this.$store.dispatch('playlist/setMusicList',[])
+    this.$store.dispatch("playlist/setMusicList", []);
   }
 };
 </script>
@@ -226,12 +171,6 @@ export default {
 .u-height {
   height: 100%;
   .safe;
-  .loading_box {
-    .after;
-    img {
-      .loading_img;
-    }
-  }
   .root {
     position: relative;
     background-color: #fcfcfd;
@@ -382,58 +321,6 @@ export default {
                   }
                 }
               }
-            }
-          }
-        }
-        .pllist_intro {
-          position: relative;
-          margin: 0 10px 0 15px;
-          padding-top: 10px;
-          line-height: 19px;
-          color: #666;
-          .tags {
-            margin-bottom: 10px;
-            margin-right: -10px;
-            line-height: 20px;
-            font-size: 14px;
-            .tag {
-              display: inline-block;
-              margin-right: 10px;
-              padding: 1px 8px;
-              font-size: 12px;
-              position: relative;
-              &::after {
-                .small_border;
-              }
-            }
-            .ignore_tag_bottom {
-              &::after {
-                border-width: 1px;
-                border-radius: 80px;
-              }
-            }
-          }
-          .u_intro {
-            padding-bottom: 18px;
-            position: relative;
-            color: #666;
-            line-height: 19px;
-            .three_line {
-              .text_2;
-              -webkit-line-clamp: 3;
-            }
-            .intro_3 {
-              .break_2;
-              i {
-                font-style: normal;
-                font-size: 14px;
-              }
-            }
-            .icon-pull_down {
-              float: right;
-            }
-            .arrow {
-              transform: rotate(-180deg);
             }
           }
         }

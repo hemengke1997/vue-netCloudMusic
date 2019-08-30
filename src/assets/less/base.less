@@ -95,8 +95,47 @@ input {
     font-family: 'PingFang SC', Helvetica, sans-serif, STHeiTi;
 }
 
-a, b, blockquote, body, button, caption, dd, del, div, dl, dt, em, fieldset, figure, form, h1, h2, h3, h4, h5, h6, hr, html, i, ins, legend, li, menu, ol, p, pre, s, span, strong, table, td, textarea, th, u, ul {
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+a,
+b,
+blockquote,
+body,
+button,
+caption,
+dd,
+del,
+div,
+dl,
+dt,
+em,
+fieldset,
+figure,
+form,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+hr,
+html,
+i,
+ins,
+legend,
+li,
+menu,
+ol,
+p,
+pre,
+s,
+span,
+strong,
+table,
+td,
+textarea,
+th,
+u,
+ul {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-user-select: none;
 }
 
@@ -128,10 +167,10 @@ body {
     background-color: transparent;
 }
 
-input {  
-    background:none;  
-    outline:none;  
-    border:none;
+input {
+    background: none;
+    outline: none;
+    border: none;
 }
 
 blockquote,
@@ -164,28 +203,6 @@ li {
     list-style: none;
 }
 
-// ::-webkit-scrollbar {
-//     width: 6px;
-//     height: 6px;
-// }
-
-// ::-webkit-scrollbar-track-piece {
-//     background-color: rgba(0, 0, 0, 0.2);
-//     -webkit-border-radius: 6px;
-// }
-
-// ::-webkit-scrollbar-thumb:vertical {
-//     height: 5px;
-//     background-color: rgba(125, 125, 125, 0.7);
-//     -webkit-border-radius: 6px;
-// }
-
-// ::-webkit-scrollbar-thumb:horizontal {
-//     width: 5px;
-//     background-color: rgba(125, 125, 125, 0.7);
-//     -webkit-border-radius: 6px;
-// }
-
 html,
 body {
     width: 100%;
@@ -197,9 +214,11 @@ body {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-overflow-scrolling: touch;
     overflow-scrolling: touch;
+    .iphonex-media;
+
 }
 
-@mixin iphonex-css {
+.iphonex-css() {
     padding-top: constant(safe-area-inset-top); //为导航栏+状态栏的高度 88px
     padding-top: env(safe-area-inset-top); //为导航栏+状态栏的高度 88px
     padding-left: constant(safe-area-inset-left); //如果未竖屏时为0
@@ -211,10 +230,10 @@ body {
 }
 
 // iphonex 适配
-@mixin iphonex-media {
-    @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
-        body.iphonex {
-            @include iphonex-css;
+.iphonex-media() {
+    @media screen and (-webkit-device-pixel-ratio: 3) and (device-width: 375px) and (device-height: 812px) {
+        #app {
+            .iphonex-css;
         }
     }
 }

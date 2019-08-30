@@ -143,8 +143,8 @@ export default {
     gotoItem(keyword) {
       this.inputVal = keyword;
       this.$store.dispatch('searchcontent/setSearchLoading',true)
-      this.$store
-        .dispatch("searchcontent/setKeyword", keyword);
+      this.$store.dispatch('searchcontent/setKeyword',keyword)
+
       this.showSearch = false;
     }
   },

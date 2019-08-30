@@ -1,4 +1,6 @@
-import {HOST} from 'js/config'
+import {
+    HOST
+} from 'js/config'
 import axios from 'axios'
 
 function getSearchList(keyword) {
@@ -6,7 +8,7 @@ function getSearchList(keyword) {
     return axios.get(url)
 }
 
-function searchSong(keyword,limit=20,offset=0) {
+function searchSong(keyword, limit = 20, offset = 0) {
     const url = HOST + `/search?keywords=${keyword}&limit=${limit}&offset=${offset}`
     return axios.get(url)
 }
@@ -26,10 +28,17 @@ function searchMV(keyword) {
     return axios.get(url)
 }
 
+function gotoSinger(id) {
+    const url = HOST + `/artists?id=${id}`
+    return axios.get(url)
+}
+
+
 export {
     getSearchList,
     searchSong,
     searchSinger,
     searchAlbum,
-    searchMV
+    searchMV,
+    gotoSinger
 }

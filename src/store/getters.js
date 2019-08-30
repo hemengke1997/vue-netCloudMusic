@@ -9,17 +9,12 @@ const getters = {
     playlist: state => state.playlist.playlist,  // 用户歌单详情
 
     // 用户主页 
-    // avatarUrl: state => state.user.avatarUrl,   // 用户头像
-    // followeds: state => state.user.followeds,  // 用户粉丝数
-    // nickname: state => state.user.nickname, // 用户名
-    // backgroundUrl: state => state.user.backgroundUrl,   // 用户背景图
-    // listencount: state => state.user.listencount,   // 用户听歌数
     userId: state => state.user.userId, // 用户id
 
     //  搜索
-    keyword: state => state.searchcontent.keyword,
     hasAlbum: state => state.searchcontent.hasAlbum,
     hasMV: state => state.searchcontent.hasMV,
+    keyword: state => state.searchcontent.keyword,
 
     searchLoading: state => state.searchcontent.searchLoading,
 }

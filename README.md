@@ -1033,3 +1033,7 @@ animation: shine 1.2s steps(1) infinite;
 ## 还有很大的空间可以优化组件 分离组件 有空我会优化一下
 
 溜了溜了 上班了
+
+## 2019.9.2 更新
+
+还未完成的： mv界面， 搜索记录加入local存储 ， 部署项目到github上， 点击下载跳转到appstore

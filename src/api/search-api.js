@@ -33,6 +33,10 @@ function gotoSinger(id) {
     return axios.get(url)
 }
 
+function getAlbumDetails(id) {
+    const url = HOST + `/album?id=${id}`
+    return axios.get(url)
+}
 
 export {
     getSearchList,
@@ -40,5 +44,6 @@ export {
     searchSinger,
     searchAlbum,
     searchMV,
-    gotoSinger
+    gotoSinger,
+    getAlbumDetails
 }

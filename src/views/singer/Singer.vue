@@ -1,7 +1,7 @@
 <template>
   <div class="s_header" ref="test">
     <img :src="data.picUrl"/>
-    <p class="s_name">{{name(data)}}</p>
+    <p class="s_name" v-cloak>{{name(data)}}</p>
   </div>
 </template>
 
@@ -34,7 +34,7 @@ export default {
     _gotoSinger(id) {
       gotoSinger(id).then(res => {
         this.data = res.data.artist;
-        this.$store.dispatch('playlist/setMusicList',res.data.hotSongs)
+        this.$store.dispatch('searchcontent/setHotSongs',res.data.hotSongs)
         this.$store.dispatch('playlist/setPlaylist',{
           description: res.data.artist.briefDesc
         })
@@ -43,9 +43,6 @@ export default {
   },
   mounted() {
     this._gotoSinger(this.id);
-    this.$nextTick(()=>{
-      console.log(this.$refs.test.offsetHeight)
-    })
   }
 };
 </script>
@@ -53,6 +50,9 @@ export default {
 
 
 <style lang="less" scoped>
+[v-cloak] {
+  display: none;
+}
 .s_header {
   position: relative;
   padding-top: 68%;

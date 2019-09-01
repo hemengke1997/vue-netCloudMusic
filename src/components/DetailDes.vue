@@ -4,19 +4,19 @@
       标签：
       <span
         class="tag ignore_tag_bottom"
-        v-for="(item,index) in playlist.tags"
+        v-for="(item,index) in des.tags"
         :key="index"
       >{{item}}</span>
     </div>
-    <div class="u_intro"  v-if="playlist.description">
+    <div class="u_intro" v-if="des.description">
       <div class="intro_3" :class="{three_line:overthree}" ref="intro" @click.prevent="showDes">
         <span>
-          <i>简介：{{description_first}}</i>
+          <i v-cloak>简介：{{description_first}}</i>
           <br />
         </span>
         <span v-for="(item,index) in description_last" :key="index">
           <i>{{item}}</i>
-          <br />
+          <br v-if="item"/>
         </span>
       </div>
       <i class="iconfont icon-pull_down" v-if="arrow" :class="{arrow:!overthree}"></i>
@@ -33,8 +33,14 @@ export default {
       flag: false,
       overthree: false,
       arrow: false,
-      init: true
+      init: true,
     };
+  },
+  props: {
+    type: {          // type:1 用户歌单描述，歌手主页描述   type:2 专辑描述
+      type: Number,
+      required: true
+    }
   },
   computed: {
     tagslength() {
@@ -44,22 +50,30 @@ export default {
       if (this.description) {
         return this.description[0];
       }
-      return "";
+      return;
     },
     description_last() {
       if (this.description) {
         return this.description.slice(1);
       }
-      return "";
+      return;
     },
     description() {
-      if (this.playlist.description) {
-        return this.playlist.description.split(/\n/);
+      if (this.des.description) {
+        return this.des.description.split(/\n/);
       }
-      return "";
+      return;
+    },
+    des() {
+      if(this.type === 1) {
+        return this.playlist
+      } else if (this.type === 2) {
+        return this.album
+      } return []
     },
     ...mapGetters({
-      playlist: "playlist"
+      playlist: "playlist",
+      album: "album"
     })
   },
   methods: {
@@ -68,8 +82,8 @@ export default {
         this.overthree = !this.overthree;
       }
     },
-    updateHeight: async function() {
-        await this.$nextTick()
+    updateHeight() {
+      this.$nextTick(() => {
         if (
           this.$refs.intro &&
           this.$refs.intro.offsetHeight / this.lineheight > 4
@@ -78,21 +92,22 @@ export default {
           this.overthree = true;
           this.flag = true;
         }
+      });
     }
-  },
-  destroyed() {
-    this.$store.dispatch("playlist/setPlaylist",{})
   },
   updated() {
-    if(this.init) {
-      this.init = false
-      this.updateHeight()
+    if (this.init) {
+      this.init = false;
+      this.updateHeight();
     }
-  }
-}
+  },
+};
 </script>
 
 <style lang="less" scoped>
+[v-cloak] {
+  display: none;
+}
 .pllist_intro {
   position: relative;
   margin: 0 10px 0 15px;

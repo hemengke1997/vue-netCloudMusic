@@ -79,7 +79,7 @@
                         <img v-lazy="item.coverImgUrl" alt="playlist" />
                         <div class="play_count">
                           <i class="iconfont icon-erji"></i>
-                          <span>{{count(item.playCount)}}</span>
+                          <span v-cloak>{{count(item.playCount)}}</span>
                         </div>
                       </figure>
                       <h3 class="playlist_title">{{item.name}}</h3>
@@ -119,7 +119,7 @@
                         </div>
                       </div>
                       <div v-if="hotComments.length<10">
-                        <h3 class="cmt_title">最新评论{{newComments.length}}</h3>
+                        <h3 class="cmt_title" v-cloak>最新评论{{newComments.length}}</h3>
                         <div class="cmt_list">
                           <comment-item
                             v-for="(item,index) in newComments"
@@ -403,17 +403,13 @@ export default {
       this.setLrcHeight(h);
     }
   },
-  // destroyed() {
-  //   this.$refs.audio.src = "";
-  //   this.playing = false;
-  //   this.currentTime = [];
-  //   this.lyc_time_index = 0;
-  //   this.lyc_translateY = 0;
-  // }
 };
 </script>
 
 <style lang="less" scoped>
+[v-cloak] {
+  display: none
+}
 // 整个界面的过渡效果
 .fade-top-leave-active,
 .fade-top-enter-active {
@@ -454,7 +450,7 @@ export default {
         background-position: 50%;
         background-repeat: no-repeat;
         background-size: auto 100%;
-        filter: blur(60px);
+        filter: blur(60px) brightness(50%);
         position: fixed;
         left: 0;
         top: 0;

@@ -23,9 +23,16 @@ function getSongComments(id) {
     return axios.get(url)
 }
 
+// 获取专辑的评论
+function getAlbumComments(id) {
+    const url = HOST + `/comment/album?id=${id}&limit=15`
+    return axios.get(url)
+}
+
 export  {
     getComments,
     getUserPlaylist,
     getUser,
     getSongComments,
+    getAlbumComments
 }

@@ -4,13 +4,13 @@
       <h3 class="title">最佳匹配</h3>
       <ul>
         <li class="artist">
-          <item :type="1"></item>
+          <item :type="1" :data="singer"></item>
         </li>
         <li class="album" v-if="hasAlbum">
-          <item :type="2"></item>
+          <item :type="2" :data="album"></item>
         </li>
         <li class="MV" v-if="hasMV">
-          <item :type="3"></item>
+          <item :type="3" :data="mv"></item>
         </li>
       </ul>
     </section>
@@ -34,10 +34,16 @@
 <script>
 import Item from "./Item";
 import MusicList from "@/components/Musiclist";
-import { searchSong } from "@/api/search-api";
 import { mapGetters } from "vuex";
 import { setTimeout } from "timers";
 import { Promise } from "q";
+import {
+  searchSinger,
+  searchAlbum,
+  searchMV,
+  searchSong
+} from "@/api/search-api";
+
 export default {
   name: "SearchContent",
   data() {
@@ -54,7 +60,10 @@ export default {
       limit: 20,
       offset: 0,
       more: true,
-      isLoading: false
+      isLoading: false,
+      singer: {}, // 查询到的歌手
+      album: {}, // 查询到的专辑
+      mv: {} // 查询到的MV
     };
   },
   components: {
@@ -78,13 +87,13 @@ export default {
     ...mapGetters({
       hasAlbum: "hasAlbum",
       hasMV: "hasMV",
-      keyword: 'keyword'
+      keyword: "keyword"
     })
   },
   methods: {
-    _searchSong(keyword) {
+    _searchSong() {
       return new Promise(resolve => {
-        searchSong(keyword, this.limit, this.offset).then(res => {
+        searchSong(this.keyword, this.limit, this.offset).then(res => {
           if (res.data.result.songs.length < 20) {
             this.more = false;
           }
@@ -96,6 +105,73 @@ export default {
           resolve();
         });
       });
+    },
+    _searchSinger() {
+      return new Promise(resolve => {
+        searchSinger(this.keyword).then(res => {
+          let data = res.data.result.artists[0];
+          this.singer = data;
+          this.$set(this.singer, "name", this.getTitle(data, 1));
+        });
+        resolve();
+      });
+    },
+    _searchAlbum() {
+      return new Promise(resolve => {
+        searchAlbum(this.keyword).then(res => {
+          if (res.data.result.albums && res.data.result.albums[0]) {
+            this.$store.dispatch("searchcontent/hasAlbumOrNot", true);
+            let data = res.data.result.albums[0];
+            this.album = data;
+            this.$set(this.album, "name", this.getTitle(data, 2));
+          } else {
+            this.$store.dispatch("searchcontent/hasAlbumOrNot", false);
+          }
+          resolve();
+        });
+      });
+    },
+    _searchMV() {
+      return new Promise(resolve => {
+        searchMV(this.keyword).then(res => {
+          if (res.data.result.mvs && res.data.result.mvs[0]) {
+            this.$store.dispatch("searchcontent/hasMVOrNot", true);
+            let data = res.data.result.mvs[0];
+            this.mv = data;
+            this.$set(this.mv, "name", this.getTitle(data, 3));
+          } else {
+            this.$store.dispatch("searchcontent/hasMVOrNot", false);
+          }
+          resolve();
+        });
+      });
+    },
+    searchAll() {
+      Promise.all([
+        this._searchSong(),
+        this._searchSinger(),
+        this._searchAlbum(),
+        this._searchMV()
+      ]).then(() => {
+        this.$emit("changeSearchLoading");
+      });
+    },
+    getTitle(data, type) {
+      if (type === 1) {
+        if (data.transNames && data.transNames[0]) {
+          return `${data.name} (${data.transNames[0]})`;
+        } else if (data.alias && data.alias[0]) {
+          return `${data.name} (${data.alias[0]})`;
+        } else {
+          return data.name.trim();
+        }
+      } else if (type === 2 || type === 3) {
+        if (data.alias && data.alias[0]) {
+          return `${data.name} (${data.alias[0]})`.trim();
+        } else {
+          return data.name.trim();
+        }
+      }
     },
     eventFn() {
       const clientHeight =
@@ -120,13 +196,18 @@ export default {
     }
   },
   mounted() {
-    this._searchSong(this.keyword);
+    this.searchAll();
 
     document.addEventListener("scroll", this.eventFn);
   },
   destroyed() {
-    this.$store.dispatch("playlist/setMusicList", {});
     document.removeEventListener("scroll", this.eventFn);
+
+    // 如果不把 hasMV 的值置为true 搜索了没有mv的结果 会导致以后的搜索都不显示MV
+    // 渲染顺序是先从父组件开始的。父组件获取到的hasMV为false 就不再执行type=3的item了
+    if (!this.hasMV) {
+      this.$store.dispatch("searchcontent/hasMVOrNot", true);
+    }
   }
 };
 </script>
@@ -142,8 +223,7 @@ export default {
       color: #666;
     }
     .artist,
-    .album
-    .MV {
+    .album .MV {
       position: relative;
       height: 66px;
     }

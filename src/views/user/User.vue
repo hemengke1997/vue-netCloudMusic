@@ -33,7 +33,6 @@
       </section>
       <user-playlist></user-playlist>
       <collect-sheet :text="text"></collect-sheet>
-      <div class="footer_bn"></div>
     </div>
   </div>
 </template>
@@ -208,9 +207,6 @@ export default {
           }
         }
       }
-    }
-    .footer_bn {
-      height: 56px;
     }
   }
   .loading_box {

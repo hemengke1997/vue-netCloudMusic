@@ -190,24 +190,6 @@ a {
 li {
   list-style: none;
 }
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track-piece {
-  background-color: rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 6px;
-}
-::-webkit-scrollbar-thumb:vertical {
-  height: 5px;
-  background-color: rgba(125, 125, 125, 0.7);
-  -webkit-border-radius: 6px;
-}
-::-webkit-scrollbar-thumb:horizontal {
-  width: 5px;
-  background-color: rgba(125, 125, 125, 0.7);
-  -webkit-border-radius: 6px;
-}
 html,
 body {
   width: 100%;
@@ -216,21 +198,18 @@ body {
 body {
   -webkit-text-size-adjust: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
 }
-@mixin iphonex-css {
-  padding-top: constant(safe-area-inset-top);
-  padding-top: env(safe-area-inset-top);
-  padding-left: constant(safe-area-inset-left);
-  padding-left: env(safe-area-inset-left);
-  padding-right: constant(safe-area-inset-right);
-  padding-right: env(safe-area-inset-right);
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
-}
-@mixin iphonex-media {
-  @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
-    body.iphonex {
-      @include iphonex-css;
-    }
+@media screen and (-webkit-device-pixel-ratio: 3) and (device-width: 375px) and (device-height: 812px) {
+  body #app {
+    padding-top: constant(safe-area-inset-top);
+    padding-top: env(safe-area-inset-top);
+    padding-left: constant(safe-area-inset-left);
+    padding-left: env(safe-area-inset-left);
+    padding-right: constant(safe-area-inset-right);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

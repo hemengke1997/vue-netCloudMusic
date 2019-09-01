@@ -85,9 +85,6 @@ export default {
   created() {
     this._getHotSong()
   },
-  destroyed() {
-    this.$store.dispatch('playlist/setMusicList',{})
-  }
 };
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="user_playlist">
-    <h3 class="title">歌单({{ownPlaylist.length}})</h3>
+    <h3 class="title" v-cloak>歌单({{ownPlaylist.length}})</h3>
     <ul class="playlist">
         <li class="song" v-for="(item,index) in ownPlaylist" :key="index" @click="gotoPlaylist(item.id)">
             <div class="ignore_left">
@@ -11,7 +11,7 @@
             </div>
             <div class="right">
               <h3 class="playlist_title">{{item.name}}</h3>
-              <div class="bottom">{{item.trackCount}}首，播放{{item.playCount}}次</div>
+              <div class="bottom" v-cloak>{{item.trackCount}}首，播放{{item.playCount}}次</div>
             </div>
         </li>
     </ul>
@@ -64,6 +64,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+[v-cloak] {
+  display: none;
+}
 .user_playlist {
   .title {
     background-color: #eeeff0;

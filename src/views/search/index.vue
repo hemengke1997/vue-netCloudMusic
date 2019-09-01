@@ -45,7 +45,7 @@
         </ul>
       </section>
     </div>
-    <section class="s_content" v-show="showSearch&&inputVal">
+    <section class="s_content" v-show="!showSearch&&inputVal">
       <h3 class="title t_bottom">搜索"{{inputVal}}"</h3>
       <ul>
         <li
@@ -59,10 +59,10 @@
         </li>
       </ul>
     </section>
-    <div class="loading" v-if="(isLoading&&inputVal) || searchLoading">
-      <img src="../../assets/img/loading.gif" alt />
+    <div v-if="(isLoading&&inputVal) || searchLoading" class="loading">
+      <img src="../../assets/img/loading.gif" alt="loading" />
     </div>
-    <search-content v-if="!showSearch"></search-content>
+    <search-content v-if="showSearch" @changeSearchLoading="changeSearchLoading"></search-content>
   </div>
 </template>
 
@@ -71,8 +71,7 @@ import { getHotSearch } from "@/api/hot-api";
 import { clearTimeout, setTimeout } from "timers";
 import { getSearchList } from "@/api/search-api";
 import SearchContent from "./SearchContent";
-import { Promise } from 'q';
-import {mapGetters} from 'vuex'
+import { Promise } from "q";
 export default {
   name: "SearchIndex",
   data() {
@@ -81,17 +80,17 @@ export default {
       inputVal: "",
       inputdata: "",
       timeout: null,
-      isLoading: false,
+      isLoading: false, // 在输入框中搜索时 isloading置为true
       searchresult: [],
-      showSearch: true // 显示搜索结果
+      showSearch: false, // 显示搜索结果
+      searchLoading: false // 点击搜索时 searchLoading置为true
     };
   },
   components: {
-    SearchContent
+    SearchContent,
   },
   mounted() {
     this.$refs.input.focus();
-    this._getHotSearch();
   },
   directives: {
     focus: {
@@ -99,11 +98,6 @@ export default {
         el.focus();
       }
     }
-  },
-  computed:{
-    ...mapGetters({
-      searchLoading: 'searchLoading'
-    })
   },
   methods: {
     _getHotSearch() {
@@ -113,26 +107,26 @@ export default {
     },
     clear() {
       this.inputVal = "";
-      this.showSearch = true;
+      this.showSearch = false;
       this.inputdata = "";
     },
     inputsome(e) {
       this.inputdata = e.data;
-      
-      this.searchresult = []
-      if(this.inputVal) {
-        this.isLoading = true
-        clearTimeout(this.timeout)
-        new Promise((resolve)=>{
+
+      this.searchresult = [];
+      if (this.inputVal) {
+        this.isLoading = true;
+        clearTimeout(this.timeout);
+        new Promise(resolve => {
           this.timeout = setTimeout(() => {
-          this._getSearchList(this.inputVal)
-          resolve()
-        }, 300);
-        }).then(()=>{
-          this.isLoading = false
-        })
+            this._getSearchList(this.inputVal);
+            resolve();
+          }, 300);
+        }).then(() => {
+          this.isLoading = false;
+        });
       } else {
-        this.showSearch = true
+        this.showSearch = false;
       }
     },
     _getSearchList(v) {
@@ -142,10 +136,13 @@ export default {
     },
     gotoItem(keyword) {
       this.inputVal = keyword;
-      this.$store.dispatch('searchcontent/setSearchLoading',true)
-      this.$store.dispatch('searchcontent/setKeyword',keyword)
-
-      this.showSearch = false;
+      this.searchLoading = true
+      this.$store.dispatch("searchcontent/setKeyword", keyword).then(()=>{
+        this.showSearch = true;
+      })
+    },
+    changeSearchLoading() {
+      this.searchLoading = false
     }
   },
   created() {
@@ -160,11 +157,18 @@ export default {
   height: 100%;
   .loading {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    left: 0;
+    top: 185px;
+    bottom: 0;
+    right: 0;
+    z-index: 3;
+    background-color: #fff;
     img {
-      width: 50%;
+      position: absolute;
+      left: 50%;
+      top: 30%;
+      transform: translate(-50%, -50%);
+      height: 20px;
     }
   }
   .search_form {

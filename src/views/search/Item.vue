@@ -30,13 +30,16 @@ export default {
       highlight: true,
       titleHasKey: false,
       authorHasKey: false,
-      data: {},
       hasMV: true
     };
   },
   props: {
     type: {
       type: Number,
+      required: true
+    },
+    data: {
+      type: Object,
       required: true
     }
   },
@@ -106,67 +109,6 @@ export default {
     })
   },
   methods: {
-    getTitle(data) {
-      // 歌手
-      if (this.type === 1) {
-        if (data.transNames && data.transNames[0]) {
-          return `${data.name} (${data.transNames[0]})`;
-        } else if (data.alias && data.alias[0]) {
-          return `${data.name} (${data.alias[0]})`;
-        } else {
-          return data.name.trim();
-        }
-      } else if(this.type === 2 || this.type === 3){
-        if (data.alias && data.alias[0]) {
-          return `${data.name} (${data.alias[0]})`.trim();
-        } else {
-          return data.name.trim();
-        }
-      }
-    },
-    _searchSinger() {
-      return new Promise(resolve => {
-        searchSinger(this.keyword).then(res => {
-          let data = res.data.result.artists[0];
-          this.data = data;
-          console.log(data,'歌手')
-          this.$set(this.data, "name", this.getTitle(data));
-        });
-        resolve();
-      });
-    },
-    _searchAlbum() {
-      return new Promise(resolve => {
-        searchAlbum(this.keyword).then(res => {
-          if (res.data.result.albums && res.data.result.albums[0]) {
-            this.$store.dispatch("searchcontent/hasAlbumOrNot", true);
-            let data = res.data.result.albums[0];
-            this.data = data;
-            console.log(data,'专辑')
-            this.$set(this.data, "name", this.getTitle(data));
-          } else {
-            this.$store.dispatch("searchcontent/hasAlbumOrNot", false);
-          }
-          resolve();
-        });
-      });
-    },
-    _searchMV() {
-      return new Promise(resolve=>{
-        searchMV(this.keyword).then(res=>{
-          if(res.data.result.mvs && res.data.result.mvs[0]) {
-            this.$store.dispatch("searchcontent/hasMVOrNot",true)
-            let data = res.data.result.mvs[0]
-            this.data = data
-            console.log(data,'MV')
-            this.$set(this.data,'name',this.getTitle(data))
-          } else {
-            this.$store.dispatch("searchcontent/hasMVOrNot",false)
-          }
-          resolve()
-        })
-      })
-    },
     hasKeyword(k) {
       if (k.indexOf(this.keyword) != -1) {
         this.hasKey = true;
@@ -175,21 +117,6 @@ export default {
         this.hasKey = false;
         return false;
       }
-    }
-  },
-  created() {
-    if (this.type === 1) {
-      this._searchSinger().then(() => {
-        this.$store.dispatch("searchcontent/setSearchLoading", false);
-      });
-    } else if (this.type === 2) {
-      this._searchAlbum().then(() => {
-        this.$store.dispatch("searchcontent/setSearchLoading", false);
-      });
-    } else if (this.type === 3) {
-      this._searchMV().then(()=>{
-        this.$store.dispatch("searchcontent/setSearchLoading", false)
-      })
     }
   }
 };

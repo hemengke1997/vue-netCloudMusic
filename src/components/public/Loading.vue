@@ -11,6 +11,8 @@ export default {};
 <style lang="less" scoped>
 .loading_box {
   .after;
+  background-color: #fff;
+  z-index: 999;
   img {
     .loading_img;
   }

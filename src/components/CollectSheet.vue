@@ -1,17 +1,20 @@
 <template>
-  <div class="collect_fixed collect_bottom">
-    <div class="collect_wrapper">
-      <div class="collect_inner" @click="download">
-        <i class="iconfont icon-wangyiyunyinle"></i>
-        <span class="collect_logo">{{text}}</span>
+  <div>
+    <div class="collect_fixed collect_bottom">
+      <div class="collect_wrapper">
+        <div class="collect_inner" @click="download">
+          <i class="iconfont icon-wangyiyunyinle"></i>
+          <span class="collect_logo" v-cloak>{{text}}</span>
+        </div>
       </div>
     </div>
+    <div class="footer_ph"></div>
   </div>
 </template>
 
 <script>
 export default {
-  props:{
+  props: {
     text: {
       type: String,
       required: true
@@ -20,14 +23,17 @@ export default {
   methods: {
     download() {
       this.$router.push({
-        path: '/download'
-      })
+        path: "/download"
+      });
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
+[v-cloak] {
+  display: none;
+}
 .collect_fixed {
   width: 100%;
   position: fixed;
@@ -62,5 +68,8 @@ export default {
       }
     }
   }
+}
+.footer_ph {
+  height: 56px;
 }
 </style>

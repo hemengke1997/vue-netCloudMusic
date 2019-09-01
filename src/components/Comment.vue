@@ -1,9 +1,9 @@
 <template>
   <div class="comment_list">
     <comment-item v-for="(item,index) in comment" :key="index" :item="item"></comment-item>
-    <div class="cmt_more" v-if="judgement && total > sum">
-      <span class="box" @click="download">
-        查看全部{{total}}条评论
+    <div class="cmt_more" v-if="judgement && commentOBJ.total > limit">
+      <span class="box" @click="download" v-cloak>
+        查看全部{{commentOBJ.total}}条评论
         <i class="iconfont icon-pull_down"></i>
       </span>
     </div>
@@ -11,27 +11,25 @@
 </template>
 
 <script>
-import { getComments } from "@/api/comment-api";
-import {OK} from 'js/config'
-import CommentItem from '@/components/CommentItem'
+import { OK } from "js/config";
+import CommentItem from "@/components/CommentItem";
 export default {
   data() {
     return {
-      comment: [],
-      sum: 15,
-      total: 0,
-      comments: {    // 总的comments对象
-        hotComments:[],
-      }
+      limit: 15
     };
   },
   props: {
     type: {
+      // type:1 精彩评论  type:2 最新评论
       type: Number,
       required: true
     },
-    id: {
-      required: true
+    commentOBJ: {
+      type: Object,
+      default: function () {
+        return { hotComments: [ ] }
+      }
     }
   },
   components: {
@@ -39,8 +37,22 @@ export default {
   },
   computed: {
     judgement() {
-      return (this.comments.hotComments.length >= 15 && this.type === 1) || (this.comments.hotComments.length < 15 && this.type === 2)
+      return (
+        (this.hotCommentsLength >= 15 && this.type === 1) ||
+        (this.hotCommentsLength < 15 && this.type === 2)
+      );
     },
+    comment() {
+      if(this.type === 1) {
+        return this.commentOBJ.hotComments
+      } else if(this.type === 2 && this.hotCommentsLength < this.limit) {
+        return this.commentOBJ.comments.slice(0,this.limit - this.hotCommentsLength)
+      }
+      return this.commentOBJ.comments
+    },
+    hotCommentsLength() {
+      return this.commentOBJ.hotComments && this.commentOBJ.hotComments.length
+    }
     // 评论中艾特了别人的效果暂时没想到怎么做  想到了  用正则表达式匹配 @xxx  @[^\s]+\s?
     // at() {
     //   return function(content) {
@@ -57,30 +69,11 @@ export default {
     // }
   },
   methods: {
-    _getComment(id,type) {
-      getComments(id).then(res => {
-        if(res.status === OK) {
-          this.$store.dispatch('comment/setHotcommentLength',res.data.hotComments.length)
-          this.$store.dispatch('comment/setNewcommentLength',res.data.comments.length)
-          this.total = res.data.total
-          this.comments = res.data
-          // console.log(this.comments)
-          if(type === 1) {
-            this.comment = res.data.hotComments
-          } else if (type === 2 && res.data.hotComments.length < this.sum) {
-            this.comment = res.data.comments.slice(0, this.sum - res.data.hotComments.length)
-          }
-        }
-      });
-    },
     download() {
       this.$router.push({
-        path: '/download'
-      })
+        path: "/download"
+      });
     }
-  },
-  created() {
-    this._getComment(this.id,this.type)
   }
 };
 </script>
@@ -90,6 +83,9 @@ export default {
   .cmt_more {
     margin-left: 50px;
     position: relative;
+    [v-cloak] {
+      display: none;
+    }
     .box {
       display: block;
       margin-right: 50px;

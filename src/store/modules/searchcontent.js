@@ -1,8 +1,8 @@
 const state = {
     keyword: '',        // 搜索关键字
-    hasAlbum: true,
-    hasMV: true,
-    searchLoading: false
+    hasAlbum: true,     // 是否包含专辑
+    hasMV: true,        // 是否包含MV
+    hotSongs:{},       // 歌手的热门单曲
 }
 
 const mutations = {
@@ -15,8 +15,8 @@ const mutations = {
     HAS_MV_OR_NOT: (state,hasMV) => {
         state.hasMV = hasMV
     },
-    SET_SEARCH_LOADING: (state,isLoading) => {
-        state.isLoading = isLoading
+    SET_HOT_SONGS: (state, hotSongs) => {
+        state.hotSongs = hotSongs
     }
 }
 
@@ -37,10 +37,9 @@ const actions = {
             commit('HAS_MV_OR_NOT',hasMV)
         })
     },
-    setSearchLoading({commit},isLoading) {
-        return new Promise((resolve)=>{
-            commit('SET_SEARCH_LOADING',isLoading)
-            resolve()
+    setHotSongs({commit},hotSongs) {
+        return new Promise(()=>{
+            commit('SET_HOT_SONGS',hotSongs)
         })
     }
 }

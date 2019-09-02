@@ -3,6 +3,7 @@
     <div class="m-mv">
       <mv-video :urlAndcover="urlAndcover"></mv-video>
       <div class="scroll">
+<<<<<<< HEAD
         <user-des v-if="type===2" :user="user"></user-des>
         <mv-des :des="des"></mv-des>
         <recommend :related="related"></recommend>
@@ -15,6 +16,15 @@
             <h3 class="list_title">最新评论({{commentOBJ.total}})</h3>
             <comment :type="2" :commentOBJ="commentOBJ"></comment>
           </template>
+=======
+        <video-des :des="des"></video-des>
+        <recommend :related="related"></recommend>
+        <div>
+          <h3 class="list_title">精彩评论</h3>
+          <comment :type="1" :commentOBJ="commentOBJ"></comment>
+          <h3 class="list_title">最新评论</h3>
+          <comment :type="2" :commentOBJ="commentOBJ"></comment>
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
         </div>
       </div>
       <collect-sheet :text="text"></collect-sheet>
@@ -25,11 +35,16 @@
 
 <script>
 import MvVideo from "@/components/video/Video";
+<<<<<<< HEAD
 import MvDes from "@/components/video/MvDes";
+=======
+import VideoDes from "@/components/video/VideoDes";
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
 import Recommend from "./Recommend";
 import Comment from "@/components/comment/Comment";
 import CollectSheet from "public/CollectSheet";
 import Loading from "public/Loading";
+<<<<<<< HEAD
 import UserDes from './UserDes'
 
 import {
@@ -41,6 +56,9 @@ import {
   getVideoDes,
   getVideoComments
 } from "@/api/mv-api";
+=======
+import { getMvUrl, getRelated, getMvDes, getMvComments } from "@/api/mv-api";
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
 import { Promise } from "q";
 
 export default {
@@ -51,21 +69,33 @@ export default {
       urlAndcover: {},
       des: {},
       related: [],
+<<<<<<< HEAD
       commentOBJ: {},
       comments: [], // 最新评论
       hotComments: [], // 热门评论
       type: Number, // 类型： MV 或者 视频
       user: {}
+=======
+      commentOBJ: {}
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
     };
   },
   components: {
     MvVideo,
+<<<<<<< HEAD
     MvDes,
     Recommend,
     Comment,
     CollectSheet,
     Loading,
     UserDes
+=======
+    VideoDes,
+    Recommend,
+    Comment,
+    CollectSheet,
+    Loading
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
   },
   computed: {
     id() {
@@ -109,8 +139,12 @@ export default {
             desc: item.desc,
             name: item.name,
             publishTime: item.publishTime,
+<<<<<<< HEAD
             playCount: item.playCount,
             type: 'mv'
+=======
+            playCount: item.playCount
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
           };
           resolve();
         });
@@ -118,6 +152,7 @@ export default {
     },
     _getMvComments() {
       getMvComments(this.id).then(res => {
+<<<<<<< HEAD
         this.commentOBJ = res.data;
         this.hotComments = res.data.hotComments;
         this.comments = res.data.comments;
@@ -179,6 +214,23 @@ export default {
       this.type = 2;
       this.getVideoAll();
     }
+=======
+        
+      });
+    },
+    getAll() {
+      Promise.all([
+        this._getMvUrl(),
+        this._getRelated(),
+        this._getMvDes()
+      ]).then(() => {
+        this.isLoading = false;
+      });
+    }
+  },
+  created() {
+    this.getAll();
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
   }
 };
 </script>

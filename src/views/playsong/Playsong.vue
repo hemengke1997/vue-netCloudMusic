@@ -94,7 +94,7 @@
                   <ul>
                     <li v-for="(item,index) in simiSongs" :key="index" @click="gotoSong(item.id)">
                       <figure class="ignore_cover">
-                        <img v-lazy="item.album.picUrl" alt="song" />
+                        <img :src="item.album.picUrl" alt="song" />
                       </figure>
                       <article>
                         <h3 class="song_title">{{item.name}}</h3>

@@ -20,7 +20,11 @@
           <p class="singer">
             {{durations(item.durations)}}
             ，&nbsp;by&nbsp;
+<<<<<<< HEAD
             {{item.creator.userName}}
+=======
+            {{item.creator.name}}
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
           </p>
         </article>
       </li>
@@ -49,7 +53,11 @@ export default {
     durations() {
       return time => {
         const minutes = parseInt((time % (1000 * 60 * 60)) / (1000 * 60));
+<<<<<<< HEAD
         const seconds = parseInt((time % (1000 * 60)) / 1000);
+=======
+        const seconds = (time % (1000 * 60)) / 1000;
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
         return `${minutes}:${seconds}`
       };
     }
@@ -57,6 +65,7 @@ export default {
   methods: {
     gotoRelated(item) {
       if (item.type === 0) {
+<<<<<<< HEAD
         this.$router.push({
           path: '/mv',
           query: {id: item.vid}
@@ -66,6 +75,11 @@ export default {
           path: '/video',
           query: {id: item.vid}
         })
+=======
+        // 跳转到mv
+      } else if (item.type === 1) {
+        // 跳转到视频
+>>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
       }
     }
   }

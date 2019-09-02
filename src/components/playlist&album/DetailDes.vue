@@ -50,19 +50,19 @@ export default {
       if (this.description) {
         return this.description[0];
       }
-      return;
+      return '';
     },
     description_last() {
       if (this.description) {
         return this.description.slice(1);
       }
-      return;
+      return '';
     },
     description() {
       if (this.des.description) {
         return this.des.description.split(/\n/);
       }
-      return;
+      return '';
     },
     des() {
       if(this.type === 1) {

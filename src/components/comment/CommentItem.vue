@@ -133,10 +133,10 @@ export default {
             flex: none;
             width: 21px;
             height: 11px;
-            background: url("../assets/img/vip_ratiox2.png") no-repeat;
+            background: url("../../assets/img/vip_ratiox2.png") no-repeat;
             background-size: contain !important;
             @media screen and (-webkit-device-pixel-ratio: 3) {
-              background: url("../assets/img/vip_radiox3.png") no-repeat;
+              background: url("../../assets/img/vip_radiox3.png") no-repeat;
             }
           }
         }

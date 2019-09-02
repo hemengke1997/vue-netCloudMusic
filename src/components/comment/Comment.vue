@@ -11,8 +11,7 @@
 </template>
 
 <script>
-import { OK } from "js/config";
-import CommentItem from "@/components/CommentItem";
+import CommentItem from "@/components/comment/CommentItem";
 export default {
   data() {
     return {
@@ -28,7 +27,7 @@ export default {
     commentOBJ: {
       type: Object,
       default: function () {
-        return { hotComments: [ ] }
+        return { hotComments: [] }
       }
     }
   },

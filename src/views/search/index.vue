@@ -31,13 +31,13 @@
           >{{item.first}}</li>
         </ul>
       </section>
-      <section class="history_wrapper" v-if="0">
+      <section class="history_wrapper" v-if="searchHistory.length">
         <ul class="list">
-          <li class="item">
+          <li class="item" v-for="(item,index) in searchHistory" :key="index">
             <i class="iconfont icon-jilu"></i>
             <div class="history history_1">
-              <span class="link">测试</span>
-              <figure class="ignore_close">
+              <span class="link" @click="gotoItem(item.first)">{{item.first}}</span>
+              <figure class="ignore_close" @click="removeLocalStorage(item.first)">
                 <i class="iconfont icon-guanbi"></i>
               </figure>
             </div>
@@ -83,11 +83,13 @@ export default {
       isLoading: false, // 在输入框中搜索时 isloading置为true
       searchresult: [],
       showSearch: false, // 显示搜索结果
-      searchLoading: false // 点击搜索时 searchLoading置为true
+      searchLoading: false, // 点击搜索时 searchLoading置为true
+      searchHistory: [], // 搜索历史
+      index: -1 // 搜索历史的index
     };
   },
   components: {
-    SearchContent,
+    SearchContent
   },
   mounted() {
     this.$refs.input.focus();
@@ -136,17 +138,60 @@ export default {
     },
     gotoItem(keyword) {
       this.inputVal = keyword;
-      this.searchLoading = true
-      this.$store.dispatch("searchcontent/setKeyword", keyword).then(()=>{
+      this.searchLoading = true;
+      this.setLocalStorage(keyword);
+      this.$store.dispatch("searchcontent/setKeyword", keyword).then(() => {
         this.showSearch = true;
-      })
+      });
     },
     changeSearchLoading() {
-      this.searchLoading = false
+      this.searchLoading = false;
+    },
+    setLocalStorage(k) {
+      this.removeLocalStorage(k);
+      this.searchHistory.unshift({
+        first: k
+      });
+      localStorage.setItem(
+        "search_history",
+        JSON.stringify(this.searchHistory)
+      );
+    },
+    getLocalStorage() {
+      if (localStorage.getItem("search_history")) {
+        this.searchHistory = JSON.parse(localStorage.getItem("search_history"));
+      } else {
+        localStorage.setItem(
+          "search_history",
+          JSON.stringify(this.searchHistory)
+        );
+        this.searchHistory = JSON.parse(localStorage.getItem("search_history"));
+      }
+    },
+    removeLocalStorage(k) {
+      this.getLocalStorage();
+      if (this.searchHistory.length) {
+        for (let i = 0; i < this.searchHistory.length; i++) {
+          if (this.searchHistory[i].first === k) {
+            this.index = i;
+            break;
+          } else {
+            this.index = -1;
+          }
+        }
+        if (this.index != -1) {
+          this.searchHistory.splice(this.index, 1); // 删除index位置的元素
+          localStorage.setItem(
+            "search_history",
+            JSON.stringify(this.searchHistory)
+          );
+        }
+      }
     }
   },
   created() {
     this._getHotSearch();
+    this.getLocalStorage();
   }
 };
 </script>

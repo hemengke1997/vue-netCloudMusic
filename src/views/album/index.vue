@@ -17,12 +17,12 @@
 </template>
 
 <script>
-import PAhead from "@/components/PAhead";
+import PAhead from "@/components/playlist&album/PAhead";
 import MusicList from "@/components/Musiclist";
-import DetailDes from "@/components/DetailDes";
+import DetailDes from "@/components/playlist&album/DetailDes";
 import Loading from "public/Loading";
-import CollectSheet from "@/components/CollectSheet";
-import Comment from "@/components/Comment";
+import CollectSheet from "public/CollectSheet";
+import Comment from "@/components/comment/Comment";
 import { getAlbumDetails } from "@/api/search-api";
 import { getAlbumComments } from "@/api/comment-api";
 import { OK } from "js/config";

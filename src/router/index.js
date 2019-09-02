@@ -104,9 +104,15 @@ export default new Router({
     },
     // MV页
     {
-      path: '/MV',
+      path: '/mv',
       component: Mv,
-      name: 'MV'
+      name: 'mv'
+    },
+    // 视频页
+    {
+      path: '/video',
+      component: Mv,
+      name: 'video'
     }
   ]
 })

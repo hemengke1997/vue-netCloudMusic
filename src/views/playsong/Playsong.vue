@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import CommentItem from "@/components/CommentItem";
+import CommentItem from "@/components/comment/CommentItem";
 import { getSongComments } from "@/api/comment-api";
 import {
   getSong,

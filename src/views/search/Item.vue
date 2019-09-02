@@ -101,7 +101,7 @@ export default {
       } else if (this.type === 2) {
         return `/album?id=${this.data.id}`
       } else if (this.type === 3) {
-        return `/MV?id=${this.data.id}`
+        return `/mv?id=${this.data.id}`
       } return '/'
     },
     ...mapGetters({

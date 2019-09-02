@@ -11,13 +11,14 @@
           <h3 class="list_title">歌曲列表</h3>
         </music-list>
         <div class="sheet_comment">
-          <h3 class="hot_comment" v-if="hotComments">精彩评论</h3>
-          <comment :type="1" :commentOBJ="commentOBJ"></comment>
-          <h3
-            class="new_comment"
-            v-if="hotComments.length < 15 && comments"
-          >最新评论({{commentOBJ.total}})</h3>
-          <comment :type="2" :commentOBJ="commentOBJ"></comment>
+          <template v-if="hotComments.length">
+            <h3 class="hot_comment">精彩评论</h3>
+            <comment :type="1" :commentOBJ="commentOBJ"></comment>
+          </template>
+          <template v-if="hotComments.length < 15 && comments.length">
+            <h3 class="new_comment">最新评论({{commentOBJ.total}})</h3>
+            <comment :type="2" :commentOBJ="commentOBJ"></comment>
+          </template>
         </div>
         <collect-sheet :text="text"></collect-sheet>
       </div>
@@ -27,13 +28,13 @@
 
 <script>
 import MusicList from "@/components/Musiclist";
-import CollectSheet from "@/components/CollectSheet";
-import PAhead from "@/components/PAhead";
-import DetailDes from "@/components/DetailDes";
+import CollectSheet from "public/CollectSheet";
+import PAhead from "@/components/playlist&album/PAhead";
+import DetailDes from "@/components/playlist&album/DetailDes";
 import { getSheetDetails } from "@/api/recommend-api";
 import { getComments } from "@/api/comment-api";
 import { OK } from "js/config";
-import Comment from "@/components/Comment";
+import Comment from "@/components/comment/Comment";
 import Loading from "public/Loading";
 import { Promise } from "q";
 
@@ -54,9 +55,9 @@ export default {
       },
       isLoading: true,
       text: "收藏歌单",
-      comments:[],     // 最新评论
-      hotComments:[],  // 热门评论
-      commentOBJ:{},  // 评论的总对象
+      comments: [], // 最新评论
+      hotComments: [], // 热门评论
+      commentOBJ: {} // 评论的总对象
     };
   },
   components: {
@@ -123,16 +124,16 @@ export default {
       });
     },
     _getComments(id) {
-      return new Promise((resolve)=>{
-        getComments(id).then(res=>{
-        if(res.status === OK) {
-          this.commentOBJ = res.data
-          this.comments = res.data.comments
-          this.hotComments = res.data.hotComments
-          resolve()
-        }
-      })
-      })
+      return new Promise(resolve => {
+        getComments(id).then(res => {
+          if (res.status === OK) {
+            this.commentOBJ = res.data;
+            this.comments = res.data.comments;
+            this.hotComments = res.data.hotComments;
+            resolve();
+          }
+        });
+      });
     }
   },
   created() {

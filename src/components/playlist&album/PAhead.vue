@@ -75,7 +75,7 @@ export default {
       } else if (this.type === 2) {
         return this.album;
       }
-      return;
+      return '';
     },
     ptype() {
       if (this.type === 1) {
@@ -83,7 +83,7 @@ export default {
       } else if (this.type === 2) {
         return "专辑";
       }
-      return;
+      return '';
     },
     singers() {
       if (!this.album.artists) {
@@ -118,6 +118,7 @@ export default {
       } else if (this.type === 2) {
         return this.album.blurPicUrl;
       }
+      return ''
     },
     ...mapGetters({
       playlist: "playlist",
@@ -206,7 +207,7 @@ export default {
         z-index: 1;
         height: 114px;
         padding-left: 115%;
-        background: url('../assets/img/album@2x.png') 100% no-repeat;
+        background: url('../../assets/img/album@2x.png') 100% no-repeat;
         background-size: contain;
         @media screen and (min-width: 360px){
           height: 126px;
@@ -218,7 +219,7 @@ export default {
           height: 200px;
         }
         @media screen and (-webkit-min-device-pixel-ratio: 3){
-          background-image: url('../assets/img/album@3x.png');
+          background-image: url('../../assets/img/album@3x.png');
         }
       }
       img {
@@ -311,9 +312,9 @@ export default {
               background-position: 0 0;
               background-repeat: no-repeat;
               background-size: 75px auto;
-              background-image: url("../assets/img/usericn_2x.png");
+              background-image: url("../../assets/img/usericn_2x.png");
               @media screen and(-webkit-device-pixel-ratio: 3) {
-                background-image: url("../assets/img/usericn_3x.png");
+                background-image: url("../../assets/img/usericn_3x.png");
                 background-size: 70px auto;
               }
             }

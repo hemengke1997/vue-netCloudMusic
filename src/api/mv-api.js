@@ -25,7 +25,6 @@ function getMvComments(id) {
   return axios.get(url)
 }
 
-<<<<<<< HEAD
 // 获取视频的地址
 function getVideoUrl(id) {
   const url = HOST + `/video/url?id=${id}`
@@ -45,18 +44,12 @@ function getVideoComments(id) {
 }
 
 
-=======
->>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
 export {
   getMvUrl,
   getRelated,
   getMvDes,
-<<<<<<< HEAD
   getMvComments,
   getVideoUrl,
   getVideoDes,
   getVideoComments
-=======
-  getMvComments
->>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
 }

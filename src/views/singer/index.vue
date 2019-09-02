@@ -13,12 +13,8 @@
 <script>
 import Singer from "./Singer";
 import DetailDes from "@/components/playlist&album/DetailDes";
-<<<<<<< HEAD
 import CollectSheet from "public/CollectSheet";
 import MusicList from '@/components/Musiclist'
-=======
-import MusicList from "public/CollectSheet";
->>>>>>> c9c80d53b980af279036ed745c2359a32904f11e
 import Loading from "public/Loading";
 import { mapGetters } from "vuex";
 

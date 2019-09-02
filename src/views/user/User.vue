@@ -41,7 +41,7 @@
 import UserPlaylist from '@/components/UserPlaylist'
 import {getUser} from "@/api/comment-api"
 import {OK} from 'js/config'
-import CollectSheet from '@/components/CollectSheet'
+import CollectSheet from 'public/CollectSheet'
 export default {
   data() {
     return {

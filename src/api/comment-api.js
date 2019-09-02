@@ -29,10 +29,15 @@ function getAlbumComments(id) {
     return axios.get(url)
 }
 
+// 获取MV的评论
+function getMvComments(id) {
+    const url = HOST + `/comment/mv?id=${id}`
+}
 export  {
     getComments,
     getUserPlaylist,
     getUser,
     getSongComments,
-    getAlbumComments
+    getAlbumComments,
+    getMvComments
 }

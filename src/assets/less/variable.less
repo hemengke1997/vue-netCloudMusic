@@ -4,22 +4,10 @@
 @color-highlight-background: rgb(196, 71, 59);
 @color-dialog-background: rgb(204, 204, 204);
 @color-theme: #d43c33; // top的背景色
-@color-sub-theme: rgb(240, 116, 107);
-@color-text: #2E3030;
 
 @white: #fff;
 @red: #dd001b; // tab的字体颜色
 
-// 字体大小规范
-@font-size-small-ss: 9px;
-@font-size-small-s: 10px;
-@font-size-small: 11px;
-@font-size-small-x: 12px;
-@font-size-medium: 14px;
-@font-size-medium-x: 16px;
-@font-size-large-s: 17px;
-@font-size-large: 18px;
-@font-size-large-x: 22px;
 
 // 自定义类
 .text_overflow() {
@@ -57,22 +45,20 @@
     transform-origin: left top;
     z-index: 2;
 
-    @media screen and (-webkit-device-pixel-ratio: 3) {
-        width: 300%;
-        height: 300%;
-        transform: scale(.333333);
+    @media screen and (-webkit-min-device-pixel-ratio: 1) {
+        width: 150%;
+        height: 150%;
+        transform: scale(.666666);
     }
-
-    @media screen and (-webkit-device-pixel-ratio: 2) {
+    @media screen and (-webkit-min-device-pixel-ratio: 2) {
         width: 200%;
         height: 200%;
         transform: scale(.5);
     }
-
-    @media screen and (-webkit-device-pixel-ratio: 1) {
-        width: 150%;
-        height: 150%;
-        transform: scale(.666666);
+    @media screen and (-webkit-min-device-pixel-ratio: 3) {
+        width: 300%;
+        height: 300%;
+        transform: scale(.333333);
     }
 }
 
@@ -130,4 +116,15 @@
     font-size: 12px;
     color: #666;
     background-color: #eeeff0;
+}
+
+.ismv() {
+    font-style: normal;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 14px;
+    font-size: 9px;
+    color: #d33a31;
 }

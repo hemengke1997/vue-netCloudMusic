@@ -27,13 +27,13 @@
 
 <script>
 import MusicList from "@/components/Musiclist";
-import CollectSheet from "@/components/CollectSheet";
-import PAhead from "@/components/PAhead";
-import DetailDes from "@/components/DetailDes";
+import CollectSheet from "public/CollectSheet";
+import PAhead from "@/components/playlist&album/PAhead";
+import DetailDes from "@/components/playlist&album/DetailDes";
 import { getSheetDetails } from "@/api/recommend-api";
 import { getComments } from "@/api/comment-api";
 import { OK } from "js/config";
-import Comment from "@/components/Comment";
+import Comment from "@/components/comment/Comment";
 import Loading from "public/Loading";
 import { Promise } from "q";
 

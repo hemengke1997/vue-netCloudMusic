@@ -12,9 +12,8 @@
 
 <script>
 import Singer from "./Singer";
-import DetailDes from "@/components/DetailDes";
-import MusicList from "@/components/Musiclist";
-import CollectSheet from "@/components/CollectSheet";
+import DetailDes from "@/components/playlist&album/DetailDes";
+import MusicList from "public/CollectSheet";
 import Loading from "public/Loading";
 import { mapGetters } from "vuex";
 

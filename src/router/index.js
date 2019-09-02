@@ -104,7 +104,7 @@ export default new Router({
     },
     // MV页
     {
-      path: '/MV',
+      path: '/mv',
       component: Mv,
       name: 'MV'
     }

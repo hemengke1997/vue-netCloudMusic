@@ -1036,4 +1036,4 @@ animation: shine 1.2s steps(1) infinite;
 
 ## 2019.9.2 更新
 
-还未完成的： mv界面， 搜索记录加入local存储 ， 部署项目到github上， 点击下载跳转到appstore
+还未完成的： 部署项目到github上， 点击下载跳转到appstore

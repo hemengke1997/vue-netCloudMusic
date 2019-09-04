@@ -16,7 +16,7 @@ const Album = () => import('@/views/album/index')
 const Mv = () => import('@/views/MV/index')
 
 export default new Router({
-  // mode: 'history',   // 需要服务器支持
+  mode: 'history',   // 需要服务器支持
 
   base: process.env.BASE_URL,
 

@@ -119,11 +119,20 @@ module.exports = {
   devServer: { // 所有 webpack-dev-server 的选项都支持
     hot: true, // 热更新
     open: false,
-    host: '0.0.0.0',
+    // host: '0.0.0.0',
     port: 8088,
     https: false,
     hotOnly: false,
-    // proxy: {}, // 跨域代理
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:4000',
+    //     ws: true,
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/api': ''
+    //     }
+    //   }
+    // }, // 跨域代理
   },
 
 }

@@ -12,7 +12,6 @@
 
 <script>
 import CommentItem from "@/components/comment/CommentItem";
-import emojione from 'emojione'
 export default {
   data() {
     return {

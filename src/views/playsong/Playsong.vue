@@ -242,7 +242,7 @@ export default {
     },
     lyc() {
       return index => {
-        return this.lyric[index] === "" ? "......" : this.lyric[index];
+        return this.lyric[index] === "" ? "····" : this.lyric[index];
       };
     }
   },
@@ -357,8 +357,6 @@ export default {
       this.$router.replace(this.$route.fullPath);
     },
     updateTime(e) {
-      // console.log(e)
-
       for (let i = this.lycNeedScroll; i < this.currentTime.length; i++) {
         if (e.target.currentTime >= this.currentTime[i]) {
           this.lycNeedScroll = i + 1;

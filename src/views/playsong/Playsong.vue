@@ -394,19 +394,19 @@ export default {
       })();
     };
     this.setLrcHeight(this.screenWidth);
-     this.$refs.audio.src = this.songUrl;
+    this.$refs.audio.src = this.songUrl;
   },
   watch: {
     screenWidth(h) {
       this.setLrcHeight(h);
     }
-  },
+  }
 };
 </script>
 
 <style lang="less" scoped>
 [v-cloak] {
-  display: none
+  display: none;
 }
 // 整个界面的过渡效果
 .fade-top-leave-active,

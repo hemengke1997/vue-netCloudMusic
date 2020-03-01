@@ -8,7 +8,13 @@
       </p>
     </h4>
     <span class="singer" v-if="ismv">
-      歌手：<span v-for="(item,index) in singers" :key="index" @click="gotoSinger(item.id)" class="asing">{{item.name}}</span>
+      歌手：
+      <span
+        v-for="(item,index) in singers"
+        :key="index"
+        @click="gotoSinger(item.id)"
+        class="asing"
+      >{{item.name}}</span>
     </span>
     <p class="info" :class="{videoinfo: !ismv}">
       <span class="publishtime">发布时间：{{publishTime(des.publishTime)}}</span>
@@ -16,69 +22,69 @@
     </p>
     <div class="content" :class="{vd_content:!ismv}">
       <span v-for="(item,index) in desc" :key="index" v-show="showdes">
-      <i>{{item}}</i>
-      <br/>
-    </span>
+        <i>{{item}}</i>
+        <br />
+      </span>
     </div>
   </section>
 </template>
 
 <script>
-import transDate from '@/utils/transDate'
+import transDate from "@/utils/transDate";
 export default {
   data() {
     return {
       showdes: false
-    }
+    };
   },
   props: {
     des: {
-      type:Object,
-      required:true
+      type: Object,
+      required: true
     }
   },
   computed: {
     singers() {
-      let artists = this.des.artists
-      if(!artists) {
-        return ""
+      let artists = this.des.artists;
+      if (!artists) {
+        return "";
       }
-      return artists
+      return artists;
     },
     publishTime() {
-      return (time)=>{
-        const date = transDate(time)
-        return `${date.year}-${date.month}-${date.day}`
-      }
+      return time => {
+        const date = transDate(time);
+        return `${date.year}-${date.month}-${date.day}`;
+      };
     },
     playCount() {
-      if(this.des.playCount > 10000) {
-        return Math.floor(this.des.playCount/10000) + '万'
+      if (this.des.playCount > 10000) {
+        return Math.floor(this.des.playCount / 10000) + "万";
       }
-      return this.des.playCount
+      return this.des.playCount;
     },
     desc() {
-      if(this.des.desc) {
-        if(this.des.desc.split(/\n/).length > 1){
-          return this.des.desc.split(/\n/).slice(0,-1)
-        } 
-        return  this.des.desc.split(/\n/)
-      }
+      if (this.des.desc) {
+        if (this.des.desc.split(/\n/).length > 1) {
+          return this.des.desc.split(/\n/).slice(0, -1);
+        }
+        return this.des.desc.split(/\n/);
+      } else return "";
     },
     desc_length() {
-      return this.des.desc && this.des.desc.length
+      return this.des.desc && this.des.desc.length;
     },
     ismv() {
-      return this.des.type === 'mv'
+      return this.des.type === "mv";
     }
   },
   methods: {
     gotoSinger(id) {
       this.$router.push({
-        path: '/singer',
-        query: {id: id}
-      })
-    },
+        path: "/singer",
+        query: { id: id }
+      });
+    }
   }
 };
 </script>
@@ -119,7 +125,7 @@ export default {
         top: 1px;
         right: 8px;
         &.showdes {
-          transform: rotate(180deg); 
+          transform: rotate(180deg);
         }
       }
     }
@@ -131,10 +137,10 @@ export default {
     font-size: 13px;
     line-height: 14px;
     .asing {
-      margin: 0 6px;  
+      margin: 0 6px;
     }
     :first-child {
-        margin: 0;
+      margin: 0;
     }
   }
   .info {
@@ -151,9 +157,9 @@ export default {
       &::after {
         .small_border;
         border-right-width: 1px;
-        @media screen and (-webkit-min-device-pixel-ratio: 3){
+        @media screen and (-webkit-min-device-pixel-ratio: 3) {
           border-right-width: 2px;
-        } 
+        }
       }
     }
     .played {

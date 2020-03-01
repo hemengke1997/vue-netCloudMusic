@@ -9,7 +9,7 @@
 <script>
 import Top from "public/Top";
 import Tab from "public/Tab";
-import AppMain from 'public/AppMain'
+import AppMain from "public/AppMain";
 export default {
   components: {
     Top,

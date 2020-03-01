@@ -105,7 +105,7 @@ export default {
     
   },
   watch: {
-    inputVal(v, ov) {
+    inputVal(v) {
       this.searchresult = []
       if (v) {
         this.isLoading = true;

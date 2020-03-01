@@ -3,12 +3,12 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const Recommend = () => import('@/views/recommend/Recommend.vue')
-const Hot = () => import('@/views/hot/Hot.vue')
-const Index = () => import('@/views/index.vue')
-const Search = () => import('@/views/search/index.vue')
-const SheetDetails = () => import('@/views/sheetdetails/SheetDetails')
-const User = () => import('@/views/user/User')
+const Recommend = ()=> import('@/views/recommend/Recommend.vue')
+const Hot = ()=> import('@/views/hot/Hot.vue')
+const Index = ()=> import('@/views/index.vue')
+const Search = ()=> import('@/views/search/index.vue')
+const SheetDetails = ()=> import('@/views/sheetdetails/SheetDetails')
+const User = ()=> import('@/views/user/User')
 const Download = () => import('@/views/download/Download')
 const PlaySong = () => import('@/views/playsong/Playsong')
 const Singer = () => import('@/views/singer/index')
@@ -20,48 +20,55 @@ export default new Router({
 
   base: process.env.BASE_URL,
 
-  routes: [{
+  routes: [
+    {
       path: '/',
       component: Index,
       redirect: '/recommend',
-      name: 'index',
-      children: [{
-        path: '/recommend',
-        component: Recommend,
-        name: 'recommend',
-        meta: {
-          title: '推荐'
+      name:'index',
+      children: [
+        {
+          path: '/recommend',
+          component: Recommend,
+          name:'recommend',
+          meta: {
+            title:'推荐'
+          }
         }
-      }]
+      ]
     },
     {
       path: '/hot',
       component: Index,
-      children: [{
-        path: '/hot',
-        name: 'hot',
-        component: Hot,
-        meta: {
-          title: '热歌榜'
+      children:[
+        {
+          path:'/hot',
+          name: 'hot',
+          component: Hot,
+          meta:{
+            title: '热歌榜'
+          }
         }
-      }]
+      ]
     },
     // 搜索
     {
       path: '/search',
-      component: Index,
-      children: [{
-        path: '/search',
-        name: 'search',
-        component: Search,
-        meta: {
-          title: '搜索'
+      component:Index,
+      children: [
+        {
+          path:'/search',
+          name:'search',
+          component: Search,
+          meta:{
+            title:'搜索'
+          }
         }
-      }]
+      ]
     },
     // 歌单详情
     {
-      path: '/playlist/detail',
+      path:'/playlist/detail',
       component: SheetDetails,
       name: 'sheetDetails'
     },

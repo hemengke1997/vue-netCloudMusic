@@ -3,7 +3,49 @@
 
 项目做完了，先放截图
 
+![首页](https://github.com/hemengke1997/vue-template/blob/master/images/index1.png)
 
+![首页](https://github.com/hemengke1997/vue-template/blob/master/images/index2.png)
+
+![热搜榜](https://github.com/hemengke1997/vue-template/blob/master/images/hot.png)
+
+![搜索界面](https://github.com/hemengke1997/vue-template/blob/master/images/sss.png)
+
+![搜索结果](https://github.com/hemengke1997/vue-template/blob/master/images/s2.png)
+
+![歌手主页](https://github.com/hemengke1997/vue-template/blob/master/images/s3.png)
+
+![播放页](https://github.com/hemengke1997/vue-template/blob/master/images/s4.png)
+
+![播放页](https://github.com/hemengke1997/vue-template/blob/master/images/s5.png)
+
+![评论](https://github.com/hemengke1997/vue-template/blob/master/images/c1.png)
+
+![用户主页](https://github.com/hemengke1997/vue-template/blob/master/images/user.png)
+
+![用户歌单](https://github.com/hemengke1997/vue-template/blob/master/images/bb.png)
+
+
+
+#### 已实现功能
+
+跟网易云官方移动web端功能完全一致
+
++ 播放歌曲
++ 搜索歌手、歌曲、视频等
++ 查看歌手主页
++ 查看用户主页
++ 热门榜单
++ ....
+
+不支持功能： 
+
++ 下载app
++ 评论
+
+#### 感谢
+
+感谢[Binaryify](https://github.com/Binaryify)大神提供的后端接口。 [接口地址](https://github.com/Binaryify/NeteaseCloudMusicApi)。
 
 ### 安装淘宝的NPM镜像
 
